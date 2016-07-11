@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/NinjaPlayer.iml" filepath="$PROJECT_DIR$/NinjaPlayer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/commontools/commontools.iml" filepath="$PROJECT_DIR$/commontools/commontools.iml" />
+      <module fileurl="file://$PROJECT_DIR$/scheduledesigner/scheduledesigner.iml" filepath="$PROJECT_DIR$/scheduledesigner/scheduledesigner.iml" />
+      <module fileurl="file://$PROJECT_DIR$/templatedesigner/templatedesigner.iml" filepath="$PROJECT_DIR$/templatedesigner/templatedesigner.iml" />
+    </modules>
+  </component>
+</project>
