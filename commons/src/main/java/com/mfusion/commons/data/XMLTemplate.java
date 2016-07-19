@@ -351,12 +351,11 @@ public class XMLTemplate {
         return false;
     }
     /**
-     * export a template to a specified folder.
+     * get local template layout sample.
      * @param assetManager path that template will export to
      * @param path path that template will export to
-     * @return true|false.
-     * @throws PathAccessException
-     * @throws TemplateNotFoundException
+     * @return a list of object that contains template basic info.
+     * @throws Exception
      */
     public ArrayList<VisualTemplate> getAllLocalSampleLayouts(AssetManager assetManager, String path) throws Exception{
         // TODO Auto-generated method stub
@@ -376,7 +375,13 @@ public class XMLTemplate {
 
         return templateList;
     }
-
+    /**
+     * get detail information about local template layout sample.
+     * @param visualTemplate object that contains template basic info.
+     * @param assetManager
+     * @return a template object
+     * @throws Exception
+     */
     public TemplateEntity getSampleLayout(VisualTemplate visualTemplate,AssetManager assetManager){
         return  this.readTemplateInfoFromAsset(assetManager, visualTemplate.path, visualTemplate.id);
     }
