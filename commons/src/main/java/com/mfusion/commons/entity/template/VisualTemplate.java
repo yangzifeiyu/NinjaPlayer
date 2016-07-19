@@ -2,8 +2,6 @@ package com.mfusion.commons.entity.template;
 
 import android.graphics.Bitmap;
 
-import com.mfusion.commons.entity.inernalenum.ResourceSourceType;
-
 /**
  * Created by jimmy on 7/12/2016.
  *

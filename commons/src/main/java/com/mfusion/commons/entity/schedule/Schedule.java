@@ -1,6 +1,6 @@
 package com.mfusion.commons.entity.schedule;
 
-import com.mfusion.commons.entity.inernalenum.SchedulePlayType;
+import com.mfusion.commons.entity.values.SchedulePlayType;
 
 import java.util.ArrayList;
 

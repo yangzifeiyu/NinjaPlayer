@@ -1,4 +1,4 @@
-package com.mfusion.commons.entity.inernalenum;
+package com.mfusion.commons.entity.values;
 
 public enum SchedulePlayType {
 

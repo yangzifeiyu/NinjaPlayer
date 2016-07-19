@@ -1,6 +1,6 @@
 package com.mfusion.commons.entity.schedule;
 
-import com.mfusion.commons.entity.inernalenum.BlockType;
+import com.mfusion.commons.entity.values.BlockType;
 
 import java.util.ArrayList;
 import java.util.Date;

@@ -1,7 +1,6 @@
 package com.mfusion.commons.tools;
 
 import com.mfusion.commons.entity.exception.PathAccessException;
-import com.mfusion.commons.entity.inernalenum.ResourceSourceType;
 
 import java.io.File;
 import java.io.FileFilter;

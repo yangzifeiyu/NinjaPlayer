@@ -2,13 +2,12 @@ package com.mfusion.commons.data;
 
 import android.content.res.AssetManager;
 import android.graphics.Color;
-import android.os.Environment;
 
 import com.mfusion.commons.entity.exception.IllegalTemplateException;
 import com.mfusion.commons.entity.exception.PathAccessException;
 import com.mfusion.commons.entity.exception.TemplateNotFoundException;
-import com.mfusion.commons.entity.inernalenum.ComponentType;
-import com.mfusion.commons.entity.inernalenum.ResourceSourceType;
+import com.mfusion.commons.entity.values.ComponentType;
+import com.mfusion.commons.entity.values.ResourceSourceType;
 import com.mfusion.commons.entity.template.ComponentEntity;
 import com.mfusion.commons.entity.template.TemplateEntity;
 import com.mfusion.commons.entity.template.VisualTemplate;

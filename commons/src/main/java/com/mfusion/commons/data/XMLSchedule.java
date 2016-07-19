@@ -4,7 +4,7 @@ import com.mfusion.commons.entity.exception.IllegalScheduleException;
 import com.mfusion.commons.entity.exception.PathAccessException;
 import com.mfusion.commons.entity.exception.ScheduleNotFoundException;
 import com.mfusion.commons.entity.exception.TemplateNotFoundException;
-import com.mfusion.commons.entity.inernalenum.SchedulePlayType;
+import com.mfusion.commons.entity.values.SchedulePlayType;
 import com.mfusion.commons.entity.schedule.BlockEntity;
 import com.mfusion.commons.entity.schedule.Schedule;
 import com.mfusion.commons.tools.DateConverter;

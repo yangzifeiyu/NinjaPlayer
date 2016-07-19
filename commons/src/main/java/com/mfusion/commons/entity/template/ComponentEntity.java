@@ -2,7 +2,7 @@ package com.mfusion.commons.entity.template;
 
 import android.graphics.Color;
 
-import com.mfusion.commons.entity.inernalenum.ComponentType;
+import com.mfusion.commons.entity.values.ComponentType;
 
 import org.w3c.dom.Element;
 

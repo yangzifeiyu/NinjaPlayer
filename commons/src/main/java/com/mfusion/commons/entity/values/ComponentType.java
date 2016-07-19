@@ -1,4 +1,4 @@
-package com.mfusion.commons.entity.inernalenum;
+package com.mfusion.commons.entity.values;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -3,7 +3,7 @@ package com.mfusion.commons.entity.template;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 
-import com.mfusion.commons.entity.inernalenum.ResourceSourceType;
+import com.mfusion.commons.entity.values.ResourceSourceType;
 
 import java.util.ArrayList;
 

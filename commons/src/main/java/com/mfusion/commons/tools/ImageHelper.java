@@ -13,7 +13,7 @@ import android.graphics.Paint;
 import android.graphics.Bitmap.Config;
 import android.graphics.Paint.Style;
 
-import com.mfusion.commons.entity.inernalenum.ResourceSourceType;
+import com.mfusion.commons.entity.values.ResourceSourceType;
 import com.mfusion.commons.entity.template.ComponentEntity;
 import com.mfusion.commons.entity.template.TemplateEntity;
 /**
