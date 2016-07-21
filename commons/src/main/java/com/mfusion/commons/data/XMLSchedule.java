@@ -49,17 +49,7 @@ public class XMLSchedule {
         //Assign a global value here
         this.m_XMLHelper=new XmlOperator();
     }
-    /**
-     * load schedule information from a specified folder.
-     * @param XMLFolder target xml folder
-     * @return A schedule Object that is to be rendered on schedule designer
-     * @throws PathAccessException
-     * @throws ScheduleNotFoundException
-     * @throws IllegalScheduleException
-     */
-    public Schedule LoadSchedule(String XMLFolder) throws Exception{
-        return this.LoadSchedule(InternalKeyWords.DefaultScheduleXmlPath,InternalKeyWords.DefaultScheduleName);
-    }
+
     /**
      * Default function to be called externally
      * As there is only one schedule xml for initial version, this is supposed
@@ -72,9 +62,22 @@ public class XMLSchedule {
      */
     public Schedule LoadSchedule() throws Exception
     {
-        return this.LoadSchedule(InternalKeyWords.DefaultScheduleXmlPath);
+        return this.LoadSchedule(InternalKeyWords.DefaultScheduleName);
     }
-
+    /**
+     * Default function to be called externally
+     * As there is only one schedule xml for initial version, this is supposed
+     * to be used by default unless otherwise required.
+     * load schedule information from a default folder.
+     * @return A schedule Object that is to be rendered on schedule designer
+     * @throws PathAccessException
+     * @throws ScheduleNotFoundException
+     * @throws IllegalScheduleException
+     */
+    public Schedule LoadSchedule(String scheduleName) throws Exception
+    {
+        return this.LoadSchedule(InternalKeyWords.DefaultScheduleXmlPath,scheduleName);
+    }
     /**
      * load specified schedule information from a specified folder.
      * @param scheduleName schedule name
@@ -153,6 +156,9 @@ public class XMLSchedule {
     {
         if(sch==null||sch.idleItem==null||sch.idleItem==null||sch.idleItem.isEmpty())
             throw new IllegalScheduleException("No Default Template");
+
+        if(sch.id==null||sch.id.isEmpty())
+            sch.id=InternalKeyWords.DefaultScheduleName;
 
         Document scheduleDocument=this.writeScheduleDocument(sch);
 
@@ -244,7 +250,7 @@ public class XMLSchedule {
         try {
             HashSet<String> blockItemSet=null;
             Document scheduleDocument=null;
-            if(scheName!=null&&scheName.isEmpty()){
+            if(scheName!=null&&!scheName.isEmpty()){
                 scheduleDocument=this.m_XMLHelper.getXmlDocument(ScheXMLFolder+scheName+".xml");
                 if(scheduleDocument!=null){
                     blockItemSet=this.getAllItemInSchedule(scheduleDocument);
@@ -268,7 +274,7 @@ public class XMLSchedule {
             //Copy template to assign folder
             if(blockItemSet!=null)
                 for (String template : blockItemSet) {
-                    if(!XMLTemplate.getInstance().existTemplate(template,TemplateXMLFolder)){
+                    if(!XMLTemplate.getInstance().existTemplate(TemplateXMLFolder,template)){
                         throw new TemplateNotFoundException(template);
                     }
                     FileOperator.copyFolder(TemplateXMLFolder+template, outputFolder+template);

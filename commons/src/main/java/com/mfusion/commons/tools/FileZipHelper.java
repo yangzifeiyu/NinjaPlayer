@@ -25,12 +25,14 @@ public class FileZipHelper {
 			
 			File inputFile=new File(inputPath);
 			if(!inputFile.exists())
-				throw new PathAccessException(inputPath);
+				return false;
 			
 			File zipFile=new File(zipFileFath);
 			if(!zipFile.getParentFile().exists())
 				zipFile.getParentFile().mkdirs();
-			
+			if(zipFile.exists())
+				zipFile.delete();
+
 			zip(zipFileFath, inputFile);
 			return true;
 		} catch (Exception e) {

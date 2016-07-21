@@ -24,7 +24,11 @@ public class DateConverter {
 	public static String convertTimeToStrNoSecond(Date time){
 		return short_time_format.format(time)+":00";
 	}
-	
+
+	public static String convertShortTimeToStr(Date time){
+		return short_time_format.format(time);
+	}
+
 	public static String convertTimeToStr(Date time){
 		return time_format.format(time);
 	}
@@ -43,7 +47,16 @@ public class DateConverter {
 		}
 		return null;
 	}
-	
+
+	public static Date convertShortStrToTime(String time){
+		try {
+			return short_time_format.parse(time);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
+	}
+
 	public static Date convertStrToDate(String date){
 		try {
 			return date_format.parse(date);

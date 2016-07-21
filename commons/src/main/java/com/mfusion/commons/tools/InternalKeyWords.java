@@ -20,9 +20,9 @@ public class InternalKeyWords {
 
 	public static String Config_ExitPassword="ExitPassword";
 
-	public static String DefaultTemplateXmlPath= Environment.getExternalStorageDirectory().getPath()+"/Storage/Template";
+	public static String DefaultTemplateXmlPath= Environment.getExternalStorageDirectory().getPath()+"/Storage/Template/";
 
-	public static String DefaultScheduleXmlPath= Environment.getExternalStorageDirectory().getPath()+"/Storage/Schedule";
+	public static String DefaultScheduleXmlPath= Environment.getExternalStorageDirectory().getPath()+"/Storage/Schedule/";
 
 	public static String DefaultXmlTempPath= Environment.getExternalStorageDirectory().getPath()+"/Temp/";
 

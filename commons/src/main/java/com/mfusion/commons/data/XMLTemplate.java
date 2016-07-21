@@ -77,7 +77,7 @@ public class XMLTemplate {
      * @throws TemplateNotFoundException
      */
     public Boolean existTemplate(String tempId) throws Exception{
-        return this.existTemplate(tempId,InternalKeyWords.DefaultTemplateXmlPath);
+        return this.existTemplate(InternalKeyWords.DefaultTemplateXmlPath,tempId);
     }
     /**
      * check whether template is exist in specified folder.
@@ -86,12 +86,12 @@ public class XMLTemplate {
      * @return true|false
      * @throws TemplateNotFoundException
      */
-    public Boolean existTemplate(String tempId,String XMLFolder) throws Exception{
+    public Boolean existTemplate(String XMLFolder,String tempId) throws Exception{
         // TODO Auto-generated method stub
 
         String templateFolder=this.getTemplateFolder(XMLFolder,tempId);
         if(FileOperator.existFile(templateFolder))
-            return FileOperator.existFile(this.getTemplateXmlPath(XMLFolder,tempId));
+            return FileOperator.existFile(this.getTemplateXmlPath(templateFolder,tempId));
 
         throw new TemplateNotFoundException(tempId);
     }
@@ -153,7 +153,7 @@ public class XMLTemplate {
         FileOperator.createDir(tempFolder);
         Document tempDocument=this.writeTemplateDocument(tempFolder,tempInfo);
 
-        return this.m_XMLHelper.saveXmlDocument(tempDocument, this.getTemplateXmlPath(XMLFolder,tempInfo.id));
+        return this.m_XMLHelper.saveXmlDocument(tempDocument, this.getTemplateXmlPath(tempFolder,tempInfo.id));
     }
     /**
      * rename template in default folder.
@@ -171,7 +171,7 @@ public class XMLTemplate {
      */
     public Boolean renameTemplate(String oldName, String newName,String XMLFolder) throws Exception{
         // TODO Auto-generated method stub
-        if(this.existTemplate(oldName,XMLFolder)){
+        if(this.existTemplate(XMLFolder,oldName)){
 
             if(oldName.toLowerCase().equalsIgnoreCase(newName))
                 return true;
@@ -282,13 +282,15 @@ public class XMLTemplate {
 
             //UnZip
             String inputPath=InternalKeyWords.DefaultXmlTempPath+newTempName+File.separator;
+            FileOperator.deleteFile(inputPath);
             if(!FileZipHelper.deCompressionFolder(zipFile, InternalKeyWords.DefaultXmlTempPath))
                 throw new PathAccessException("Decompression "+ importedTempPath);
 
-            if(FileOperator.existFile(this.getTemplateXmlPath(XMLFolder,newTempName))){
+            if(FileOperator.existFile(this.getTemplateXmlPath(this.getTemplateFolder(XMLFolder,newTempName),newTempName))){
                 String oldName=newTempName;
                 newTempName = FileOperator.CheckFileName(XMLFolder,newTempName);
                 this.renameTemplate(oldName, newTempName,InternalKeyWords.DefaultXmlTempPath);
+                inputPath=InternalKeyWords.DefaultXmlTempPath+newTempName+File.separator;
             }
 
             //Check Template Xml and return template entity
@@ -585,7 +587,7 @@ public class XMLTemplate {
         return null;
     }
 
-    private String getTemplateFolder(String tempName,String XMLFolder){
+    private String getTemplateFolder(String XMLFolder,String tempName){
 
         return XMLFolder+tempName+File.separator;
     }
