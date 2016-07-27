@@ -20,8 +20,8 @@
         android:id="@+id/btnContinue"
         android:textSize="12dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/myRadioGroup"
-        android:layout_toStartOf="@+id/landscape" />
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/myRadioGroup" />
 
     <TextView
 
@@ -54,6 +54,15 @@
             android:textColor="#3b5998"
             android:drawableLeft="@drawable/portrait"/>
 
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="49dp"
+            android:id="@+id/landscape"
+            android:textSize="12dp"
+            android:textColor="#3b5998"
+            android:drawableLeft="@drawable/phoneport"
+            />
+
 
     </RadioGroup>
 
@@ -64,8 +73,8 @@
         android:id="@+id/textView3"
         android:textSize="15dp"
         android:textColor="#3b5998"
-        android:layout_alignBottom="@+id/etPassword"
-        android:layout_alignParentLeft="true" />
+        android:layout_alignTop="@+id/etPassword"
+        android:layout_alignParentStart="true"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -74,8 +83,9 @@
         android:id="@+id/textView4"
         android:textSize="15dp"
         android:textColor="#3b5998"
-        android:layout_centerVertical="true"
-        android:layout_alignParentLeft="true" />
+        android:layout_below="@+id/etPassword"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="41dp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -84,9 +94,8 @@
         android:id="@+id/textView5"
         android:textSize="15dp"
         android:textColor="#3b5998"
-        android:layout_below="@+id/btnImgShut"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="42dp" />
+        android:layout_alignTop="@+id/tvW"
+        android:layout_alignParentStart="true" />
 
     <EditText
         android:background="@drawable/edittext_bg"
@@ -97,10 +106,10 @@
         android:textColorHint="#3b5998"
         android:gravity="center"
         android:hint="@string/edittext_hint"
-        android:textSize="12dp"
+        android:layout_marginTop="23dp"
         android:layout_below="@+id/myRadioGroup"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="42dp" />
+        android:layout_centerHorizontal="true"
+        android:textSize="12dp" />
 
     <Button
 
@@ -111,9 +120,11 @@
         android:id="@+id/btnCheck"
         android:textSize="12dp"
         android:textColor="#ffffff"
-        android:layout_below="@+id/etPassword"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="29dp" />
+        android:layout_marginLeft="36dp"
+        android:layout_alignTop="@+id/etPassword"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/txtStatusPa"
+        android:layout_alignBottom="@+id/textView3" />
 
     <!--<Button-->
 
@@ -135,9 +146,8 @@
         android:id="@+id/txtStatusPa"
         android:textSize="11dp"
         android:gravity="center|bottom"
-        android:layout_alignTop="@+id/btnCheck"
-        android:layout_alignParentLeft="true"
-        android:layout_alignRight="@+id/myRadioGroup" />
+        android:layout_below="@+id/etPassword"
+        android:layout_alignStart="@+id/myRadioGroup" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -145,10 +155,9 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:id="@+id/tvTime"
         android:gravity="center"
-        android:layout_above="@+id/textView5"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/btnImgShut"
-        android:layout_toEndOf="@+id/btnImgShut" />
+        android:layout_alignBottom="@+id/textView4"
+        android:layout_alignStart="@+id/txtStatusPa"
+        android:layout_toStartOf="@+id/btnContinue" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -156,35 +165,24 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:id="@+id/tvW"
         android:gravity="center"
-        android:layout_alignTop="@+id/btnImgWake"
-        android:layout_alignParentEnd="true"
-        android:layout_toEndOf="@+id/btnImgWake" />
+        android:layout_above="@+id/btnContinue"
+        android:layout_alignStart="@+id/tvTime"
+        android:layout_toStartOf="@+id/btnContinue" />
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btnImgShut"
         android:background="@drawable/shut"
-        android:layout_alignTop="@+id/textView4"
-        android:layout_toLeftOf="@+id/etPassword" />
+        android:layout_toEndOf="@+id/textView4"
+        android:layout_alignTop="@+id/textView4" />
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btnImgWake"
         android:background="@drawable/wake"
-        android:layout_alignTop="@+id/textView5"
         android:layout_alignBottom="@+id/textView5"
-        android:layout_toStartOf="@+id/tvTime" />
-
-    <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/landscape"
-        android:textSize="12dp"
-        android:textColor="#3b5998"
-        android:drawableLeft="@drawable/phoneport"
-        android:layout_above="@+id/etPassword"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignStart="@+id/btnImgShut" />
 
 </RelativeLayout>
