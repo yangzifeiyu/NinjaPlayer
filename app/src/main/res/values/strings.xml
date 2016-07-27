@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">MF Ninja</string>
+
+    <string name="edittext_hint"><font size="10">Enter your password</font></string>
+    <string-array name="info_arrays">
+        <item> App version: Nanja Lite 1.0      App Name: MediaFusion Nanja Lite </item>
+    </string-array>
+
+    <string name="select_mode">Select Mode</string>
+    <string-array name="mode_names">
+
+        <item>Sequence</item>
+        <item>Timeline</item>
+
+
+    </string-array>
+    <string name="select_list">Select Mode</string>
+    <string-array name="list_names">
+
+        <item>Playlist1</item>
+        <item>Playlist2</item>
+        <item>Playlist3</item>
+        <item>Playlist4</item>
+        <item>Playlist5</item>
+    </string-array>
+    <string name="title_activity_configuration_fragment">ConfigurationFragment</string>
+</resources>
