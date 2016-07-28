@@ -16,7 +16,7 @@
         android:textColor="#ffffff"
         android:layout_width="wrap_content"
         android:layout_height="35dp"
-        android:text="Save Settings"
+        android:text="Save"
         android:id="@+id/btnContinue"
         android:textSize="30dp"
         android:layout_alignParentBottom="true"
@@ -108,7 +108,7 @@
         android:textColorHint="#3b5998"
         android:gravity="center"
         android:hint="@string/edittext_hint"
-        android:textSize="30dp"
+        android:textSize="25dp"
         android:layout_below="@+id/myRadioGroup"
         android:layout_alignStart="@+id/myRadioGroup"
         android:layout_marginTop="34dp"
@@ -179,10 +179,8 @@
         android:layout_height="50dp"
         android:id="@+id/btnImgShut"
         android:background="@drawable/shut"
-        android:layout_marginEnd="54dp"
         android:layout_above="@+id/btnImgWake"
-        android:layout_alignEnd="@+id/btnCheck"
-        android:layout_marginBottom="35dp"/>
+        android:layout_toEndOf="@+id/textView4" />
 
     <ImageButton
         android:layout_width="55dp"
@@ -191,5 +189,19 @@
         android:background="@drawable/wake"
         android:layout_alignBottom="@+id/tvW"
         android:layout_alignStart="@+id/btnImgShut"/>
+
+    <EditText
+        android:background="@drawable/edittext_bg"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/etMatch"
+        android:inputType="textPassword"
+        android:textColorHint="#3b5998"
+        android:gravity="center"
+        android:hint="@string/edittext_hint2"
+        android:textSize="25dp"
+        android:layout_below="@+id/textView3"
+        android:layout_alignStart="@+id/etPassword"
+        android:layout_alignEnd="@+id/etPassword" />
 
 </RelativeLayout>
