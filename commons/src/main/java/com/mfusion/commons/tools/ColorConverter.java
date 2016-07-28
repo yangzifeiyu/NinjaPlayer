@@ -2,9 +2,7 @@ package com.mfusion.commons.tools;
 
 import android.graphics.Color;
 
-/**
- * Created by 1B15182 on 21/7/2016 0021.
- */
+
 public class ColorConverter {
     public static int convertARGBStrToColorInt(String ARGBStr){
         String[] ary=ARGBStr.split(",");
