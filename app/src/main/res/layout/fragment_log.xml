@@ -17,7 +17,7 @@
         android:textColor="#ffffff"
         android:layout_width="120dp"
         android:layout_height="20dp"
-        android:text="Load Log data"
+        android:text="Load Log"
         android:id="@+id/btnReload"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
@@ -36,7 +36,8 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_below="@+id/btnReload"
-        android:textSize="15dp"/>
+        android:textSize="15dp"
+        android:gravity="top"/>
 
     <Button
         android:background="@drawable/mybutton"
@@ -44,7 +45,7 @@
         style="?android:attr/buttonStyleSmall"
         android:layout_width="150dp"
         android:layout_height="20dp"
-        android:text="Clear Error  Data"
+        android:text="Clear Log"
         android:id="@+id/btnClear"
         android:layout_alignTop="@+id/btnReload"
         android:layout_alignParentLeft="true"
