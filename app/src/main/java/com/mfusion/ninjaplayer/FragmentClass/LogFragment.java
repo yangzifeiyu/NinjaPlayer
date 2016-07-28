@@ -99,7 +99,7 @@ public class LogFragment extends Fragment {
 
             }
 
-        });
+        });//load all information from log
 
 
         clear.setOnClickListener(new View.OnClickListener() {
@@ -109,13 +109,13 @@ public class LogFragment extends Fragment {
                 // TODO Auto-generated method stub
 
                 try {
-                    File myFile = new File("/sdcard/MFusion/log.txt");
+                    File myFile = new File("/sdcard/MFusion/log.txt");//file path
                     PrintWriter writer = new PrintWriter(myFile);
                     writer.print("");
                     writer.close();
                     Toast.makeText(getActivity(),
                             "Cleared everything from log.txt'",
-                            Toast.LENGTH_SHORT).show();
+                            Toast.LENGTH_SHORT).show();//display when click clear button 
                 } catch (Exception e) {
                     Toast.makeText(getActivity(), e.getMessage(),
                             Toast.LENGTH_SHORT).show();
@@ -127,7 +127,7 @@ public class LogFragment extends Fragment {
             }
 
 
-        });
+        });//clear all information from log
 
 
         return rootView;
@@ -149,7 +149,7 @@ public class LogFragment extends Fragment {
 
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
                 String currentDateandTime = sdf.format(new Date());
-                myOutWriter.append("Error Getting Data in LogFragment at : "+ currentDateandTime + "\n");
+                myOutWriter.append("Error Getting Data in LogFragment at : "+ currentDateandTime + "\n");//display in log info when there is an error
                 myOutWriter.close();
                 fOut.close();
             }
@@ -157,7 +157,7 @@ public class LogFragment extends Fragment {
         } catch (Exception e) {
             Toast.makeText(getActivity(), e.getMessage(),
                     Toast.LENGTH_SHORT).show();
-        }
+        }//error log information
 
 
     }
