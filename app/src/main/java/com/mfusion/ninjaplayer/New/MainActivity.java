@@ -43,7 +43,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
 
     // Tab titles
-    private String[] tabs = {"Configure", "Template", "Schedule", "Log", "About"};
+    private String[] tabs = {"Configure", "Template", "Schedule", "Log", "About"};//string tabs
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,9 +59,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
 
         viewPager.setAdapter(mAdapter);
-        //actionBar.setDisplayShowHomeEnabled(false);
+     
         actionBar.setDisplayShowTitleEnabled(false);
-        //actionBar.setHomeButtonEnabled(false);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         // Adding Tabs
@@ -91,9 +90,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             }
         });
 
-        AutoStart();
-        Advertisment();
-        ErrorLog();
+        AutoStart();//call auto start method
+        Advertisment();//call adbertisement method
+        ErrorLog();//call error log method
     }//oncreate
 
 
@@ -122,13 +121,13 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         if (!isFinishing()) {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("MediaFusion Ultimate Lite");
-            builder.setMessage("Download our Pro Edition now to try more!");
-            builder.setIcon(R.drawable.logo);
-            builder.setCancelable(false);
+            builder.setTitle("MediaFusion Ultimate Lite");//set title
+            builder.setMessage("Download our Pro Edition now to try more!");//set message
+            builder.setIcon(R.drawable.logo);//set icon
+            builder.setCancelable(false);//ensure user could not close the pop up window unless they clicked close button
 
             final ImageView image = new ImageView(this);
-            image.setImageResource(R.drawable.splashlog2);
+            image.setImageResource(R.drawable.splashlog2);//set image
 
             builder.setView(image);
 
@@ -140,7 +139,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
                     new Handler().postDelayed(new Runnable() {
                         public void run() {
-                            test();
+                            test();//call test method
                         }
                     }, 300 * 1000);//display every 5 min
 
@@ -160,7 +159,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                     Intent intent = new Intent();
                     intent.setAction(Intent.ACTION_VIEW);
                     intent.addCategory(Intent.CATEGORY_BROWSABLE);
-                    intent.setData(Uri.parse("https://play.google.com/store?hl=en"));
+                    intent.setData(Uri.parse("https://play.google.com/store?hl=en"));//link to playstore
                     startActivity(intent);
 
                 }
@@ -186,7 +185,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                         new OutputStreamWriter(fOut);
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
                 String currentDateandTime = sdf.format(new Date());
-                myOutWriter.append("Created 'log.txt' at : " + currentDateandTime);
+                myOutWriter.append("Created 'log.txt' at : " + currentDateandTime);//display message in log info
                 myOutWriter.append(separator);
                 myOutWriter.close();
                 fOut.close();
@@ -195,7 +194,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 OutputStreamWriter myOutWriter =
                         new OutputStreamWriter(fOut);
                 myOutWriter.append(separator);
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");//display message in log info
                 String currentDateandTime = sdf.format(new Date());
                 myOutWriter.append("Application started :" + currentDateandTime);
                 myOutWriter.append("\n");
@@ -253,7 +252,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
                     if (value.equals(storedPassword)) {
 
-                        Toast.makeText(MainActivity.this, "User Exit Successfully", Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this, "User Exit Successfully", Toast.LENGTH_LONG).show();//display when password is correct and can exit the app
 
                         Intent intent = new Intent(getApplicationContext(), Home.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
