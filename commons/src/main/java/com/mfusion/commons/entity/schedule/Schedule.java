@@ -13,7 +13,7 @@ public class Schedule {
 
     public String idleItem;
 
-    public SchedulePlayType playType=SchedulePlayType.TimeLine;
+    public SchedulePlayType playType=SchedulePlayType.Sequence;
 
     public ArrayList<BlockEntity> blockList=new ArrayList<BlockEntity>();
 }

@@ -59,6 +59,8 @@ public class DateConverter {
 
 	public static Date convertStrToDate(String date){
 		try {
+			if(date.equalsIgnoreCase("0001,01,01"))
+				return null;
 			return date_format.parse(date);
 		} catch (Exception e) {
 			// TODO: handle exception

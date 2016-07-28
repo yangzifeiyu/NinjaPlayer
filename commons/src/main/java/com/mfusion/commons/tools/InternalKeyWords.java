@@ -32,5 +32,5 @@ public class InternalKeyWords {
 
 	public static String AssignedXmlName="MFusion.xml";
 
-	public static String AssignedXmlFolder=Environment.getExternalStorageDirectory().getPath()+"/Data/";
+	public static String AssignedXmlFolder=Environment.getExternalStorageDirectory().getPath()+"/Data/XML/";
 }

@@ -89,13 +89,14 @@ public class XMLSchedule {
      */
     public Schedule LoadSchedule(String XMLFolder,String scheduleName) throws Exception
     {
+        Schedule scheduleEntity=new Schedule();
+        scheduleEntity.id=scheduleName;
+
         File scheduleFile=new File(XMLFolder,scheduleName+".xml");
         Document scheduleDocument=this.m_XMLHelper.getXmlDocument(scheduleFile);
         if(scheduleDocument==null)
-            throw new ScheduleNotFoundException(scheduleName);
+            return scheduleEntity;
 
-        Schedule scheduleEntity=new Schedule();
-        scheduleEntity.id=scheduleName;
         Element rootElement=scheduleDocument.getDocumentElement();
 
         Element runElement=this.m_XMLHelper.getSubNode(rootElement, "Run");
@@ -281,7 +282,7 @@ public class XMLSchedule {
                 }
 
             //back current playing content
-            String backupPath=assignDestFolder+"MFusion.old.zip";
+            String backupPath=InternalKeyWords.DefaultXmlTempPath+"MFusion.old.zip";
             FileZipHelper.compressionFolder(backupPath, assignDestFolder);
             try {
 
@@ -295,6 +296,7 @@ public class XMLSchedule {
                 FileZipHelper.deCompressionFolder(new File(backupPath), assignDestFolder);
             }
 
+            FileOperator.deleteFile(backupPath);
             return  DALSettings.getInstance().updateSetting(InternalKeyWords.Config_PlayingSchedule, scheName);
 
         } catch (Exception e) {
@@ -319,7 +321,7 @@ public class XMLSchedule {
             Element timelinElement=document.createElement("TimeLine");
             timelinElement.setAttribute("RunTime", shutDownTime);
             timelinElement.setAttribute("StartDate", DateConverter.convertCurrentDateToStr());
-            timelinElement.setAttribute("EndDate", "");
+            timelinElement.setAttribute("EndDate", "0001,01,01");
 
             Element cmdElement=document.createElement("Command");
             cmdElement.setAttribute("name", "Shutdown");

@@ -1,7 +1,10 @@
 package com.mfusion.commons.tools;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
@@ -22,16 +25,58 @@ import com.mfusion.commons.entity.template.TemplateEntity;
 public class ImageHelper {
 
 	public static Bitmap getBitmap(String imagePath, ResourceSourceType sourceType, AssetManager assetManager){
+
+		Bitmap bitmap=null;
+		InputStream imageStream=null;
+		FileInputStream fs = null;
 		try {
+			BitmapFactory.Options opts = new BitmapFactory.Options();
+			opts.inJustDecodeBounds = false;
+			opts.inPreferredConfig = Bitmap.Config.RGB_565;
+			opts.inPurgeable = false;
+			opts.inInputShareable = false;
+			opts.inSampleSize = 5;
+
 			if(sourceType==ResourceSourceType.http){
 				
 			}if(sourceType==ResourceSourceType.internal){
-				return BitmapFactory.decodeStream(assetManager.open(imagePath));
+				imageStream=assetManager.open(imagePath);
 			}
-			
-			return BitmapFactory.decodeFile(imagePath);
+			if(sourceType==ResourceSourceType.local){
+				try
+				{
+					fs = new FileInputStream(imagePath);
+					imageStream = new BufferedInputStream(fs);
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+			if(imageStream==null)
+				return null;
+
+			bitmap= BitmapFactory.decodeStream(imageStream,null,opts);
+			if(bitmap==null)
+				bitmap=BitmapFactory.decodeFile(imagePath,opts);
+
+			return bitmap;
 		} catch (Exception e) {
 			// TODO: handle exception
+			e.printStackTrace();
+		}finally {
+			try{
+				if(imageStream!=null){
+					imageStream.close();
+					imageStream=null;
+				}
+				if(fs!=null){
+					fs.close();
+					fs=null;
+				}
+			}catch(Exception ex){ex.printStackTrace();}
+
+			System.gc();
 		}
 		
 		return null;

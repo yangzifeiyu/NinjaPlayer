@@ -245,10 +245,31 @@ public class XMLTemplate {
             template.id=folder.getName();
             template.path=folder.getPath()+File.separator;
             template.thumbImageBitmap=ImageHelper.getBitmap(template.path+InternalKeyWords.TemplateResourceFolder+"thumb.jpg", ResourceSourceType.local,null);
-            tempList.add(template);
+
+            this.addToListWithSort(tempList,template);
         }
 
         return tempList;
+    }
+
+    private void addToListWithSort(ArrayList<VisualTemplate> tempList,VisualTemplate newTemplate){
+        if(tempList.size()==0) {
+            tempList.add(newTemplate);
+            return;
+        }
+
+        Integer insertIndex=tempList.size()-1;
+        for(;insertIndex>=0;insertIndex--){
+            if(tempList.get(insertIndex).id.compareTo(newTemplate.id)<0) {
+                if(insertIndex==(tempList.size()-1))
+                    tempList.add(newTemplate);
+                else
+                    tempList.add(insertIndex+1, newTemplate);
+                return;
+            }
+        }
+
+        tempList.add(0, newTemplate);
     }
     /**
      * import a zip file for template to a default folder.
@@ -372,7 +393,8 @@ public class XMLTemplate {
             templateEntity.id=name;
             templateEntity.path=path+File.separator+name+File.separator;
             templateEntity.thumbImageBitmap=ImageHelper.getBitmap(templateEntity.path+InternalKeyWords.TemplateResourceFolder+"thumb.jpg", ResourceSourceType.internal,assetManager);
-            templateList.add(templateEntity);
+
+            this.addToListWithSort(templateList,templateEntity);
         }
 
         return templateList;
