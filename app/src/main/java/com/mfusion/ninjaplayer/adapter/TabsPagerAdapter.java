@@ -32,13 +32,15 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
             case 2:
                 // Schedule fragment activity
                 return new ScheduleFragment();
+
             case 3:
+                // Log fragment activity
+                return new LogFragment();
+            case 4:
                 // About fragment activity
                 return new AboutFragment();
 
-            case 4:
-                // About fragment activity
-                return new LogFragment();
+
 
 
         }
