@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Schedule Designer</string>
+    <string name="sche_idle_template_tip"> Please drag template in </string>
 </resources>
