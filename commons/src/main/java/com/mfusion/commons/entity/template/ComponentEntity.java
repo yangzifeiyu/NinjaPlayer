@@ -31,4 +31,24 @@ public class ComponentEntity {
      * @Description XML nodes(node name is property)
      */
     public ArrayList<Element> property=new ArrayList<Element>();
+
+    /**
+     * save property to entity
+     * @param propertyName eg:ForeColor, Speed
+     * @param value
+     * @return true if the property is found and changed,false if the property does not exist
+     */
+    public boolean setComponentProperty(String propertyName,String value){
+        boolean changed=false;
+        for(int i=0;i<property.size();i++){
+            Element current=property.get(i);
+            if(current.getAttribute("name").equals(propertyName))
+            {
+                current.setTextContent(value);
+                changed=true;
+            }
+            property.set(i,current);
+        }
+        return changed;
+    }
 }

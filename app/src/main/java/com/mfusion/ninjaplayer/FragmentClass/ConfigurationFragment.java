@@ -36,7 +36,7 @@ public class ConfigurationFragment extends Fragment {
     ViewPager viewPager;
     Button Continue, Check;
     ImageButton shut, wake;
-    EditText pass;
+    EditText pass, passagain;
     TextView status, tvtime, tvwtime;
 
     private RadioGroup radioGroup;
@@ -74,6 +74,8 @@ public class ConfigurationFragment extends Fragment {
 
         pass = (EditText) rootView.findViewById(R.id.etPassword);
 
+        passagain = (EditText) rootView.findViewById(R.id.etMatch);
+
         //viewPager = (ViewPager) getActivity().findViewById(R.id.pager);
 
 
@@ -88,7 +90,6 @@ public class ConfigurationFragment extends Fragment {
                 continues();
             }
         });
-
 
 
         shut.setOnClickListener(new View.OnClickListener() {
@@ -156,7 +157,7 @@ public class ConfigurationFragment extends Fragment {
     private void retrieveinfo() {
 
 
-        controller.list_setting6(tvtime, tvwtime, status, pass, radioGroup);//Called DBController method listsettings6 to invoke database
+        controller.list_setting6(tvtime, tvwtime, status, pass, passagain, radioGroup);//Called DBController method listsettings6 to invoke database
 
 
     }//end of retrieveinfo method
@@ -182,12 +183,22 @@ public class ConfigurationFragment extends Fragment {
 
     private void check() {
         String pa = pass.getText().toString().trim();
+        String match = passagain.getText().toString().trim();
 
-        if (isValidPassword(pa) && pa != null) {
-            status.setText("Password Accepted, you have type: " + pass.getText());
-        } else {
-            status.setText("Password not Accepted must be min6,max12,0-9,a-z or A-Z");
+        if (isValidPassword(pa) && pa.equals(match) && pa != null) {
+            status.setText("Password match and Password Accepted, you have type: " + pass.getText());
+        } else if (isValidPassword(pa) && pa != match && pa != null) {
+            status.setText("Password does not match");
+        } else if (!isValidPassword(pa) && pa != null) {
+            status.setText("Password must be min6,max12,0-9,a-z or A-Z");
+        } else if (isValidPassword(pa) && pa != match && pa != null) {
+            status.setText("Password does not match");
+        } else if (!isValidPassword(pa) && pa.equals(match)&& pa != null) {
+            status.setText("Password match with wrong format");
         }
+
+
+
 
     }//check password
 
@@ -295,33 +306,35 @@ public class ConfigurationFragment extends Fragment {
         String pa = pass.getText().toString().trim();
         String shut = tvtime.getText().toString().trim();
         String wake = tvwtime.getText().toString().trim();
+        String match = passagain.getText().toString().trim();
 
         //String dis = ((RadioButton) getActivity().findViewById(radioGroup.getCheckedRadioButtonId())).getText().toString().trim();
 
         if (radioGroup.getCheckedRadioButtonId() == R.id.landscape) {
             String s = "Landscape";
 
-            if (pa.isEmpty() && s != null) {
+            if (pa.isEmpty() && pa.equals(match) && s != null) {
                 //controller.insert_setting(dis, pa, shut, wake, auto);
                 controller.insert_setting2(s, pa, shut, wake);
                 Toast.makeText(getActivity(), "Saved with Default PASSWORD", Toast.LENGTH_SHORT).show();
 
-                configurationLog();
+                configurationLogDefault();
 
 
             } else if (pa != null) {
 
-                if (isValidPassword(pa)) {
+                if (isValidPassword(pa) && pa.equals(match)) {
                     //controller.insert_setting(dis, pa, shut, wake, auto);
                     controller.insert_setting2(s, pa, shut, wake);
-                    Toast.makeText(getActivity(), "Saved with User set PASSWORD", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Password match and Saved with User set PASSWORD", Toast.LENGTH_SHORT).show();
                     configurationLog();
 
 
-                }
-
-                if (!isValidPassword(pa)) {
+                } else if (!isValidPassword(pa)) {
                     Toast.makeText(getActivity(), "Password must be min6,max12,0-9,a-z or A-Z =)", Toast.LENGTH_SHORT).show();
+                    PasswordLog();
+                } else if (isValidPassword(pa) && pa != match) {
+                    Toast.makeText(getActivity(), "Password Not match", Toast.LENGTH_SHORT).show();
                     PasswordLog();
                 }
             }
@@ -330,26 +343,27 @@ public class ConfigurationFragment extends Fragment {
         } else if (radioGroup.getCheckedRadioButtonId() == R.id.portrait) {
             String a = "Portrait";
 
-            if (pa.isEmpty() && a != null) {
+            if (pa.isEmpty() && pa.equals(match) && a != null) {
                 //controller.insert_setting(dis, pa, shut, wake, auto);
                 controller.insert_setting2(a, pa, shut, wake);
                 Toast.makeText(getActivity(), "Saved with Default PASSWORD", Toast.LENGTH_SHORT).show();
-                configurationLog();
+                configurationLogDefault();
 
 
             } else if (pa != null) {
 
-                if (isValidPassword(pa)) {
+                if (isValidPassword(pa) && pa.equals(match)) {
                     //controller.insert_setting(dis, pa, shut, wake, auto);
                     controller.insert_setting2(a, pa, shut, wake);
-                    Toast.makeText(getActivity(), "Saved with User set PASSWORD", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Password match and Saved with User set PASSWORD", Toast.LENGTH_SHORT).show();
                     configurationLog();
 
 
-                }
-
-                if (!isValidPassword(pa)) {
+                } else if (!isValidPassword(pa)) {
                     Toast.makeText(getActivity(), "Password must be min6,max12,0-9,a-z or A-Z =)", Toast.LENGTH_SHORT).show();
+                    PasswordLog();
+                } else if (isValidPassword(pa) && pa != match) {
+                    Toast.makeText(getActivity(), "Password Not match", Toast.LENGTH_SHORT).show();
                     PasswordLog();
                 }
 
@@ -418,14 +432,43 @@ public class ConfigurationFragment extends Fragment {
                 Execerror();
             }
 
-        }//end of log
+        }
 
-    }
+    }//end of log
 
-    private void PasswordLog() {
+    private void configurationLogDefault() {
+
         String pa = pass.getText().toString().trim();
+        String shut = tvtime.getText().toString().trim();
+        String wake = tvwtime.getText().toString().trim();
 
-        if (!isValidPassword(pa)) {
+
+        if (radioGroup.getCheckedRadioButtonId() == R.id.landscape) {
+            String s = "Landscape";
+            try {
+                File myFile = new File("/sdcard/MFusion/log.txt");
+
+                if (!myFile.exists()) {
+                    myFile.createNewFile();
+                    //Toast.makeText(getActivity(),"Created 'log.txt'",Toast.LENGTH_SHORT).show();
+                } else if (myFile.exists()) {
+                    FileOutputStream fOut = new FileOutputStream(myFile, true);
+                    OutputStreamWriter myOutWriter =
+                            new OutputStreamWriter(fOut);
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                    String currentDateandTime = sdf.format(new Date());
+                    myOutWriter.append("Configuration Settings saved to log.txt at : " + currentDateandTime + "\n" + s + "," + "mfusion" + "," + shut + "," + wake + "\n");
+                    myOutWriter.close();
+                    fOut.close();
+                }
+
+            } catch (Exception e) {
+                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                Execerror();
+            }
+        } else if (radioGroup.getCheckedRadioButtonId() == R.id.portrait) {
+
+            String a = "Landscape";
             try {
                 File myFile = new File("/sdcard/MFusion/log.txt");
 
@@ -439,7 +482,39 @@ public class ConfigurationFragment extends Fragment {
 
                     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
                     String currentDateandTime = sdf.format(new Date());
-                    myOutWriter.append("Atempted to change password but failed due to wrong requirement at : " + currentDateandTime + "\n" + pa + "\n");
+                    myOutWriter.append("Configuration Settings saved to log.txt at : " + currentDateandTime + "\n" + a + "," + "mfusion" + "," + shut + "," + wake + "\n");
+
+                    myOutWriter.close();
+                    fOut.close();
+                }
+
+            } catch (Exception e) {
+                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                Execerror();
+            }
+
+        }
+
+    }//end of default log
+
+    private void PasswordLog() {
+        String pa = pass.getText().toString().trim();
+        String match = passagain.getText().toString().trim();
+        if (!isValidPassword(pa) && pa!=match) {
+            try {
+                File myFile = new File("/sdcard/MFusion/log.txt");
+
+                if (!myFile.exists()) {
+                    myFile.createNewFile();
+                    //Toast.makeText(getActivity(),"Created 'log.txt'",Toast.LENGTH_SHORT).show();
+                } else if (myFile.exists()) {
+                    FileOutputStream fOut = new FileOutputStream(myFile, true);
+                    OutputStreamWriter myOutWriter =
+                            new OutputStreamWriter(fOut);
+
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                    String currentDateandTime = sdf.format(new Date());
+                    myOutWriter.append("Attempted to change password but failed due to wrong requirement or Password does not match at : " + currentDateandTime + "\n" + pa + "\n");
 
                     myOutWriter.close();
                     fOut.close();
@@ -454,8 +529,7 @@ public class ConfigurationFragment extends Fragment {
 
     }//eng of passwordlog
 
-    private void Execerror()
-    {
+    private void Execerror() {
         try {
             File myFile = new File("/sdcard/MFusion/log.txt");
 
@@ -469,7 +543,7 @@ public class ConfigurationFragment extends Fragment {
 
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
                 String currentDateandTime = sdf.format(new Date());
-                myOutWriter.append("Exception Error in ConfigurationFragment at : "+ currentDateandTime + "\n");
+                myOutWriter.append("Exception Error in ConfigurationFragment at : " + currentDateandTime + "\n");
                 myOutWriter.close();
                 fOut.close();
             }
