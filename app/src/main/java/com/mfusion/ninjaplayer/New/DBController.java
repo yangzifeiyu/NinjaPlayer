@@ -17,7 +17,16 @@ import com.mfusion.ninjaplayer.R;
 import java.io.File;
 
 public class DBController extends SQLiteOpenHelper {
-
+    
+	public static final String DATABASE_FILE_PATH = Environment.getExternalStorageDirectory().toString();
+	public static final String APP_FOLDER = "/MFusion/";
+	public static final String DB_NAME = "MfusionDataBase.db";
+	public static final int DATABASE_VERSION = 1;
+	public static final String TABLE_NAME_TEMPLATE="tamplate";
+	public static final String TABLE_NAME_COMPONENT="component";
+	public static final String TABLE_NAME_USER_SCREEN="userscreen";
+	public static final String TABLE_NAME_USER_SCREEN_COMPONENT="userscreencomponent";
+	public static final String TAG="DBController";
     private String sdPath;
     private SQLiteDatabase db;
 
