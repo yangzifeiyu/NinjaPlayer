@@ -147,7 +147,7 @@ public class LogFragment extends Fragment {
                 OutputStreamWriter myOutWriter =
                         new OutputStreamWriter(fOut);
 
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");//datatime formate
                 String currentDateandTime = sdf.format(new Date());
                 myOutWriter.append("Error Getting Data in LogFragment at : "+ currentDateandTime + "\n");//display in log info when there is an error
                 myOutWriter.close();
