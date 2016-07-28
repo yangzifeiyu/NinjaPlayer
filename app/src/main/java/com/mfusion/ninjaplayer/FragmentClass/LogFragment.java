@@ -15,11 +15,16 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 public class LogFragment extends Fragment {
 
@@ -28,6 +33,7 @@ public class LogFragment extends Fragment {
     private static final int MSG_LogList = 0;
 
     private static final String processId = Integer.toString(android.os.Process.myPid());
+    ArrayList<String> rows = new ArrayList<String>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -37,6 +43,7 @@ public class LogFragment extends Fragment {
         load = (Button) rootView.findViewById(R.id.btnReload);
         clear = (Button) rootView.findViewById(R.id.btnClear);
         logcat = (EditText) rootView.findViewById(R.id.etLog);
+
                /* try {
                     StringBuffer sb = new StringBuffer();
                     String logPath = Environment.getExternalStorageDirectory().getPath() + "/Log/" + "log.txt";
@@ -54,53 +61,12 @@ public class LogFragment extends Fragment {
 
         load.setOnClickListener(new View.OnClickListener() {
 
-
+            int count = 0;
             @Override
             public void onClick(View arg0) {
                 // TODO Auto-generated method stub
 
-//               try {
-//                  // Process process = Runtime.getRuntime().exec(new String[]{"logcat", "-d","-s","*:v"});
-//                   Process process = Runtime.getRuntime().exec("logcat -d *:I" );
-//                    //Process process = Runtime.getRuntime().exec("logcat -d");
-//
-//                    BufferedReader bufferedReader = new BufferedReader(
-//                            new InputStreamReader(process.getInputStream()));
-//                    StringBuilder log=new StringBuilder();
-//                    String line = "";
-//                    while ((line = bufferedReader.readLine()) != null) {
-//                        log.append(line+"\n");
-//                    }
-//
-//                 // logcat.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
-//                   logcat.setMovementMethod(new ScrollingMovementMethod());
-//                   logcat.setText(log.toString());
-//
-//                } catch (IOException e) {
-//
-//                   logcat.setText("ERROR GETTING DATA");
-//                }
 
-//
-//                try {
-//                    StringBuffer sb = new StringBuffer();
-//                    String logPath = Environment.getExternalStorageDirectory().getPath() + "/Log/" + "log.txt";
-//
-//                    BufferedReader br = new BufferedReader(new FileReader(new File(logPath)));
-//                    String line = "";
-//                    while ((line = br.readLine()) != null) {
-//                        sb.append(line + "\n");
-//                    }
-//                    br.close();
-//                    // logcat.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
-//                    logcat.setMovementMethod(new ScrollingMovementMethod());
-//                    logcat.setText(logPath.toString());
-//                    logcat.setText(sb.toString());
-//
-//                } catch (IOException e) {
-//
-//                    logcat.setText("ERROR GETTING DATA");
-//
                 try {
                     File myFile = new File("/sdcard/Mfusion/log.txt");
                     FileInputStream fIn = new FileInputStream(myFile);
@@ -108,10 +74,15 @@ public class LogFragment extends Fragment {
                             new InputStreamReader(fIn));
                     String aDataRow = "";
                     String aBuffer = "";
+
+
                     while ((aDataRow = myReader.readLine()) != null) {
                         aBuffer += aDataRow + "\n";
+
                     }
-                    //logcat.setText(aBuffer);
+
+
+
                     logcat.setText(aBuffer);
                     logcat.append("\n");
 
@@ -122,24 +93,11 @@ public class LogFragment extends Fragment {
                 } catch (Exception e) {
                     Error();
                 }
-            }
-//
-//                try {
-//                    StringBuffer sb = new StringBuffer();
-//                    String logPath = Environment.getExternalStorageDirectory().getPath() + "/Log/" + "log.txt";
-//                    BufferedReader br = new BufferedReader(new FileReader(new File(logPath)));
-//                    String line = "";
-//                    while ((line = br.readLine()) != null) {
-//                        sb.append(line + "\n");
-//                    }
-//                    br.close();
-//                    TextView tv = (TextView) rootView.findViewById(R.id.etLog);
-//                    tv.setText(sb.toString());
-//                } catch (Exception e) {
-//                    // TODO: handle exception
-//                }
 
-            //}
+
+
+
+            }
 
         });
 
