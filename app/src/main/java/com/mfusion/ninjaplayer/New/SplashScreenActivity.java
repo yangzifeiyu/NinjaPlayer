@@ -19,19 +19,18 @@ public class SplashScreenActivity extends Activity {
 
 
         Animation anim = AnimationUtils.loadAnimation(this, R.anim.move_up);
-        ImageView imageView = (ImageView) findViewById(R.id.imgSplash);
-        imageView.setAnimation(anim);
+        ImageView imageView = (ImageView) findViewById(R.id.imgSplash);//set image
+        imageView.setAnimation(anim);//set animation
 
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
+                startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));//intent
                 finish();
             }
-        }, 2000);
-
+        }, 2000);//display 2 seconds
 
     }
 }
