@@ -40,9 +40,9 @@ public class LogFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         final View rootView = inflater.inflate(R.layout.fragment_log, container, false);
-        load = (Button) rootView.findViewById(R.id.btnReload);
-        clear = (Button) rootView.findViewById(R.id.btnClear);
-        logcat = (EditText) rootView.findViewById(R.id.etLog);
+        load = (Button) rootView.findViewById(R.id.btnReload);//load log
+        clear = (Button) rootView.findViewById(R.id.btnClear);//clear log
+        logcat = (EditText) rootView.findViewById(R.id.etLog);//display log info 
 
                /* try {
                     StringBuffer sb = new StringBuffer();
@@ -68,7 +68,7 @@ public class LogFragment extends Fragment {
 
 
                 try {
-                    File myFile = new File("/sdcard/Mfusion/log.txt");
+                    File myFile = new File("/sdcard/Mfusion/log.txt");//file path
                     FileInputStream fIn = new FileInputStream(myFile);
                     BufferedReader myReader = new BufferedReader(
                             new InputStreamReader(fIn));
@@ -83,7 +83,7 @@ public class LogFragment extends Fragment {
 
 
 
-                    logcat.setText(aBuffer);
+                    logcat.setText(aBuffer);//show buffer
                     logcat.append("\n");
 
                     myReader.close();
