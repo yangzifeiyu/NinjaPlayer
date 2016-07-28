@@ -33,13 +33,13 @@ public class AboutFragment extends Fragment {
 
 				Company.setText("Founded in 2001, M-Fusion develops proprietary digital signage software.\n" +
 						"\n" +
-						"Through the years, M-Fusion, went on to provide multimedia solutions on various digital medium. These solutions included kiosks, digital displaysand in-house tvs. Projects after projects we became domain experts in this field and streamlined some of our key solutions into digital signage products.");
+						"Through the years, M-Fusion, went on to provide multimedia solutions on various digital medium. These solutions included kiosks, digital displaysand in-house tvs. Projects after projects we became domain experts in this field and streamlined some of our key solutions into digital signage products.");//set company information
 
-				Function.setText("Our app can enable users to choose template, create Playback, assign a schedule, configure their own profiles...");
+				Function.setText("Our app can enable users to choose template, create Playback, assign a schedule, configure their own profiles...");//set function
 			}
 		});
 
-		return rootView;
+		return rootView;//return statement
 	}
 
 }
