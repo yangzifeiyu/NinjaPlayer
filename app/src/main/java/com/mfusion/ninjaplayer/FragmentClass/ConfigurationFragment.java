@@ -34,11 +34,10 @@ import java.util.regex.Pattern;
 
 public class ConfigurationFragment extends Fragment {
     ViewPager viewPager;
-    Button Continue, Check;
+    Button Save, Check;
     ImageButton shut, wake;
     EditText pass, passagain;
     TextView status, tvtime, tvwtime;
-
     private RadioGroup radioGroup;
     private RadioButton Landscape, Portrait;
 
@@ -57,38 +56,32 @@ public class ConfigurationFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_configuration, container, false);
 
-        radioGroup = (RadioGroup) rootView.findViewById(R.id.myRadioGroup);
-        Portrait = (RadioButton) rootView.findViewById(R.id.portrait);
-        Landscape = (RadioButton) rootView.findViewById(R.id.landscape);
+        radioGroup = (RadioGroup) rootView.findViewById(R.id.myRadioGroup);//radio group for screen orientation
+        Portrait = (RadioButton) rootView.findViewById(R.id.portrait);//portrait button
+        Landscape = (RadioButton) rootView.findViewById(R.id.landscape);//landscape button
 
-        Continue = (Button) rootView.findViewById(R.id.btnContinue);
-        Check = (Button) rootView.findViewById(R.id.btnCheck);
-        shut = (ImageButton) rootView.findViewById(R.id.btnImgShut);
-        wake = (ImageButton) rootView.findViewById(R.id.btnImgWake);
+        Save = (Button) rootView.findViewById(R.id.btnSave);//save setting button
+        Check = (Button) rootView.findViewById(R.id.btnCheck);//check password button
+        shut = (ImageButton) rootView.findViewById(R.id.btnImgShut);//shutdown image button
+        wake = (ImageButton) rootView.findViewById(R.id.btnImgWake);//wake uo time image button
 
-        status = (TextView) rootView.findViewById(R.id.txtStatusPa);
-        tvtime = (TextView) rootView.findViewById(R.id.tvTime);
-        tvwtime = (TextView) rootView.findViewById(R.id.tvW);
+        status = (TextView) rootView.findViewById(R.id.txtStatusPa);//password validation
+        tvtime = (TextView) rootView.findViewById(R.id.tvTime);//shutdown time
+        tvwtime = (TextView) rootView.findViewById(R.id.tvW);//wake up time
 
-        //click = (TextView) rootView.findViewById(R.id.tvClick);
-
-        pass = (EditText) rootView.findViewById(R.id.etPassword);
-
-        passagain = (EditText) rootView.findViewById(R.id.etMatch);
-
-        //viewPager = (ViewPager) getActivity().findViewById(R.id.pager);
-
+        pass = (EditText) rootView.findViewById(R.id.etPassword);//enter password
+        passagain = (EditText) rootView.findViewById(R.id.etMatch);//confirm password
 
         Landscape.setChecked(true);
         Portrait.setChecked(false);
 
 
-        Continue.setOnClickListener(new View.OnClickListener() {
+        Save.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                continues();
-            }
+                save();
+            }//call save method
         });
 
 
@@ -102,7 +95,7 @@ public class ConfigurationFragment extends Fragment {
 
 
             }
-        });
+        });//shutdown onclick method
 
         wake.setOnClickListener(new View.OnClickListener() {
 
@@ -114,7 +107,7 @@ public class ConfigurationFragment extends Fragment {
 
 
             }
-        });
+        });//wakeup onclick method
 
 
         Check.setOnClickListener(new View.OnClickListener() {
@@ -122,7 +115,7 @@ public class ConfigurationFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                check();
+                check();//call check password method
             }
         });
 
@@ -134,25 +127,95 @@ public class ConfigurationFragment extends Fragment {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
 
                 if (checkedId == R.id.landscape) {
-                    getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                    getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);//check if user choose landscape orientation
                     //Toast.makeText(getActivity(), "Landscape", Toast.LENGTH_SHORT).show();
 
                 } else if (checkedId == R.id.portrait) {
 
-                    getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                    getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);//check if user choose portrait orientation
                     //Toast.makeText(getActivity(), "Portrait", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
-        defaultconfig();
-        retrieveinfo();//method for retreving value from database and set the result at the textview or radiobutton
+        defaultconfig();//method for getting configuration setting from database
+        retrieveinfo();//method for retrieving value from database and set the result at the textview or radiobutton
 
         return rootView;
 
 
     }//oncreate
 
+    private void save() {
+        String pa = pass.getText().toString().trim();
+        String shut = tvtime.getText().toString().trim();
+        String wake = tvwtime.getText().toString().trim();
+        String match = passagain.getText().toString().trim();
+
+        //String dis = ((RadioButton) getActivity().findViewById(radioGroup.getCheckedRadioButtonId())).getText().toString().trim();
+
+        if (radioGroup.getCheckedRadioButtonId() == R.id.landscape) {
+            String s = "Landscape";
+
+            if (pa.isEmpty() && pa.equals(match) && s != null) {
+                //controller.insert_setting(dis, pa, shut, wake, auto);
+                controller.insert_setting2(s, pa, shut, wake);
+                Toast.makeText(getActivity(), "Saved with Default PASSWORD", Toast.LENGTH_SHORT).show();//display if password is not null and match together
+
+                configurationLogDefault();//save to log info of configuration
+
+            } else if (pa != null) {
+
+                if (isValidPassword(pa) && pa.equals(match)) {
+                    //controller.insert_setting(dis, pa, shut, wake, auto);
+                    controller.insert_setting2(s, pa, shut, wake);
+                    Toast.makeText(getActivity(), "Password match and Saved with User set PASSWORD", Toast.LENGTH_SHORT).show();//display if password is valid and match together
+                    configurationLog();//save password message to display in log info
+
+                } else if (!isValidPassword(pa)) {
+                    Toast.makeText(getActivity(), "Password must be min6,max12,0-9,a-z or A-Z =)", Toast.LENGTH_SHORT).show();//display if password is not valid
+                    PasswordLog();// password error message to display in log info
+                } else if (isValidPassword(pa) && pa != match) {
+                    Toast.makeText(getActivity(), "Password Not match", Toast.LENGTH_SHORT).show();//display if password is valid and match together
+                    PasswordLog();// password error message to display in log info
+                }
+            }
+
+
+        } else if (radioGroup.getCheckedRadioButtonId() == R.id.portrait) {
+            String a = "Portrait";
+
+            if (pa.isEmpty() && pa.equals(match) && a != null) {
+                //controller.insert_setting(dis, pa, shut, wake, auto);
+                controller.insert_setting2(a, pa, shut, wake);
+                Toast.makeText(getActivity(), "Saved with Default PASSWORD", Toast.LENGTH_SHORT).show();//display if password matched and is not null
+                configurationLogDefault();//save default password and display in log info
+
+
+            } else if (pa != null) {
+
+                if (!isValidPassword(pa)) {
+                    Toast.makeText(getActivity(), "Password must be min6,max12,0-9,a-z or A-Z =)", Toast.LENGTH_SHORT).show();//display if password is not valid
+                    PasswordLog();
+                }
+                else if (isValidPassword(pa) && pa.equals(match)) {
+                    //controller.insert_setting(dis, pa, shut, wake, auto);
+                    controller.insert_setting2(a, pa, shut, wake);//call from database
+                    Toast.makeText(getActivity(), "Password match and Saved with User set PASSWORD", Toast.LENGTH_SHORT).show();//display if password is valid and matches
+                    configurationLog();//save message and display in log info
+
+
+                } else if (isValidPassword(pa) && pa != match) {
+                    Toast.makeText(getActivity(), "Password Not match", Toast.LENGTH_SHORT).show();//display if password is valid and not match
+                    PasswordLog();//save password error and display in log info
+                }
+
+
+            }
+
+        }
+
+    }//save setting
 
     private void retrieveinfo() {
 
@@ -160,7 +223,7 @@ public class ConfigurationFragment extends Fragment {
         controller.list_setting6(tvtime, tvwtime, status, pass, passagain, radioGroup);//Called DBController method listsettings6 to invoke database
 
 
-    }//end of retrieveinfo method
+    }//end of retrieve info method
 
     private void defaultconfig() {
         controller.insert_setting3();
@@ -186,15 +249,13 @@ public class ConfigurationFragment extends Fragment {
         String match = passagain.getText().toString().trim();
 
         if (isValidPassword(pa) && pa.equals(match) && pa != null) {
-            status.setText("Password match and Password Accepted, you have type: " + pass.getText());
-        } else if (isValidPassword(pa) && pa != match && pa != null) {
-            status.setText("Password does not match");
+            status.setText("Password match and Password Accepted, you have type: " + pass.getText());//display when password match and valid
         } else if (!isValidPassword(pa) && pa != null) {
-            status.setText("Password must be min6,max12,0-9,a-z or A-Z");
+            status.setText("Password must be min6,max12,0-9,a-z or A-Z");//display when password is not valid
         } else if (isValidPassword(pa) && pa != match && pa != null) {
-            status.setText("Password does not match");
+            status.setText("Password does not match");//display when password does not match
         } else if (!isValidPassword(pa) && pa.equals(match)&& pa != null) {
-            status.setText("Password match with wrong format");
+            status.setText("Password match with wrong format");//display when password is not valid but match
         }
 
 
@@ -210,9 +271,9 @@ public class ConfigurationFragment extends Fragment {
                 calendar.get(Calendar.HOUR_OF_DAY),
                 calendar.get(Calendar.MINUTE),
                 is24r);
-        timePickerDialog.setTitle("Set Shutdown Time");
+        timePickerDialog.setTitle("Set Shutdown Time");//set shutdown time picker's title
 
-        timePickerDialog.show();
+        timePickerDialog.show();//show shutdown time
 
 
     }//set shutdown time
@@ -225,9 +286,9 @@ public class ConfigurationFragment extends Fragment {
                 calendar.get(Calendar.HOUR_OF_DAY),
                 calendar.get(Calendar.MINUTE),
                 is24r);
-        timePickerDialog.setTitle("Set Wakeup Time");
+        timePickerDialog.setTitle("Set Wakeup Time");//set wake up time picker's title
 
-        timePickerDialog.show();
+        timePickerDialog.show();//show wake up time
 
     }//set wake up time
 
@@ -302,77 +363,6 @@ public class ConfigurationFragment extends Fragment {
     }//alarmwake
 
 
-    private void continues() {
-        String pa = pass.getText().toString().trim();
-        String shut = tvtime.getText().toString().trim();
-        String wake = tvwtime.getText().toString().trim();
-        String match = passagain.getText().toString().trim();
-
-        //String dis = ((RadioButton) getActivity().findViewById(radioGroup.getCheckedRadioButtonId())).getText().toString().trim();
-
-        if (radioGroup.getCheckedRadioButtonId() == R.id.landscape) {
-            String s = "Landscape";
-
-            if (pa.isEmpty() && pa.equals(match) && s != null) {
-                //controller.insert_setting(dis, pa, shut, wake, auto);
-                controller.insert_setting2(s, pa, shut, wake);
-                Toast.makeText(getActivity(), "Saved with Default PASSWORD", Toast.LENGTH_SHORT).show();
-
-                configurationLogDefault();
-
-
-            } else if (pa != null) {
-
-                if (isValidPassword(pa) && pa.equals(match)) {
-                    //controller.insert_setting(dis, pa, shut, wake, auto);
-                    controller.insert_setting2(s, pa, shut, wake);
-                    Toast.makeText(getActivity(), "Password match and Saved with User set PASSWORD", Toast.LENGTH_SHORT).show();
-                    configurationLog();
-
-
-                } else if (!isValidPassword(pa)) {
-                    Toast.makeText(getActivity(), "Password must be min6,max12,0-9,a-z or A-Z =)", Toast.LENGTH_SHORT).show();
-                    PasswordLog();
-                } else if (isValidPassword(pa) && pa != match) {
-                    Toast.makeText(getActivity(), "Password Not match", Toast.LENGTH_SHORT).show();
-                    PasswordLog();
-                }
-            }
-
-
-        } else if (radioGroup.getCheckedRadioButtonId() == R.id.portrait) {
-            String a = "Portrait";
-
-            if (pa.isEmpty() && pa.equals(match) && a != null) {
-                //controller.insert_setting(dis, pa, shut, wake, auto);
-                controller.insert_setting2(a, pa, shut, wake);
-                Toast.makeText(getActivity(), "Saved with Default PASSWORD", Toast.LENGTH_SHORT).show();
-                configurationLogDefault();
-
-
-            } else if (pa != null) {
-
-                if (isValidPassword(pa) && pa.equals(match)) {
-                    //controller.insert_setting(dis, pa, shut, wake, auto);
-                    controller.insert_setting2(a, pa, shut, wake);
-                    Toast.makeText(getActivity(), "Password match and Saved with User set PASSWORD", Toast.LENGTH_SHORT).show();
-                    configurationLog();
-
-
-                } else if (!isValidPassword(pa)) {
-                    Toast.makeText(getActivity(), "Password must be min6,max12,0-9,a-z or A-Z =)", Toast.LENGTH_SHORT).show();
-                    PasswordLog();
-                } else if (isValidPassword(pa) && pa != match) {
-                    Toast.makeText(getActivity(), "Password Not match", Toast.LENGTH_SHORT).show();
-                    PasswordLog();
-                }
-
-
-            }
-
-        }
-
-    }//continue-save setting
 
 
     private void configurationLog() {
@@ -385,7 +375,7 @@ public class ConfigurationFragment extends Fragment {
         if (radioGroup.getCheckedRadioButtonId() == R.id.landscape) {
             String s = "Landscape";
             try {
-                File myFile = new File("/sdcard/MFusion/log.txt");
+                File myFile = new File("/sdcard/MFusion/log.txt");//text path
 
                 if (!myFile.exists()) {
                     myFile.createNewFile();
@@ -396,7 +386,7 @@ public class ConfigurationFragment extends Fragment {
                             new OutputStreamWriter(fOut);
                     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
                     String currentDateandTime = sdf.format(new Date());
-                    myOutWriter.append("Configuration Settings saved to log.txt at : " + currentDateandTime + "\n" + s + "," + pa + "," + shut + "," + wake + "\n");
+                    myOutWriter.append("Configuration Settings saved to log.txt at : " + currentDateandTime + "\n" + s + "," + pa + "," + shut + "," + wake + "\n");//display configuration setting message in log info
                     myOutWriter.close();
                     fOut.close();
                 }
@@ -407,9 +397,9 @@ public class ConfigurationFragment extends Fragment {
             }
         } else if (radioGroup.getCheckedRadioButtonId() == R.id.portrait) {
 
-            String a = "Landscape";
+            String a = "portrait";
             try {
-                File myFile = new File("/sdcard/MFusion/log.txt");
+                File myFile = new File("/sdcard/MFusion/log.txt");//file path
 
                 if (!myFile.exists()) {
                     myFile.createNewFile();
@@ -421,7 +411,7 @@ public class ConfigurationFragment extends Fragment {
 
                     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
                     String currentDateandTime = sdf.format(new Date());
-                    myOutWriter.append("Configuration Settings saved to log.txt at : " + currentDateandTime + "\n" + a + "," + pa + "," + shut + "," + wake + "\n");
+                    myOutWriter.append("Configuration Settings saved to log.txt at : " + currentDateandTime + "\n" + a + "," + pa + "," + shut + "," + wake + "\n");//display configuration setting message in log info
 
                     myOutWriter.close();
                     fOut.close();
@@ -446,7 +436,7 @@ public class ConfigurationFragment extends Fragment {
         if (radioGroup.getCheckedRadioButtonId() == R.id.landscape) {
             String s = "Landscape";
             try {
-                File myFile = new File("/sdcard/MFusion/log.txt");
+                File myFile = new File("/sdcard/MFusion/log.txt");//file path
 
                 if (!myFile.exists()) {
                     myFile.createNewFile();
@@ -457,14 +447,14 @@ public class ConfigurationFragment extends Fragment {
                             new OutputStreamWriter(fOut);
                     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
                     String currentDateandTime = sdf.format(new Date());
-                    myOutWriter.append("Configuration Settings saved to log.txt at : " + currentDateandTime + "\n" + s + "," + "mfusion" + "," + shut + "," + wake + "\n");
+                    myOutWriter.append("Configuration Settings saved to log.txt at : " + currentDateandTime + "\n" + s + "," + "mfusion" + "," + shut + "," + wake + "\n");//display configuration setting message in log info
                     myOutWriter.close();
                     fOut.close();
                 }
 
             } catch (Exception e) {
                 Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                Execerror();
+                Execerror();//display error log
             }
         } else if (radioGroup.getCheckedRadioButtonId() == R.id.portrait) {
 
@@ -482,7 +472,7 @@ public class ConfigurationFragment extends Fragment {
 
                     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
                     String currentDateandTime = sdf.format(new Date());
-                    myOutWriter.append("Configuration Settings saved to log.txt at : " + currentDateandTime + "\n" + a + "," + "mfusion" + "," + shut + "," + wake + "\n");
+                    myOutWriter.append("Configuration Settings saved to log.txt at : " + currentDateandTime + "\n" + a + "," + "mfusion" + "," + shut + "," + wake + "\n");//display configuration setting message in log info
 
                     myOutWriter.close();
                     fOut.close();
@@ -490,7 +480,7 @@ public class ConfigurationFragment extends Fragment {
 
             } catch (Exception e) {
                 Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                Execerror();
+                Execerror();//display error log
             }
 
         }
@@ -522,7 +512,7 @@ public class ConfigurationFragment extends Fragment {
 
             } catch (Exception e) {
                 Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                Execerror();
+                Execerror();//display error log
             }
 
         }
@@ -543,7 +533,7 @@ public class ConfigurationFragment extends Fragment {
 
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
                 String currentDateandTime = sdf.format(new Date());
-                myOutWriter.append("Exception Error in ConfigurationFragment at : " + currentDateandTime + "\n");
+                myOutWriter.append("Exception Error in ConfigurationFragment at : " + currentDateandTime + "\n");//save error message and display in log info
                 myOutWriter.close();
                 fOut.close();
             }
