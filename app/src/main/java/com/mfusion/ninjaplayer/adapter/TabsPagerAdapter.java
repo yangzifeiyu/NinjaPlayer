@@ -5,10 +5,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.mfusion.ninjaplayer.FragmentClass.AboutFragment;
-import com.mfusion.ninjaplayer.FragmentClass.ConfigurationFragment;
+//import com.mfusion.ninjaplayer.FragmentClass.ConfigurationFragment;
+import com.mfusion.ninjaplayer.FragmentClass.ConfigurationFragment2;
 import com.mfusion.ninjaplayer.FragmentClass.LogFragment;
-import com.mfusion.scheduledesigner.ScheduleFragment;
-import com.mfusion.templatedesigner.TemplateFragment;
+import com.mfusion.ninjaplayer.FragmentClass.ScheduleFragment;
+import com.mfusion.ninjaplayer.FragmentClass.TemplateFragment;
 
 
 public class TabsPagerAdapter extends FragmentPagerAdapter {
@@ -23,7 +24,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
         switch (index) {
             case 0:
                 // Configuration fragment activity
-                return new ConfigurationFragment();
+                return new ConfigurationFragment2();
 
             case 1:
                 // Template fragment activity
@@ -34,7 +35,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
                 return new ScheduleFragment();
 
             case 3:
-                // Log fragment activity
+                // About fragment activity
                 return new LogFragment();
             case 4:
                 // About fragment activity
