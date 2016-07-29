@@ -2,6 +2,7 @@
     <string name="app_name">MF Ninja</string>
 
     <string name="edittext_hint"><font size="10">Enter your password</font></string>
+    <string name="edittext_hint2"><font size="10">Enter password Again</font></string>
     <string-array name="info_arrays">
         <item> App version: Nanja Lite 1.0      App Name: MediaFusion Nanja Lite </item>
     </string-array>
