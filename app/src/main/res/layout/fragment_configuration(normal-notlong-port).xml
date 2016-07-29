@@ -21,8 +21,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignEnd="@+id/textView5"
-        android:text="Save"/>
+        android:text="Save"
+        android:layout_alignEnd="@+id/textView4"/>
 
     <TextView
 
@@ -74,9 +74,9 @@
         android:id="@+id/textView3"
         android:textSize="15dp"
         android:textColor="#3b5998"
-        android:layout_alignTop="@+id/etPassword"
-        android:layout_alignEnd="@+id/textView5"
-        android:layout_alignBottom="@+id/etPassword" />
+        android:layout_marginTop="53dp"
+        android:layout_below="@+id/myRadioGroup"
+        android:layout_alignParentStart="true"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -86,7 +86,7 @@
         android:textSize="15dp"
         android:textColor="#3b5998"
         android:layout_centerVertical="true"
-        android:layout_alignStart="@+id/textView5"/>
+        android:layout_alignParentStart="true"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -95,9 +95,10 @@
         android:id="@+id/textView5"
         android:textSize="15dp"
         android:textColor="#3b5998"
+        android:layout_marginTop="21dp"
         android:layout_below="@+id/tvTime"
-        android:layout_toStartOf="@+id/myRadioGroup"
-        android:layout_marginTop="27dp"/>
+        android:layout_alignParentStart="true"
+        android:layout_alignEnd="@+id/textView4"/>
 
     <EditText
         android:background="@drawable/edittext_bg"
@@ -108,23 +109,9 @@
         android:textColorHint="#3b5998"
         android:gravity="center"
         android:hint="@string/edittext_hint"
-        android:layout_below="@+id/myRadioGroup"
-        android:layout_alignStart="@+id/myRadioGroup"
-        android:layout_marginTop="47dp" />
-
-    <Button
-
-        android:background="@drawable/mybutton"
-        android:layout_width="100dp"
-        android:layout_height="30dp"
-        android:text="Check Pass"
-        android:id="@+id/btnCheck"
-        android:textSize="12dp"
-        android:textColor="#ffffff"
-        android:layout_marginLeft="36dp"
-        android:layout_alignBottom="@+id/etPassword"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/etPassword"/>
+        android:layout_below="@+id/textView3"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="21dp"/>
 
     <!--<Button-->
 
@@ -141,13 +128,14 @@
     <!--android:textColor="#ffffff"/>-->
 
     <TextView
-        android:layout_width="200dp"
-        android:layout_height="28dp"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
         android:id="@+id/txtStatusPa"
         android:textSize="11dp"
         android:gravity="center|bottom"
-        android:layout_alignTop="@+id/btnContinue"
-        android:layout_alignParentEnd="true"/>
+        android:layout_alignParentEnd="true"
+        android:layout_alignBottom="@+id/etMatch"
+        android:layout_alignTop="@+id/etPassword"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -155,10 +143,10 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:id="@+id/tvTime"
         android:gravity="center"
+        android:layout_marginTop="28dp"
         android:layout_below="@+id/textView4"
-        android:layout_alignStart="@+id/textView4"
-        android:layout_marginTop="43dp"
-        android:layout_alignEnd="@+id/etPassword"/>
+        android:layout_alignParentStart="true"
+        android:layout_alignEnd="@+id/etMatch"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -166,9 +154,10 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:id="@+id/tvW"
         android:gravity="center"
-        android:layout_marginBottom="53dp"
-        android:layout_above="@+id/btnContinue"
+        android:layout_below="@+id/textView5"
         android:layout_alignParentStart="true"
+        android:layout_marginTop="34dp"
+        android:layout_toStartOf="@+id/myRadioGroup"
         android:layout_alignEnd="@+id/tvTime"/>
 
     <ImageButton
@@ -176,16 +165,17 @@
         android:layout_height="wrap_content"
         android:id="@+id/btnImgShut"
         android:background="@drawable/shut"
-        android:layout_alignBottom="@+id/tvTime"
-        android:layout_alignStart="@+id/btnCheck"/>
+        android:layout_above="@+id/textView5"
+        android:layout_alignStart="@+id/btnImgWake"/>
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btnImgWake"
         android:background="@drawable/wake"
-        android:layout_alignBottom="@+id/tvW"
-        android:layout_alignStart="@+id/btnImgShut"/>
+        android:layout_alignTop="@+id/tvW"
+        android:layout_toEndOf="@+id/myRadioGroup"
+        android:layout_alignBottom="@+id/tvW"/>
 
     <EditText
         android:background="@drawable/edittext_bg"
@@ -196,8 +186,8 @@
         android:textColorHint="#3b5998"
         android:gravity="center"
         android:hint="@string/edittext_hint2"
-        android:layout_below="@+id/textView3"
-        android:layout_toEndOf="@+id/textView3"
-        android:layout_marginTop="31dp" />
+        android:layout_above="@+id/textView4"
+        android:layout_alignStart="@+id/etPassword"
+        android:layout_marginBottom="29dp"/>
 
 </RelativeLayout>
