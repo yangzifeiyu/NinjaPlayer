@@ -8,7 +8,9 @@ import android.util.AttributeSet;
 
 import com.mfusion.commons.entity.template.ComponentEntity;
 
-
+/**
+ * Created by 1B15182 on 26/7/2016 0026.
+ */
 public class ScheduleMediaComponentView extends BaseComponentView {
     private Paint hintPaint;
     public ScheduleMediaComponentView(Context context) {

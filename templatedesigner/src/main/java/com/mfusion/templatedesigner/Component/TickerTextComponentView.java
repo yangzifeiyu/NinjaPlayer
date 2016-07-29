@@ -14,7 +14,9 @@ import com.mfusion.commons.tools.ColorConverter;
 
 import org.w3c.dom.Element;
 
-
+/**
+ * Created by 1B15182 on 25/7/2016 0025.
+ */
 public class TickerTextComponentView extends TickerTextBaseView {
     private static final String TAG = "TickerTextComponentView";
 

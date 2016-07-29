@@ -1,6 +1,7 @@
 package com.mfusion.commons.controllers;
 
 import android.content.Context;
+import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
 import com.mfusion.commons.entity.template.TemplateEntity;
@@ -16,16 +17,20 @@ public abstract class AbstractTemplateDesigner extends LinearLayout {
         // TODO Auto-generated constructor stub
     }
 
+    public AbstractTemplateDesigner(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
     /**
      * Open a template entity
      * @param template
      * @return
      */
-    public abstract Boolean OpenTemplate  (TemplateEntity template);
+    public abstract Boolean openTemplate  (TemplateEntity template);
 
     /***
      *Save a template entity
      * @return
      */
-    public  abstract TemplateEntity SaveTemplate();
+    public  abstract TemplateEntity saveTemplate();
 }

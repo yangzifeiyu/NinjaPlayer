@@ -15,7 +15,9 @@ import android.widget.TextView;
 
 import java.util.List;
 
-
+/**
+ * Created by 1B15182 on 22/7/2016 0022.
+ */
 public class ComponentListAdapter extends BaseAdapter {
     private static final String TAG = "ComponentListAdapter";
     private List<ComponentListItem> items;

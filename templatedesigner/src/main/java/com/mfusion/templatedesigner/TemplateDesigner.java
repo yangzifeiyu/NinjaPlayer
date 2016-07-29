@@ -4,6 +4,9 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Message;
+import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.DragEvent;
@@ -52,17 +55,18 @@ public class TemplateDesigner extends AbstractTemplateDesigner {
     private boolean drawn;
 
     public TemplateDesigner(Context context) {
-        super(context);
+        this(context,null);
+
 
 
     }
-    public TemplateDesigner(Context context, AttributeSet attrs) {
-        super(context,attrs);
 
+    public TemplateDesigner(Context context, AttributeSet attrs) {
+        super(context, attrs);
         defaultComponent=new DefaultComponent(getContext());
         this.setWeightSum(4);
         LinearLayout.LayoutParams toolParams = new LinearLayout.LayoutParams(0,LayoutParams.MATCH_PARENT, 1.0f);
-        LinearLayout.LayoutParams designerParams=new LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT,3.0f);
+        LinearLayout.LayoutParams designerParams=new LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT,3.0f);
 
         toolLayout=new LinearLayout(context);
         toolLayout.setBackgroundColor(Color.parseColor("#7e97e7"));
@@ -75,31 +79,54 @@ public class TemplateDesigner extends AbstractTemplateDesigner {
         addView(designerLayout,designerParams);
 
         EventDispatcher.registerDesigner(this);
-
-
-
-
     }
 
 
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    public Boolean openTemplate(TemplateEntity template) {
+        templateEntity=template;
+        componentEntities=template.compList;
+        //work around to avoid width and height have not been calculated during initialization progress
+        final Handler handler=new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                if(msg.arg1==0)
+                    showTemplateOnScreen();
+            }};
 
-    }
+            new Thread(){
+            @Override
+            public void run() {
 
-    @Override
-    public Boolean openTemplate(String templateName) {
-        templateEntity=getTemplateInfo(templateName);
+                try {
+                    sleep(1000);
+                    EventDispatcher.dispatchDisposeProgressDialog();
+                } catch (Exception e) {
+                    Log.e(TAG, "run: ",e );
+                }
+                Message msg=handler.obtainMessage();
+                msg.arg1=0;
+                handler.sendMessage(msg);
+
+            }
+        }.start();
 
         return templateEntity != null;
     }
 
     @Override
+    public TemplateEntity saveTemplate() {
+        return getTemplateInfoFromDesigner();
+    }
+
+
+    @Override
     public void onWindowFocusChanged(boolean hasWindowFocus) {
         super.onWindowFocusChanged(hasWindowFocus);
         //draw components on screen once the view is inflated and drawn
-        if(!drawn){
+        if(!drawn&&templateEntity!=null){
             showTemplateOnScreen();
             drawn=true;
         }
@@ -150,6 +177,7 @@ public class TemplateDesigner extends AbstractTemplateDesigner {
         for(ComponentEntity componentEntity:componentEntities){
             addComponentToDesigner(componentEntity);
         }
+
         invalidate();
     }
 
@@ -189,6 +217,9 @@ public class TemplateDesigner extends AbstractTemplateDesigner {
         componentEntities.remove(index);
         showTemplateOnScreen();
 
+    }
+    public void clearComponentOnScreen(){
+        designerLayout.removeAllViews();
     }
 
     private FrameLayout.LayoutParams getLayoutParamsFromComponent(ComponentEntity componentEntity){

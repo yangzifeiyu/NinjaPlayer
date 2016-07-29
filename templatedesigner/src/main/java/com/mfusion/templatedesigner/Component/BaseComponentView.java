@@ -141,7 +141,10 @@ public class BaseComponentView extends View{
             canvas.drawBitmap(editBtnBmp,getWidth()-BTN_BMP_SIZE,getHeight()-BTN_BMP_SIZE,btnPaint);
         }
         else
+        {
             borderPaint.setColor(Color.BLACK);
+            borderPaint.setStrokeWidth(5.f);
+        }
         canvas.drawRect(0,0,getWidth(),getHeight(),borderPaint);
 
 
@@ -215,6 +218,24 @@ public class BaseComponentView extends View{
         invalidate();
     }
 
+    @Override
+    public boolean onGenericMotionEvent(MotionEvent event) {
+        if(whichEditingPoint(event.getX(),event.getY())!=EDITING_CENTER&&editing){
+            borderPaint.setStrokeWidth(EDITING_POINT_OFFSET);
+            invalidate();
+        }
+        else{
+            borderPaint.setStrokeWidth(5.f);
+            invalidate();
+        }
+        if(event.getAction()==MotionEvent.ACTION_HOVER_EXIT){
+            borderPaint.setStrokeWidth(5.f);
+            invalidate();
+        }
+
+
+        return super.onGenericMotionEvent(event);
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {

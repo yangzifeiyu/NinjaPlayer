@@ -12,7 +12,9 @@ import com.mfusion.commons.entity.values.ComponentType;
 
 import java.util.ArrayList;
 
-
+/**
+ * Created by 1B15182 on 26/7/2016 0026.
+ */
 public class DefaultComponent {
     private static final String TAG = "DefaultComponent";
     private Context context;

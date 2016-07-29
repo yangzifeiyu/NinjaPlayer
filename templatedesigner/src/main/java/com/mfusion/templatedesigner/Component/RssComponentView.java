@@ -10,6 +10,9 @@ import com.mfusion.templatedesigner.RssParser;
 
 import org.w3c.dom.Element;
 
+/**
+ * Created by 1B15182 on 27/7/2016 0027.
+ */
 public class RssComponentView extends TickerTextBaseView {
     private String address;
     public RssComponentView(Context context) {

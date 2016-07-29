@@ -29,7 +29,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
-
+/**
+ * Created by 1B15182 on 27/7/2016 0027.
+ */
 public class EditPropertyDialog extends DialogFragment {
     private static final String TAG = "EditPropertyDialog";
     private ComponentEntity entity;

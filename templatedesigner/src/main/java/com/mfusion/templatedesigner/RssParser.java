@@ -15,7 +15,9 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.zip.DataFormatException;
 
-
+/**
+ * Created by 1B15182 on 27/7/2016 0027.
+ */
 public class RssParser {
     private static final String TAG = "RssParser";
     private String address;

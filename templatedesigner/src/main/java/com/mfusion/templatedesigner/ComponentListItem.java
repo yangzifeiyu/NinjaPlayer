@@ -7,6 +7,9 @@ import com.mfusion.commons.entity.values.ComponentType;
 
 import java.util.List;
 
+/**
+ * Created by 1B15182 on 22/7/2016 0022.
+ */
 public class ComponentListItem {
     private int drawableId;
     private String name;
