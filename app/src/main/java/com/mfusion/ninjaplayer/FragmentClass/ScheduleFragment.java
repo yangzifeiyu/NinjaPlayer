@@ -26,7 +26,7 @@ public class ScheduleFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        final View rootView = inflater.inflate(R.layout.activity_test, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_schedule, container, false);
 
         FrameLayout.LayoutParams layoutParams=new FrameLayout.LayoutParams(android.app.ActionBar.LayoutParams.MATCH_PARENT, android.app.ActionBar.LayoutParams.MATCH_PARENT);
 

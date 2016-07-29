@@ -3,13 +3,18 @@ package com.mfusion.ninjaplayer.FragmentClass;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.pm.ActivityInfo;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -25,8 +30,12 @@ import com.mfusion.commons.tools.InternalKeyWords;
 import com.mfusion.commons.tools.SQLiteDBHelper;
 import com.mfusion.ninjaplayer.R;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,9 +51,6 @@ public class ConfigurationFragment2 extends Fragment {
     TimePickerDialog timePickerDialog;
 
 
-    DALSettings settings;
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -57,7 +63,6 @@ public class ConfigurationFragment2 extends Fragment {
         Landscape = (RadioButton) rootView.findViewById(R.id.landscape);
 
         Save = (Button) rootView.findViewById(R.id.btnContinue);
-        Check = (Button) rootView.findViewById(R.id.btnCheck);
         shut = (ImageButton) rootView.findViewById(R.id.btnImgShut);
         wake = (ImageButton) rootView.findViewById(R.id.btnImgWake);
 
@@ -76,6 +81,62 @@ public class ConfigurationFragment2 extends Fragment {
         Landscape.setChecked(true);
         Portrait.setChecked(false);
 
+
+        pass.addTextChangedListener(new TextWatcher() {
+
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                if (isValidPassword(pass.getText().toString())) {
+                    //pass.setError("Password Accepted");
+                    status.setText("Password Accepted");
+
+                }
+
+                if (!isValidPassword(pass.getText().toString())) {
+                    pass.setError("Password must be min6,max12,0-9,a-z or A-Z");
+                    //status.setText("Password must be min6,max12,0-9,a-z or A-Z");
+
+                }
+
+            }
+
+        });
+
+        passagain.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
+
+                String strPass1 = pass.getText().toString();
+                String strPass2 = passagain.getText().toString();
+                if (strPass1.equals(strPass2)) {
+                    status.setText("Password match");
+                } else {
+                    passagain.setError("Password do not match");
+
+                }
+            }
+        });
+
+
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
 
@@ -84,11 +145,15 @@ public class ConfigurationFragment2 extends Fragment {
 
                 if (checkedId == R.id.landscape) {
                     getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                    getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+                    Oritantion();
                     //Toast.makeText(getActivity(), "Landscape", Toast.LENGTH_SHORT).show();
 
                 } else if (checkedId == R.id.portrait) {
 
                     getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                    getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+                    Oritantion();
                     //Toast.makeText(getActivity(), "Portrait", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -125,13 +190,13 @@ public class ConfigurationFragment2 extends Fragment {
             }
         });
 
-        Check.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                check();
-            }
-        });
+//        Check.setOnClickListener(new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View v) {
+//                check();
+//            }
+//        });
 
 
         return rootView;
@@ -140,8 +205,7 @@ public class ConfigurationFragment2 extends Fragment {
 
     private void SaveSettings() {
         //set exit password
-        try
-        {
+        try {
             String shutdowntime = tvtime.getText().toString().trim();
             String wakeuptime = tvwtime.getText().toString().trim();
             String password = pass.getText().toString().trim();
@@ -149,11 +213,10 @@ public class ConfigurationFragment2 extends Fragment {
             DALSettings.getInstance().setShutDownTime(shutdowntime);
             DALSettings.getInstance().setWakeUpTime(wakeuptime);
             DALSettings.getInstance().setExitPassword(password);
-        }
 
-        catch (Exception e)
-        {
-               Toast.makeText(getActivity(), "ERRORRRRRRRRRRRRRRRR", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "saved..I think", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), "ERRORRRRRRRRRRRRRRRR", Toast.LENGTH_SHORT).show();
         }
 
     }//save button listener
@@ -187,6 +250,7 @@ public class ConfigurationFragment2 extends Fragment {
         timePickerDialog.setTitle("Set Wakeup Time");
         timePickerDialog.show();
     }
+
     TimePickerDialog.OnTimeSetListener timePickerListener2 =
             new TimePickerDialog.OnTimeSetListener() {
                 public void onTimeSet(TimePicker view, int selectedHour,
@@ -199,23 +263,6 @@ public class ConfigurationFragment2 extends Fragment {
                     tvwtime.setText(time);
                 }
             };
-
-    private void check() {
-        String pa = pass.getText().toString().trim();
-        String match = passagain.getText().toString().trim();
-
-        if (isValidPassword(pa) && pa.equals(match) && pa != null) {
-            status.setText("Password match and Password Accepted, you have type: " + pass.getText());
-        } else if (isValidPassword(pa) && pa != match && pa != null) {
-            status.setText("Password does not match");
-        } else if (!isValidPassword(pa) && pa != null) {
-            status.setText("Password must be min6,max12,0-9,a-z or A-Z");
-        } else if (isValidPassword(pa) && pa != match && pa != null) {
-            status.setText("Password does not match");
-        } else if (!isValidPassword(pa) && pa.equals(match) && pa != null) {
-            status.setText("Password match with wrong format");
-        }
-    }
 
     public boolean isValidPassword(final String password) {
 
@@ -231,6 +278,106 @@ public class ConfigurationFragment2 extends Fragment {
 
     }//valid password
 
+    private void PasswordLog() {
+        String pa = pass.getText().toString().trim();
+        String pass = passagain.getText().toString().trim();
+        try {
+            File myFile = new File("/sdcard/MFusion/log.txt");
+
+            if (!myFile.exists()) {
+                myFile.createNewFile();
+                //Toast.makeText(getActivity(),"Created 'log.txt'",Toast.LENGTH_SHORT).show();
+            } else if (myFile.exists()) {
+                FileOutputStream fOut = new FileOutputStream(myFile, true);
+                OutputStreamWriter myOutWriter =
+                        new OutputStreamWriter(fOut);
+
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                String currentDateandTime = sdf.format(new Date());
+                myOutWriter.append("Attempted to change password but failed due to wrong requirement or Password does not match/wrong match format at : " + currentDateandTime + "\n" + pa + ":" + pass + "\n");
+
+                myOutWriter.close();
+                fOut.close();
+            }
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            Execerror();
+        }
+    }//eng of passwordlog
+
+    private void Execerror() {
+
+        try {
+            File myFile = new File("/sdcard/MFusion/log.txt");
+
+            if (!myFile.exists()) {
+                myFile.createNewFile();
+                //Toast.makeText(getActivity(),"Created 'log.txt'",Toast.LENGTH_SHORT).show();
+            } else if (myFile.exists()) {
+                FileOutputStream fOut = new FileOutputStream(myFile, true);
+                OutputStreamWriter myOutWriter =
+                        new OutputStreamWriter(fOut);
+
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                String currentDateandTime = sdf.format(new Date());
+                myOutWriter.append("Exception Error in ConfigurationFragment at : " + currentDateandTime + "\n");
+                myOutWriter.close();
+                fOut.close();
+            }
+
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), e.getMessage(),
+                    Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    private void Oritantion() {
+
+        try {
+            File myFile = new File("/sdcard/MFusion/log.txt");
+
+            if (!myFile.exists()) {
+                myFile.createNewFile();
+                //Toast.makeText(getActivity(),"Created 'log.txt'",Toast.LENGTH_SHORT).show();
+            } else if (myFile.exists()) {
+
+                if(radioGroup.getCheckedRadioButtonId() == R.id.landscape)
+                {
+                    FileOutputStream fOut = new FileOutputStream(myFile, true);
+                    OutputStreamWriter myOutWriter =
+                            new OutputStreamWriter(fOut);
+
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                    String currentDateandTime = sdf.format(new Date());
+                    myOutWriter.append("Oritantion change to Landscape at : " + currentDateandTime +"\n");
+                    myOutWriter.close();
+                    fOut.close();
+
+                }
+
+                else if(radioGroup.getCheckedRadioButtonId() == R.id.portrait)
+                {
+                    FileOutputStream fOut = new FileOutputStream(myFile, true);
+                    OutputStreamWriter myOutWriter =
+                            new OutputStreamWriter(fOut);
+
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                    String currentDateandTime = sdf.format(new Date());
+                    myOutWriter.append("Oritantion change to Portrait at : " + currentDateandTime +"\n");
+                    myOutWriter.close();
+                    fOut.close();
+
+                }
+
+            }
+
+        } catch (Exception e) {
+            Toast.makeText(getActivity(), e.getMessage(),
+                    Toast.LENGTH_SHORT).show();
+        }
+
+    }
 
 }//clase
 
