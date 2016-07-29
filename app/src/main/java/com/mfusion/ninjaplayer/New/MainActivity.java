@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.mfusion.commons.data.DALSettings;
 import com.mfusion.ninjaplayer.R;
 import com.mfusion.ninjaplayer.adapter.TabsPagerAdapter;
 
@@ -34,23 +35,19 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     private ViewPager viewPager;
     private TabsPagerAdapter mAdapter;
     private ActionBar actionBar;
-    private static final String TAG = "DialogActivity";
-    private static final int DLG_EXAMPLE1 = 0;
-    private static final int TEXT_ID = 0;
-    private String m_Text = "";
-    SQLiteDatabase db1;
-    DBController controller;
+
+    //DBController controller;
 
 
     // Tab titles
-    private String[] tabs = {"Configure", "Template", "Schedule", "Log", "About"};//string tabs
+    private String[] tabs = {"Configure", "Template", "Schedule", "Log", "About"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        controller = new DBController(MainActivity.this, "", null, 1);
+        //controller = new DBController(MainActivity.this, "", null, 1);
 
 
         // Initilization
@@ -59,8 +56,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
 
         viewPager.setAdapter(mAdapter);
-     
+        //actionBar.setDisplayShowHomeEnabled(false);
         actionBar.setDisplayShowTitleEnabled(false);
+        //actionBar.setHomeButtonEnabled(false);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         // Adding Tabs
@@ -90,9 +88,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             }
         });
 
-        AutoStart();//call auto start method
-        Advertisment();//call adbertisement method
-        ErrorLog();//call error log method
+        AutoStart();
+        Advertisment();
+        ErrorLog();
     }//oncreate
 
 
@@ -121,13 +119,13 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         if (!isFinishing()) {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("MediaFusion Ultimate Lite");//set title
-            builder.setMessage("Download our Pro Edition now to try more!");//set message
-            builder.setIcon(R.drawable.logo);//set icon
-            builder.setCancelable(false);//ensure user could not close the pop up window unless they clicked close button
+            builder.setTitle("MediaFusion Ultimate Lite");
+            builder.setMessage("Download our Pro Edition now to try more!");
+            builder.setIcon(R.drawable.logo);
+            builder.setCancelable(false);
 
             final ImageView image = new ImageView(this);
-            image.setImageResource(R.drawable.splashlog2);//set image
+            image.setImageResource(R.drawable.splashlog2);
 
             builder.setView(image);
 
@@ -139,7 +137,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
                     new Handler().postDelayed(new Runnable() {
                         public void run() {
-                            test();//call test method
+                            test();
                         }
                     }, 300 * 1000);//display every 5 min
 
@@ -159,7 +157,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                     Intent intent = new Intent();
                     intent.setAction(Intent.ACTION_VIEW);
                     intent.addCategory(Intent.CATEGORY_BROWSABLE);
-                    intent.setData(Uri.parse("https://play.google.com/store?hl=en"));//link to playstore
+                    intent.setData(Uri.parse("https://play.google.com/store?hl=en"));
                     startActivity(intent);
 
                 }
@@ -185,7 +183,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                         new OutputStreamWriter(fOut);
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
                 String currentDateandTime = sdf.format(new Date());
-                myOutWriter.append("Created 'log.txt' at : " + currentDateandTime);//display message in log info
+                myOutWriter.append("Created 'log.txt' at : " + currentDateandTime);
                 myOutWriter.append(separator);
                 myOutWriter.close();
                 fOut.close();
@@ -194,7 +192,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 OutputStreamWriter myOutWriter =
                         new OutputStreamWriter(fOut);
                 myOutWriter.append(separator);
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");//display message in log info
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
                 String currentDateandTime = sdf.format(new Date());
                 myOutWriter.append("Application started :" + currentDateandTime);
                 myOutWriter.append("\n");
@@ -245,22 +243,16 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    //get exit password
 
                     String value = input.getText().toString().trim();
-                    String storedPassword = controller.getSinlgeEntry();
 
-
-                    if (value.equals(storedPassword)) {
-
-                        Toast.makeText(MainActivity.this, "User Exit Successfully", Toast.LENGTH_LONG).show();//display when password is correct and can exit the app
-
-                        Intent intent = new Intent(getApplicationContext(), Home.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.putExtra("EXIT", true);
-                        startActivity(intent);
+                    if(value.equals(DALSettings.getInstance().getExitPassword()))
+                    {
                         finish();
+                    }
 
-                    } else if (value != storedPassword) {
+                 else if (value != DALSettings.getInstance().getExitPassword()) {
                         Toast.makeText(MainActivity.this, "Password Wrong", Toast.LENGTH_LONG).show();
                     }
 
