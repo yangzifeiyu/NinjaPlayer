@@ -175,9 +175,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/btnImgWake"
         android:background="@drawable/wake"
-        android:layout_alignTop="@+id/tvW"
-        android:layout_alignBottom="@+id/tvW"
-        android:layout_alignEnd="@+id/myRadioGroup" />
+        android:layout_alignTop="@+id/textView5"
+        android:layout_toEndOf="@+id/textView13" />
 
     <EditText
         android:background="@drawable/edittext_bg"
