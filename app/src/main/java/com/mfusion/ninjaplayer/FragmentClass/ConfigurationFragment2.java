@@ -43,7 +43,7 @@ import java.util.regex.Pattern;
 public class ConfigurationFragment2 extends Fragment {
     ViewPager viewPager;
     Button Save, Check;
-    ImageButton shut, wake;
+    ImageButton shut, wake;, wake up time
     EditText pass, passagain;
     TextView status, tvtime, tvwtime;
     RadioGroup radioGroup;
@@ -59,26 +59,26 @@ public class ConfigurationFragment2 extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_configuration, container, false);
 
         radioGroup = (RadioGroup) rootView.findViewById(R.id.myRadioGroup);
-        Portrait = (RadioButton) rootView.findViewById(R.id.portrait);
-        Landscape = (RadioButton) rootView.findViewById(R.id.landscape);
+        Portrait = (RadioButton) rootView.findViewById(R.id.portrait);// portrait orientation
+        Landscape = (RadioButton) rootView.findViewById(R.id.landscape);//landscape orientation
 
-        Save = (Button) rootView.findViewById(R.id.btnContinue);
-        shut = (ImageButton) rootView.findViewById(R.id.btnImgShut);
-        wake = (ImageButton) rootView.findViewById(R.id.btnImgWake);
+        Save = (Button) rootView.findViewById(R.id.btnContinue);//save setting
+        shut = (ImageButton) rootView.findViewById(R.id.btnImgShut);//shutdown time
+        wake = (ImageButton) rootView.findViewById(R.id.btnImgWake);//wake up time
 
-        status = (TextView) rootView.findViewById(R.id.txtStatusPa);
+        status = (TextView) rootView.findViewById(R.id.txtStatusPa);//check password message
         tvtime = (TextView) rootView.findViewById(R.id.tvTime);
         tvwtime = (TextView) rootView.findViewById(R.id.tvW);
 
-        pass = (EditText) rootView.findViewById(R.id.etPassword);
+        pass = (EditText) rootView.findViewById(R.id.etPassword);//check password
 
-        passagain = (EditText) rootView.findViewById(R.id.etMatch);
+        passagain = (EditText) rootView.findViewById(R.id.etMatch);//confirm password
 
 
         //viewPager = (ViewPager) getActivity().findViewById(R.id.pager);
 
 
-        Landscape.setChecked(true);
+        Landscape.setChecked(true);//set default orientation as landscape  
         Portrait.setChecked(false);
 
 
@@ -102,19 +102,19 @@ public class ConfigurationFragment2 extends Fragment {
 
                 if (isValidPassword(pass.getText().toString())) {
                     //pass.setError("Password Accepted");
-                    status.setText("Password Accepted");
+                    status.setText("Password Accepted");//display when password is valid
 
                 }
 
                 if (!isValidPassword(pass.getText().toString())) {
-                    pass.setError("Password must be min6,max12,0-9,a-z or A-Z");
+                    pass.setError("Password must be min6,max12,0-9,a-z or A-Z");//display when password is not valid
                     //status.setText("Password must be min6,max12,0-9,a-z or A-Z");
 
                 }
 
             }
 
-        });
+        });// check password
 
         passagain.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
@@ -134,7 +134,7 @@ public class ConfigurationFragment2 extends Fragment {
 
                 }
             }
-        });
+        });//confirm password
 
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
