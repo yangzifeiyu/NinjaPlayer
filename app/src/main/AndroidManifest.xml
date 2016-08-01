@@ -29,6 +29,13 @@
         </activity>
         <activity android:name=".New.Home"/>
 
+        <activity
+            android:name=".TemplateView1"
+            android:screenOrientation="landscape"></activity>
+                  
+        <activity
+            android:name=".TemplateView2"
+            android:screenOrientation="landscape"></activity>         
 
     </application>
 
