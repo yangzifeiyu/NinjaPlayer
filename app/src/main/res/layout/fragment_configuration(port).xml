@@ -46,24 +46,6 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true">
 
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/portrait"
-            android:textSize="12dp"
-            android:textColor="#3b5998"
-            android:drawableLeft="@drawable/portrait"/>
-
-        <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/landscape"
-            android:textSize="12dp"
-            android:textColor="#3b5998"
-            android:drawableLeft="@drawable/phoneport"
-            android:layout_above="@+id/etPassword"
-            android:layout_alignParentEnd="true" />
-
 
     </RadioGroup>
 
@@ -98,7 +80,8 @@
         android:textColor="#3b5998"
         android:layout_below="@+id/btnImgShut"
         android:layout_alignParentLeft="true"
-        android:layout_marginTop="42dp" />
+        android:layout_marginTop="42dp"
+        android:layout_alignEnd="@+id/btnImgWake" />
 
     <EditText
         android:background="@drawable/edittext_bg"
@@ -110,9 +93,8 @@
         android:gravity="center"
         android:hint="@string/edittext_hint"
         android:textSize="12dp"
-        android:layout_marginTop="26dp"
-        android:layout_below="@+id/textView3"
-        android:layout_alignParentStart="true"/>
+        android:layout_alignBottom="@+id/textView3"
+        android:layout_alignEnd="@+id/txtStatusPa" />
 
     <!--<Button-->
 
@@ -135,7 +117,8 @@
         android:textSize="11dp"
         android:gravity="center|bottom"
         android:layout_below="@+id/etPassword"
-        android:layout_alignParentEnd="true"/>
+        android:layout_alignParentEnd="true"
+        android:layout_alignStart="@+id/etMatch" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -163,9 +146,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/btnImgShut"
         android:background="@drawable/shut"
-        android:layout_alignBottom="@+id/textView4"
         android:layout_alignTop="@+id/textView4"
-        android:layout_alignEnd="@+id/etMatch"/>
+        android:layout_alignStart="@+id/btnImgWake" />
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -173,7 +155,7 @@
         android:id="@+id/btnImgWake"
         android:background="@drawable/wake"
         android:layout_alignTop="@+id/textView5"
-        android:layout_alignStart="@+id/btnImgShut"/>
+        android:layout_alignEnd="@+id/portrait" />
 
     <EditText
         android:background="@drawable/edittext_bg"
@@ -185,8 +167,37 @@
         android:gravity="center"
         android:hint="@string/edittext_hint2"
         android:textSize="12dp"
-        android:layout_below="@+id/etPassword"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="29dp"/>
+        android:layout_below="@+id/txtStatusPa"
+        android:layout_alignStart="@+id/myRadioGroup" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Confirm Password:"
+        android:id="@+id/textView9"
+        android:textSize="15dp"
+        android:textColor="#3b5998"
+        android:layout_below="@+id/txtStatusPa"
+        android:layout_alignParentStart="true" />
+
+    <RadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/landscape"
+        android:textSize="12dp"
+        android:textColor="#3b5998"
+        android:drawableLeft="@drawable/phoneport"
+        android:layout_alignBottom="@+id/myRadioGroup"
+        android:layout_alignEnd="@+id/txtStatusPa" />
+
+    <RadioButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/portrait"
+        android:textSize="12dp"
+        android:textColor="#3b5998"
+        android:drawableLeft="@drawable/portrait"
+        android:layout_above="@+id/textView3"
+        android:layout_alignEnd="@+id/myRadioGroup" />
 
 </RelativeLayout>
