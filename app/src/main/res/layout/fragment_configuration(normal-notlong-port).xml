@@ -113,7 +113,7 @@
         android:layout_alignTop="@+id/textView3"
         android:layout_alignEnd="@+id/txtStatusPa"
         android:layout_alignBottom="@+id/textView3"
-        android:layout_alignStart="@+id/btnImgShut" />
+        android:layout_toEndOf="@+id/btnImgWake"/>
 
     <!--<Button-->
 
@@ -176,7 +176,7 @@
         android:id="@+id/btnImgWake"
         android:background="@drawable/wake"
         android:layout_alignTop="@+id/textView5"
-        android:layout_toEndOf="@+id/textView13" />
+        android:layout_alignStart="@+id/btnImgShut"/>
 
     <EditText
         android:background="@drawable/edittext_bg"
