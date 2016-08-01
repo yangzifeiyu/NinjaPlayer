@@ -187,4 +187,14 @@
         android:layout_alignStart="@+id/etPassword"
         android:clickable="false"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Confirm Password:"
+        android:id="@+id/textView6"
+        android:textSize="15dp"
+        android:textColor="#3b5998"
+        android:layout_below="@+id/txtStatusPa"
+        android:layout_alignParentStart="true"/>
+
 </RelativeLayout>
