@@ -154,14 +154,12 @@ public class ConfigurationFragment2 extends Fragment {
 
                 if (checkedId == R.id.landscape) {
                      getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);//set if user chose landscape orientation
-                    getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
                     Oritantion();
                     //Toast.makeText(getActivity(), "Landscape", Toast.LENGTH_SHORT).show();
 
                 } else if (checkedId == R.id.portrait) {
 
                     getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);//set if user chose portrait orientation
-                    getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
                     Oritantion();
                     //Toast.makeText(getActivity(), "Portrait", Toast.LENGTH_SHORT).show();
                 }
