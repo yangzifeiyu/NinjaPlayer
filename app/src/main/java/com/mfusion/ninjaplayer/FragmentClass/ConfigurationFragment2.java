@@ -128,9 +128,9 @@ public class ConfigurationFragment2 extends Fragment {
                 String strPass1 = pass.getText().toString();
                 String strPass2 = passagain.getText().toString();
                 if (strPass1.equals(strPass2)) {
-                    status.setText("Password match");
+                    status.setText("Password match");//display when two passwords match
                 } else {
-                    passagain.setError("Password do not match");
+                    passagain.setError("Password do not match");//display when two password do not match
 
                 }
             }
@@ -144,14 +144,14 @@ public class ConfigurationFragment2 extends Fragment {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
 
                 if (checkedId == R.id.landscape) {
-                    getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                    getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);//set if user chose landscape orientation
                     getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
                     Oritantion();
                     //Toast.makeText(getActivity(), "Landscape", Toast.LENGTH_SHORT).show();
 
                 } else if (checkedId == R.id.portrait) {
 
-                    getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                    getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);//set if user chose portrait orientation
                     getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
                     Oritantion();
                     //Toast.makeText(getActivity(), "Portrait", Toast.LENGTH_SHORT).show();
@@ -164,7 +164,7 @@ public class ConfigurationFragment2 extends Fragment {
             @Override
             public void onClick(View v) {
 
-                //set shudown settings
+                //set shudown setting
 
                 setshut();
 
@@ -175,7 +175,7 @@ public class ConfigurationFragment2 extends Fragment {
 
             @Override
             public void onClick(View v) {
-
+              //set wake up setting
                 setwake();
 
             }
@@ -186,6 +186,7 @@ public class ConfigurationFragment2 extends Fragment {
 
             @Override
             public void onClick(View v) {
+                //save configuration setting
                 SaveSettings();
             }
         });
@@ -210,13 +211,13 @@ public class ConfigurationFragment2 extends Fragment {
             String wakeuptime = tvwtime.getText().toString().trim();
             String password = pass.getText().toString().trim();
             //DALSettings settings;
-            DALSettings.getInstance().setShutDownTime(shutdowntime);
-            DALSettings.getInstance().setWakeUpTime(wakeuptime);
-            DALSettings.getInstance().setExitPassword(password);
+            DALSettings.getInstance().setShutDownTime(shutdowntime);//call setShutDownTime method
+            DALSettings.getInstance().setWakeUpTime(wakeuptime);//call setWakeUpTime method
+            DALSettings.getInstance().setExitPassword(password);//call setExitPassword method
 
-            Toast.makeText(getActivity(), "saved..I think", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "saved..", Toast.LENGTH_SHORT).show();//display when user save successfully
         } catch (Exception e) {
-            Toast.makeText(getActivity(), "ERRORRRRRRRRRRRRRRRR", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "ERRORRRRRRRRRRRRRRRR", Toast.LENGTH_SHORT).show();//display when user save unsuccessfully
         }
 
     }//save button listener
@@ -225,8 +226,8 @@ public class ConfigurationFragment2 extends Fragment {
 
         Calendar calendar = Calendar.getInstance();
 
-        timePickerDialog = new TimePickerDialog(getActivity(), timePickerListener, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false);
-        timePickerDialog.setTitle("Set Shutdown Time");
+        timePickerDialog = new TimePickerDialog(getActivity(), timePickerListener, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false);// set time picker as current time
+        timePickerDialog.setTitle("Set Shutdown Time");//set title(shutdown)
         timePickerDialog.show();
     }
 
@@ -236,18 +237,18 @@ public class ConfigurationFragment2 extends Fragment {
                                       int selectedMinute) {
                     // set time into textview
                     Calendar date = Calendar.getInstance();
-                    date.set(Calendar.HOUR_OF_DAY, selectedHour);
-                    date.set(Calendar.MINUTE, selectedMinute);
+                    date.set(Calendar.HOUR_OF_DAY, selectedHour);//set hour
+                    date.set(Calendar.MINUTE, selectedMinute);//set min
                     date.set(Calendar.AM_PM, date.get(Calendar.AM_PM));
-                    String time = new SimpleDateFormat("HH:mm:ss").format(date.getTime());
+                    String time = new SimpleDateFormat("HH:mm:ss").format(date.getTime());//set format
                     tvtime.setText(time);
                 }
             };
 
     private void setwake() {
         Calendar calendar = Calendar.getInstance();
-        timePickerDialog = new TimePickerDialog(getActivity(), timePickerListener2, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false);
-        timePickerDialog.setTitle("Set Wakeup Time");
+        timePickerDialog = new TimePickerDialog(getActivity(), timePickerListener2, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false);// set time picker as current time
+        timePickerDialog.setTitle("Set Wakeup Time");//set title (wake up )
         timePickerDialog.show();
     }
 
@@ -255,11 +256,12 @@ public class ConfigurationFragment2 extends Fragment {
             new TimePickerDialog.OnTimeSetListener() {
                 public void onTimeSet(TimePicker view, int selectedHour,
                                       int selectedMinute) {
+                                          // set time into textview
                     Calendar date = Calendar.getInstance();
-                    date.set(Calendar.HOUR_OF_DAY, selectedHour);
-                    date.set(Calendar.MINUTE, selectedMinute);
+                    date.set(Calendar.HOUR_OF_DAY, selectedHour);//set hour
+                    date.set(Calendar.MINUTE, selectedMinute);//set min
                     date.set(Calendar.AM_PM, date.get(Calendar.AM_PM));
-                    String time = new SimpleDateFormat("HH:mm:ss").format(date.getTime());
+                    String time = new SimpleDateFormat("HH:mm:ss").format(date.getTime());//set format
                     tvwtime.setText(time);
                 }
             };
@@ -269,7 +271,7 @@ public class ConfigurationFragment2 extends Fragment {
         Pattern pattern;
         Matcher matcher;
 
-        final String PASSWORD_PATTERN = "((?=.*\\d)(?=.*[a-zA-Z]).{6,12})";
+        final String PASSWORD_PATTERN = "((?=.*\\d)(?=.*[a-zA-Z]).{6,12})";//string password pattern
 
         pattern = Pattern.compile(PASSWORD_PATTERN);
         matcher = pattern.matcher(password);
@@ -282,7 +284,7 @@ public class ConfigurationFragment2 extends Fragment {
         String pa = pass.getText().toString().trim();
         String pass = passagain.getText().toString().trim();
         try {
-            File myFile = new File("/sdcard/MFusion/log.txt");
+            File myFile = new File("/sdcard/MFusion/log.txt");//file path
 
             if (!myFile.exists()) {
                 myFile.createNewFile();
@@ -292,8 +294,9 @@ public class ConfigurationFragment2 extends Fragment {
                 OutputStreamWriter myOutWriter =
                         new OutputStreamWriter(fOut);
 
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");//set date time format
                 String currentDateandTime = sdf.format(new Date());
+                //display when password does not match ( display in the log information)
                 myOutWriter.append("Attempted to change password but failed due to wrong requirement or Password does not match/wrong match format at : " + currentDateandTime + "\n" + pa + ":" + pass + "\n");
 
                 myOutWriter.close();
@@ -303,12 +306,12 @@ public class ConfigurationFragment2 extends Fragment {
             Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
             Execerror();
         }
-    }//eng of passwordlog
+    }//end of passwordlog
 
     private void Execerror() {
 
         try {
-            File myFile = new File("/sdcard/MFusion/log.txt");
+            File myFile = new File("/sdcard/MFusion/log.txt");//file path
 
             if (!myFile.exists()) {
                 myFile.createNewFile();
@@ -318,9 +321,9 @@ public class ConfigurationFragment2 extends Fragment {
                 OutputStreamWriter myOutWriter =
                         new OutputStreamWriter(fOut);
 
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");//set date time format
                 String currentDateandTime = sdf.format(new Date());
-                myOutWriter.append("Exception Error in ConfigurationFragment at : " + currentDateandTime + "\n");
+                myOutWriter.append("Exception Error in ConfigurationFragment at : " + currentDateandTime + "\n");//display in log information
                 myOutWriter.close();
                 fOut.close();
             }
@@ -335,7 +338,7 @@ public class ConfigurationFragment2 extends Fragment {
     private void Oritantion() {
 
         try {
-            File myFile = new File("/sdcard/MFusion/log.txt");
+            File myFile = new File("/sdcard/MFusion/log.txt");//file path
 
             if (!myFile.exists()) {
                 myFile.createNewFile();
@@ -348,9 +351,9 @@ public class ConfigurationFragment2 extends Fragment {
                     OutputStreamWriter myOutWriter =
                             new OutputStreamWriter(fOut);
 
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");//set date time format
                     String currentDateandTime = sdf.format(new Date());
-                    myOutWriter.append("Oritantion change to Landscape at : " + currentDateandTime +"\n");
+                    myOutWriter.append("Oritantion change to Landscape at : " + currentDateandTime +"\n");//display in log information
                     myOutWriter.close();
                     fOut.close();
 
@@ -362,9 +365,9 @@ public class ConfigurationFragment2 extends Fragment {
                     OutputStreamWriter myOutWriter =
                             new OutputStreamWriter(fOut);
 
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");//set date time format
                     String currentDateandTime = sdf.format(new Date());
-                    myOutWriter.append("Oritantion change to Portrait at : " + currentDateandTime +"\n");
+                    myOutWriter.append("Oritantion change to Portrait at : " + currentDateandTime +"\n");//display in log information
                     myOutWriter.close();
                     fOut.close();
 
@@ -377,7 +380,7 @@ public class ConfigurationFragment2 extends Fragment {
                     Toast.LENGTH_SHORT).show();
         }
 
-    }
+    }//end of orientation setting ( to diplay message inside log information)
 
 }//clase
 
