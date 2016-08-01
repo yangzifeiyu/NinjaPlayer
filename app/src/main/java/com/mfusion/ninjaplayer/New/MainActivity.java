@@ -16,11 +16,14 @@ import android.support.v4.view.ViewPager;
 import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.mfusion.commons.data.DALSettings;
+import com.mfusion.commons.tools.InternalKeyWords;
+import com.mfusion.commons.tools.SQLiteDBHelper;
 import com.mfusion.ninjaplayer.R;
 import com.mfusion.ninjaplayer.adapter.TabsPagerAdapter;
 
@@ -47,6 +50,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
         //controller = new DBController(MainActivity.this, "", null, 1);
 
 
@@ -60,6 +66,12 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         actionBar.setDisplayShowTitleEnabled(false);
         //actionBar.setHomeButtonEnabled(false);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+
+
+
+
+
 
         // Adding Tabs
         for (String tab_name : tabs) {
