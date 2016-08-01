@@ -35,7 +35,7 @@
         android:textStyle="bold|italic"/>
 
     <RadioGroup
-        android:layout_width="240dp"
+        android:layout_width="300dp"
         android:layout_height="100dp"
         android:orientation="horizontal"
         android:id="@+id/myRadioGroup"
@@ -45,13 +45,24 @@
         android:layout_centerHorizontal="true">
 
         <RadioButton
-            android:layout_width="104dp"
+            android:layout_width="115dp"
             android:layout_height="100dp"
             android:id="@+id/portrait"
             android:textSize="30dp"
             android:textColor="#3b5998"
             android:drawableLeft="@drawable/phoneland80"
             android:layout_weight="0.27"/>
+
+        <RadioButton
+            android:layout_width="145dp"
+            android:layout_height="100dp"
+            android:id="@+id/landscape"
+            android:textSize="30dp"
+            android:textColor="#3b5998"
+            android:drawableLeft="@drawable/phoneport100"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/myRadioGroup"
+            android:layout_marginStart="50dp" />
 
 
     </RadioGroup>
@@ -131,10 +142,10 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:id="@+id/tvTime"
         android:gravity="center"
-        android:layout_alignBottom="@+id/textView4"
+        android:layout_alignTop="@+id/btnImgShut"
+        android:layout_alignStart="@+id/txtStatusPa"
         android:layout_alignEnd="@+id/myRadioGroup"
-        android:layout_alignStart="@+id/etPassword"
-        android:layout_alignTop="@+id/textView4"/>
+        android:layout_above="@+id/btnImgWake"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -186,16 +197,5 @@
         android:textColor="#3b5998"
         android:layout_alignTop="@+id/etMatch"
         android:layout_alignParentStart="true" />
-
-    <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="100dp"
-        android:id="@+id/landscape"
-        android:textSize="30dp"
-        android:textColor="#3b5998"
-        android:drawableLeft="@drawable/phoneport100"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/myRadioGroup"
-        android:layout_marginStart="50dp" />
 
 </RelativeLayout>
