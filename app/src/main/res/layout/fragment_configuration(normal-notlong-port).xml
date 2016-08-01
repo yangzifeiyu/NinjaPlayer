@@ -86,7 +86,7 @@
         android:textSize="15dp"
         android:textColor="#3b5998"
         android:layout_centerVertical="true"
-        android:layout_alignParentStart="true"/>
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -109,9 +109,11 @@
         android:textColorHint="#3b5998"
         android:gravity="center"
         android:hint="@string/edittext_hint"
-        android:layout_below="@+id/textView3"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="21dp"/>
+        android:textSize="14dp"
+        android:layout_alignTop="@+id/textView3"
+        android:layout_alignEnd="@+id/txtStatusPa"
+        android:layout_alignBottom="@+id/textView3"
+        android:layout_alignStart="@+id/btnImgShut" />
 
     <!--<Button-->
 
@@ -133,9 +135,9 @@
         android:id="@+id/txtStatusPa"
         android:textSize="11dp"
         android:gravity="center|bottom"
+        android:layout_below="@+id/etMatch"
         android:layout_alignParentEnd="true"
-        android:layout_alignBottom="@+id/etMatch"
-        android:layout_alignTop="@+id/etPassword"/>
+        android:layout_alignStart="@+id/btnImgShut" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -165,8 +167,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/btnImgShut"
         android:background="@drawable/shut"
-        android:layout_above="@+id/textView5"
-        android:layout_alignStart="@+id/btnImgWake"/>
+        android:layout_alignBottom="@+id/textView4"
+        android:layout_toEndOf="@+id/textView4" />
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -174,8 +176,8 @@
         android:id="@+id/btnImgWake"
         android:background="@drawable/wake"
         android:layout_alignTop="@+id/tvW"
-        android:layout_toEndOf="@+id/myRadioGroup"
-        android:layout_alignBottom="@+id/tvW"/>
+        android:layout_alignBottom="@+id/tvW"
+        android:layout_alignEnd="@+id/myRadioGroup" />
 
     <EditText
         android:background="@drawable/edittext_bg"
@@ -186,8 +188,20 @@
         android:textColorHint="#3b5998"
         android:gravity="center"
         android:hint="@string/edittext_hint2"
-        android:layout_above="@+id/textView4"
-        android:layout_alignStart="@+id/etPassword"
-        android:layout_marginBottom="29dp"/>
+        android:textSize="15dp"
+        android:layout_alignEnd="@+id/etPassword"
+        android:layout_alignTop="@+id/textView13"
+        android:layout_alignStart="@+id/etPassword" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Exit Password:"
+        android:id="@+id/textView13"
+        android:textSize="15dp"
+        android:textColor="#3b5998"
+        android:layout_below="@+id/textView3"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="31dp" />
 
 </RelativeLayout>
