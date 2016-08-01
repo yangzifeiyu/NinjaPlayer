@@ -43,7 +43,7 @@ import java.util.regex.Pattern;
 public class ConfigurationFragment2 extends Fragment {
     ViewPager viewPager;
     Button Save, Check;
-    ImageButton shut, wake;, wake up time
+    ImageButton shut, wake;
     EditText pass, passagain;
     TextView status, tvtime, tvwtime;
     RadioGroup radioGroup;
