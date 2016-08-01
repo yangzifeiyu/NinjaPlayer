@@ -47,6 +47,25 @@
         android:layout_centerHorizontal="true">
 
 
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/portrait"
+            android:textSize="12dp"
+            android:textColor="#3b5998"
+            android:drawableLeft="@drawable/portrait"
+            android:layout_above="@+id/textView3"
+            android:layout_alignEnd="@+id/myRadioGroup" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/landscape"
+            android:textSize="12dp"
+            android:textColor="#3b5998"
+            android:drawableLeft="@drawable/phoneport"
+            android:layout_alignBottom="@+id/myRadioGroup"
+            android:layout_alignEnd="@+id/txtStatusPa" />
     </RadioGroup>
 
     <TextView
@@ -94,7 +113,7 @@
         android:hint="@string/edittext_hint"
         android:textSize="12dp"
         android:layout_alignBottom="@+id/textView3"
-        android:layout_alignEnd="@+id/txtStatusPa" />
+        android:layout_toEndOf="@+id/myRadioGroup"/>
 
     <!--<Button-->
 
@@ -116,9 +135,8 @@
         android:id="@+id/txtStatusPa"
         android:textSize="11dp"
         android:gravity="center|bottom"
-        android:layout_below="@+id/etPassword"
-        android:layout_alignParentEnd="true"
-        android:layout_alignStart="@+id/etMatch" />
+        android:layout_centerVertical="true"
+        android:layout_alignStart="@+id/etMatch"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -167,8 +185,8 @@
         android:gravity="center"
         android:hint="@string/edittext_hint2"
         android:textSize="12dp"
-        android:layout_below="@+id/txtStatusPa"
-        android:layout_alignStart="@+id/myRadioGroup" />
+        android:layout_below="@+id/textView9"
+        android:layout_toEndOf="@+id/btnImgShut"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -177,27 +195,8 @@
         android:id="@+id/textView9"
         android:textSize="15dp"
         android:textColor="#3b5998"
-        android:layout_below="@+id/txtStatusPa"
-        android:layout_alignParentStart="true" />
-
-    <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/landscape"
-        android:textSize="12dp"
-        android:textColor="#3b5998"
-        android:drawableLeft="@drawable/phoneport"
-        android:layout_alignBottom="@+id/myRadioGroup"
-        android:layout_alignEnd="@+id/txtStatusPa" />
-
-    <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/portrait"
-        android:textSize="12dp"
-        android:textColor="#3b5998"
-        android:drawableLeft="@drawable/portrait"
-        android:layout_above="@+id/textView3"
-        android:layout_alignEnd="@+id/myRadioGroup" />
+        android:layout_below="@+id/textView3"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="32dp"/>
 
 </RelativeLayout>
