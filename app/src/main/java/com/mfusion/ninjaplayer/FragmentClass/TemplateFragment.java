@@ -1,49 +1,35 @@
 package com.mfusion.ninjaplayer.FragmentClass;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import com.mfusion.commons.data.XMLTemplate;
 import com.mfusion.commons.entity.template.TemplateEntity;
 import com.mfusion.commons.entity.template.VisualTemplate;
 import com.mfusion.ninjaplayer.R;
+import com.mfusion.ninjaplayer.TemplateView2;
 import com.mfusion.ninjaplayer.view.TemplateGridViewAdapter;
 import com.mfusion.templatedesigner.EventDispatcher;
 import com.mfusion.templatedesigner.TemplateDesigner;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
 
 public class TemplateFragment extends Fragment implements View.OnClickListener{
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "TemplateView1";
 
     private GridView gridView;
     private TemplateDesigner designer;
-    private Button btnSave;
-    private Button btnCancel;
+    private Button btnNew;
+    private Button btnEdit;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,13 +39,11 @@ public class TemplateFragment extends Fragment implements View.OnClickListener{
         final View rootView = inflater.inflate(R.layout.fragment_template, container, false);
 
         //supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
-        gridView=(GridView)rootView.findViewById(R.id.template_list_grid_view);
-        designer=(TemplateDesigner)rootView.findViewById(R.id.template_designer);
-        btnSave=(Button)rootView.findViewById(R.id.template_btn_save);
-        btnCancel=(Button)rootView.findViewById(R.id.template_btn_cancel);
+        gridView = (GridView) rootView.findViewById(R.id.template_list_grid_view);
+        designer = (TemplateDesigner) rootView.findViewById(R.id.template_designer);
 
-        btnCancel.setOnClickListener(this);
-        btnSave.setOnClickListener(this);
+        btnEdit = (Button) rootView.findViewById(R.id.template_btn_edit);
+
 
 
         try {
@@ -90,6 +74,18 @@ public class TemplateFragment extends Fragment implements View.OnClickListener{
 
         designer.setVisibility(View.GONE);
 
+        btnNew = (Button) rootView.findViewById(R.id.template_btn_new);
+        btnNew.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                Intent intent = new Intent(getActivity(),TemplateView2.class);
+                startActivity(intent);
+                //finish();
+            }
+        });
+
         return  rootView;
     }
 
@@ -105,11 +101,11 @@ public class TemplateFragment extends Fragment implements View.OnClickListener{
     }
     @Override
     public void onClick(View v) {
-        if(v.getId()==R.id.template_btn_save){
+        if(v.getId()==R.id.template_btn_new){
             toggleListAndDesigner();
             //TODO: SAVE COMPONENT
         }
-        else if(v.getId()==R.id.template_btn_cancel){
+        else if(v.getId()==R.id.template_btn_edit){
             toggleListAndDesigner();
         }
     }
