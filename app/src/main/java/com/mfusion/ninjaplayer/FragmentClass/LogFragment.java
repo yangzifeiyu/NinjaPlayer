@@ -40,9 +40,9 @@ public class LogFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         final View rootView = inflater.inflate(R.layout.fragment_log, container, false);
-        load = (Button) rootView.findViewById(R.id.btnReload);//load log
-        clear = (Button) rootView.findViewById(R.id.btnClear);//clear log
-        logcat = (EditText) rootView.findViewById(R.id.etLog);//display log info 
+        load = (Button) rootView.findViewById(R.id.btnReload);
+        clear = (Button) rootView.findViewById(R.id.btnClear);
+        logcat = (EditText) rootView.findViewById(R.id.etLog);
 
                /* try {
                     StringBuffer sb = new StringBuffer();
@@ -68,7 +68,7 @@ public class LogFragment extends Fragment {
 
 
                 try {
-                    File myFile = new File("/sdcard/Mfusion/log.txt");//file path
+                    File myFile = new File("/sdcard/Mfusion/log.txt");
                     FileInputStream fIn = new FileInputStream(myFile);
                     BufferedReader myReader = new BufferedReader(
                             new InputStreamReader(fIn));
@@ -83,7 +83,7 @@ public class LogFragment extends Fragment {
 
 
 
-                    logcat.setText(aBuffer);//show buffer
+                    logcat.setText(aBuffer);
                     logcat.append("\n");
 
                     myReader.close();
@@ -99,7 +99,7 @@ public class LogFragment extends Fragment {
 
             }
 
-        });//load all information from log
+        });
 
 
         clear.setOnClickListener(new View.OnClickListener() {
@@ -109,13 +109,13 @@ public class LogFragment extends Fragment {
                 // TODO Auto-generated method stub
 
                 try {
-                    File myFile = new File("/sdcard/MFusion/log.txt");//file path
+                    File myFile = new File("/sdcard/MFusion/log.txt");
                     PrintWriter writer = new PrintWriter(myFile);
                     writer.print("");
                     writer.close();
                     Toast.makeText(getActivity(),
                             "Cleared everything from log.txt'",
-                            Toast.LENGTH_SHORT).show();//display when click clear button 
+                            Toast.LENGTH_SHORT).show();
                 } catch (Exception e) {
                     Toast.makeText(getActivity(), e.getMessage(),
                             Toast.LENGTH_SHORT).show();
@@ -127,7 +127,7 @@ public class LogFragment extends Fragment {
             }
 
 
-        });//clear all information from log
+        });
 
 
         return rootView;
@@ -147,9 +147,9 @@ public class LogFragment extends Fragment {
                 OutputStreamWriter myOutWriter =
                         new OutputStreamWriter(fOut);
 
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");//datatime formate
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
                 String currentDateandTime = sdf.format(new Date());
-                myOutWriter.append("Error Getting Data in LogFragment at : "+ currentDateandTime + "\n");//display in log info when there is an error
+                myOutWriter.append("Error Getting Data in LogFragment at : "+ currentDateandTime + "\n");
                 myOutWriter.close();
                 fOut.close();
             }
@@ -157,7 +157,7 @@ public class LogFragment extends Fragment {
         } catch (Exception e) {
             Toast.makeText(getActivity(), e.getMessage(),
                     Toast.LENGTH_SHORT).show();
-        }//error log information
+        }
 
 
     }
