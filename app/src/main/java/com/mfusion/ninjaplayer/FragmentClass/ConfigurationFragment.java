@@ -70,25 +70,25 @@ public class ConfigurationFragment extends Fragment {
         Portrait = (RadioButton) rootView.findViewById(R.id.portrait);// portrait orientation
         Landscape = (RadioButton) rootView.findViewById(R.id.landscape);//landscape orientation
 
-        Save = (Button) rootView.findViewById(R.id.btnContinue);
-        shut = (ImageButton) rootView.findViewById(R.id.btnImgShut);
-        wake = (ImageButton) rootView.findViewById(R.id.btnImgWake);
-
-        status = (TextView) rootView.findViewById(R.id.txtStatusPa);
-        tvtime = (EditText) rootView.findViewById(R.id.edTvtime);
-        tvwtime = (EditText) rootView.findViewById(R.id.edTvwtime);
-
-        pass = (EditText) rootView.findViewById(R.id.etPassword);
-
-        passagain = (EditText) rootView.findViewById(R.id.etMatch);
-
-        ckpass = (CheckBox) rootView.findViewById(R.id.chPassword2);
-        ckwake = (CheckBox) rootView.findViewById(R.id.chwake3);
-        ckshut = (CheckBox) rootView.findViewById(R.id.chshut3);
+        
+        ckshut = (CheckBox) rootView.findViewById(R.id.chshut3);//shutdown time checkbox
+        shut = (ImageButton) rootView.findViewById(R.id.btnImgShut);//wake up image button
+        tvtime = (EditText) rootView.findViewById(R.id.edTvtime);//text view for shutdown time
+        
+        ckwake = (CheckBox) rootView.findViewById(R.id.chwake3);//wake up time checkboc
+        wake = (ImageButton) rootView.findViewById(R.id.btnImgWake);//wake up time image button
+        tvwtime = (EditText) rootView.findViewById(R.id.edTvwtime);//text view for shutdown time
+          
+        ckpass = (CheckBox) rootView.findViewById(R.id.chPassword2);//password checkbox
+        pass = (EditText) rootView.findViewById(R.id.etPassword);//password
+        passagain = (EditText) rootView.findViewById(R.id.etMatch);//confirm password
+        status = (TextView) rootView.findViewById(R.id.txtStatusPa);//password validation text view
+        
+        Save = (Button) rootView.findViewById(R.id.btnContinue);//save setting button
 
         viewPager = (ViewPager) getActivity().findViewById(R.id.photosViewPager);
 
-        initmethodforeverything();
+        initmethodforeverything();//call initialisation method
         
         
         
