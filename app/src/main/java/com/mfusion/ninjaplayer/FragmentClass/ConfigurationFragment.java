@@ -67,8 +67,8 @@ public class ConfigurationFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_configuration, container, false);
 
         radioGroup = (RadioGroup) rootView.findViewById(R.id.myRadioGroup);
-        Portrait = (RadioButton) rootView.findViewById(R.id.portrait);
-        Landscape = (RadioButton) rootView.findViewById(R.id.landscape);
+        Portrait = (RadioButton) rootView.findViewById(R.id.portrait);// portrait orientation
+        Landscape = (RadioButton) rootView.findViewById(R.id.landscape);//landscape orientation
 
         Save = (Button) rootView.findViewById(R.id.btnContinue);
         shut = (ImageButton) rootView.findViewById(R.id.btnImgShut);
@@ -89,7 +89,33 @@ public class ConfigurationFragment extends Fragment {
         viewPager = (ViewPager) getActivity().findViewById(R.id.photosViewPager);
 
         initmethodforeverything();
+        
+        
+        
+ radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
+
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                if (checkedId == R.id.landscape) {
+                    // getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+//                    getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+                    //Oritantion();
+                    //Toast.makeText(getActivity(), "Landscape", Toast.LENGTH_SHORT).show();
+
+                } else if (checkedId == R.id.portrait) {
+
+                    //getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//                    getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+                    // Oritantion();
+                    //Toast.makeText(getActivity(), "Portrait", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });//radio button for screen orientation
+        
+        
+        
         pass.addTextChangedListener(new TextWatcher() {
 
 
@@ -123,7 +149,7 @@ public class ConfigurationFragment extends Fragment {
 
             }
 
-        });
+        });//check password
 
         passagain.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
@@ -146,54 +172,10 @@ public class ConfigurationFragment extends Fragment {
 
                 }
             }
-        });
+        });//confirm password validation
 
 
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-
-
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-
-                if (checkedId == R.id.landscape) {
-                    // getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-//                    getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-                    //Oritantion();
-                    //Toast.makeText(getActivity(), "Landscape", Toast.LENGTH_SHORT).show();
-
-                } else if (checkedId == R.id.portrait) {
-
-                    //getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-//                    getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-                    // Oritantion();
-                    //Toast.makeText(getActivity(), "Portrait", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-
-        Save.setOnClickListener(new View.OnClickListener() {
-            String password = pass.getText().toString().trim();
-            String match = passagain.getText().toString().trim();
-
-
-            @Override
-            public void onClick(View v) {
-
-                SaveSettings();
-
-
-            }
-        });
-
-//        Check.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                check();
-//            }
-//        });
-        ckpass.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+       ckpass.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -220,7 +202,7 @@ public class ConfigurationFragment extends Fragment {
                 }
 
             }
-        });
+        });//password checkbox
 
         ckshut.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
@@ -253,7 +235,7 @@ public class ConfigurationFragment extends Fragment {
                 }
 
             }
-        });
+        });//shutdown time check box
 
         ckwake.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
@@ -285,8 +267,32 @@ public class ConfigurationFragment extends Fragment {
                 }
 
             }
-        });
+        });//wake up time checkbox
 
+
+
+        Save.setOnClickListener(new View.OnClickListener() {
+            String password = pass.getText().toString().trim();
+            String match = passagain.getText().toString().trim();
+
+
+            @Override
+            public void onClick(View v) {
+
+                SaveSettings();
+
+
+            }
+        });//save setting
+
+//        Check.setOnClickListener(new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View v) {
+//                check();
+//            }
+//        });
+        
         //RetrieveSettings();//Retrieve settings from database if there is previous settings
 
 
@@ -317,7 +323,7 @@ public class ConfigurationFragment extends Fragment {
         tvwtime.setClickable(false);
 //
 
-    }
+    }//set all the intial settings
 
 //    private void RetrieveSettings() {
 ////        DALSettings.getInstance().getSystemSetting();
@@ -349,7 +355,67 @@ public class ConfigurationFragment extends Fragment {
 //
 //
 //    }//retrieve button listener
+private void setshut() {
 
+        Calendar calendar = Calendar.getInstance();
+
+        timePickerDialog = new TimePickerDialog(getActivity(), timePickerListener, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false);
+        timePickerDialog.setTitle("Set Shutdown Time");
+        timePickerDialog.show();
+    }//set shudown time method
+
+    TimePickerDialog.OnTimeSetListener timePickerListener =
+            new TimePickerDialog.OnTimeSetListener() {
+                public void onTimeSet(TimePicker view, int selectedHour,
+                                      int selectedMinute) {
+
+                    // set time into textview
+                    Calendar date = Calendar.getInstance();
+                    date.set(Calendar.HOUR_OF_DAY, selectedHour);
+                    date.set(Calendar.MINUTE, selectedMinute);
+                    date.set(Calendar.AM_PM, date.get(Calendar.AM_PM));
+                    String time = new SimpleDateFormat("HH:mm:ss").format(date.getTime());
+                    tvtime.setText(time);
+                }
+            };
+
+    private void setwake() {
+        Calendar calendar = Calendar.getInstance();
+        timePickerDialog = new TimePickerDialog(getActivity(), timePickerListener2, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false);
+        timePickerDialog.setTitle("Set Wakeup Time");
+        timePickerDialog.show();
+    }//set wake up time method
+
+    TimePickerDialog.OnTimeSetListener timePickerListener2 =
+            new TimePickerDialog.OnTimeSetListener() {
+                public void onTimeSet(TimePicker view, int selectedHour,
+                                      int selectedMinute) {
+                    Calendar date = Calendar.getInstance();
+                    date.set(Calendar.HOUR_OF_DAY, selectedHour);
+                    date.set(Calendar.MINUTE, selectedMinute);
+                    date.set(Calendar.AM_PM, date.get(Calendar.AM_PM));
+                    String time = new SimpleDateFormat("HH:mm:ss").format(date.getTime());
+                    tvwtime.setText(time);
+                }
+            };
+            
+            
+ public boolean isValidPassword(final String password) {
+
+        Pattern pattern;
+        Matcher matcher;
+
+        final String PASSWORD_PATTERN = "((?=.*\\d)(?=.*[a-zA-Z]).{6,12})";
+
+        pattern = Pattern.compile(PASSWORD_PATTERN);
+        matcher = pattern.matcher(password);
+
+        return matcher.matches();
+
+    }//valid password
+    
+    
+    
     private void SaveSettings() {
 
 
@@ -438,7 +504,7 @@ public class ConfigurationFragment extends Fragment {
 
             }
 
-        }
+        }//save setting method
 
 //        try {
 //
@@ -455,63 +521,8 @@ public class ConfigurationFragment extends Fragment {
 
     }//save button listener
 
-    private void setshut() {
-
-        Calendar calendar = Calendar.getInstance();
-
-        timePickerDialog = new TimePickerDialog(getActivity(), timePickerListener, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false);
-        timePickerDialog.setTitle("Set Shutdown Time");
-        timePickerDialog.show();
-    }
-
-    TimePickerDialog.OnTimeSetListener timePickerListener =
-            new TimePickerDialog.OnTimeSetListener() {
-                public void onTimeSet(TimePicker view, int selectedHour,
-                                      int selectedMinute) {
-
-                    // set time into textview
-                    Calendar date = Calendar.getInstance();
-                    date.set(Calendar.HOUR_OF_DAY, selectedHour);
-                    date.set(Calendar.MINUTE, selectedMinute);
-                    date.set(Calendar.AM_PM, date.get(Calendar.AM_PM));
-                    String time = new SimpleDateFormat("HH:mm:ss").format(date.getTime());
-                    tvtime.setText(time);
-                }
-            };
-
-    private void setwake() {
-        Calendar calendar = Calendar.getInstance();
-        timePickerDialog = new TimePickerDialog(getActivity(), timePickerListener2, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false);
-        timePickerDialog.setTitle("Set Wakeup Time");
-        timePickerDialog.show();
-    }
-
-    TimePickerDialog.OnTimeSetListener timePickerListener2 =
-            new TimePickerDialog.OnTimeSetListener() {
-                public void onTimeSet(TimePicker view, int selectedHour,
-                                      int selectedMinute) {
-                    Calendar date = Calendar.getInstance();
-                    date.set(Calendar.HOUR_OF_DAY, selectedHour);
-                    date.set(Calendar.MINUTE, selectedMinute);
-                    date.set(Calendar.AM_PM, date.get(Calendar.AM_PM));
-                    String time = new SimpleDateFormat("HH:mm:ss").format(date.getTime());
-                    tvwtime.setText(time);
-                }
-            };
-
-    public boolean isValidPassword(final String password) {
-
-        Pattern pattern;
-        Matcher matcher;
-
-        final String PASSWORD_PATTERN = "((?=.*\\d)(?=.*[a-zA-Z]).{6,12})";
-
-        pattern = Pattern.compile(PASSWORD_PATTERN);
-        matcher = pattern.matcher(password);
-
-        return matcher.matches();
-
-    }//valid password
+    
+   
 
     private void PasswordLog() {
         String pa = pass.getText().toString().trim();
@@ -565,7 +576,7 @@ public class ConfigurationFragment extends Fragment {
                     Toast.LENGTH_SHORT).show();
         }
 
-    }
+    }//error log for configuration
 
     private void Oritantion() {
 
@@ -608,7 +619,7 @@ public class ConfigurationFragment extends Fragment {
                     Toast.LENGTH_SHORT).show();
         }
 
-    }
+    }//error log for screen orientation
 
 
     private void configurationLog() {
@@ -670,7 +681,7 @@ public class ConfigurationFragment extends Fragment {
 
         }
 
-    }//end of log
+    }//end of log (log info for configuration)
 
     private void configurationLogDefault() {
 
