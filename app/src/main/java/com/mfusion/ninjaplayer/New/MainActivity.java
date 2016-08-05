@@ -57,32 +57,31 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         setContentView(R.layout.activity_main);
 
 
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);//to make sure that keyboard does not effect the GUI
 
-        //controller = new DBController(MainActivity.this, "", null, 1);
+
 
 
         // Initilization
-        ckpass = (CheckBox) findViewById(R.id.chPassword2);
-        ckwake = (CheckBox) findViewById(R.id.chwake3);
-        ckshut = (CheckBox) findViewById(R.id.chshut3);
-        pass = (EditText) findViewById(R.id.etPassword);
-        passagain = (EditText) findViewById(R.id.etMatch);
-        status = (TextView) findViewById(R.id.txtStatusPa);
+        pass = (EditText) findViewById(R.id.etPassword);//password
+        passagain = (EditText) findViewById(R.id.etMatch);//confirm password
+        status = (TextView) findViewById(R.id.txtStatusPa);//password validation textview
+        ckpass = (CheckBox) findViewById(R.id.chPassword2);//password checkboc
+        ckwake = (CheckBox) findViewById(R.id.chwake3);//wake up time checkbox
+        ckshut = (CheckBox) findViewById(R.id.chshut3);//shutdown time checkboc
+    
 
-        // viewPager = (ViewPager) findViewById(R.id.pager);
-        viewPager = (CustomViewPager) findViewById(R.id.photosViewPager);
-        viewPager.setPagingEnabled(false);
+
+        viewPager = (CustomViewPager) findViewById(R.id.photosViewPager);//customer view pager
+        viewPager.setPagingEnabled(false);//set paging not swipable
 
 
         actionBar = getActionBar();
-        mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
+        mAdapter = new TabsPagerAdapter(getSupportFragmentManager());//tabs adapter
 
         viewPager.setAdapter(mAdapter);
-        //actionBar.setDisplayShowHomeEnabled(false);
         actionBar.setDisplayShowTitleEnabled(false);
-        //actionBar.setHomeButtonEnabled(false);
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);//set navigation mode tabs
 
 
         // Adding Tabs
@@ -116,9 +115,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             }
         });
 
-        AutoStart();
-        Advertisment();
-        ErrorLog();
+        AutoStart();//call auto start up method
+        Advertisment();//call advertisement(logo endorsement) method
+        ErrorLog();////call errorLog method
     }//oncreate
 
 
@@ -131,11 +130,10 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
 
     private void Advertisment() {
-//            Toast.makeText(MainActivity.this, "Advertisment Init", Toast.LENGTH_SHORT).show();
 
         new Handler().postDelayed(new Runnable() {
             public void run() {
-                test();
+                test();//call test method
             }
         }, 60 * 1000);//display after 1 min
 
@@ -147,13 +145,13 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         if (!isFinishing()) {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("MediaFusion Ultimate Lite");
-            builder.setMessage("Download our Pro Edition now to try more!");
-            builder.setIcon(R.drawable.logo);
-            builder.setCancelable(false);
+            builder.setTitle("MediaFusion Ultimate Lite");//set pop up window tabs
+            builder.setMessage("Download our Pro Edition now to try more!");//set pop up message
+            builder.setIcon(R.drawable.logo);//set pop up icon
+            builder.setCancelable(false);//to make sure user can not close the pop up window(by clicking anywhere) unless they click the button
 
-            final ImageView image = new ImageView(this);
-            image.setImageResource(R.drawable.splash);
+            final ImageView image = new ImageView(this);//image view
+            image.setImageResource(R.drawable.splash);//set image 
 
             builder.setView(image);
 
@@ -165,27 +163,27 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
                     new Handler().postDelayed(new Runnable() {
                         public void run() {
-                            test();
+                            test();//call test method
                         }
                     }, 300 * 1000);//display every 5 min
 
                 }
-            });
+            });//end of close pop up window method 
 
 
-            builder.show();
+            builder.show();//show alert dialog
 
 
             image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    Toast.makeText(v.getContext(), "Clicked", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(v.getContext(), "Clicked", Toast.LENGTH_SHORT).show();//display when user click the image inside the pop up window
 
-                    Intent intent = new Intent();
+                    Intent intent = new Intent();//intent
                     intent.setAction(Intent.ACTION_VIEW);
                     intent.addCategory(Intent.CATEGORY_BROWSABLE);
-                    intent.setData(Uri.parse("https://play.google.com/store?hl=en"));
+                    intent.setData(Uri.parse("https://play.google.com/store?hl=en"));//direct to playstore
                     startActivity(intent);
 
                 }
@@ -200,29 +198,31 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
 
         try {
-            File myFile = new File("/sdcard/MFusion/log.txt");
-            String separator = System.getProperty("line.separator");
+            File myFile = new File("/sdcard/MFusion/log.txt");//log path
+            String separator = System.getProperty("line.separator");//set text to display line by line
 
             if (!myFile.exists()) {
                 myFile.createNewFile();
-                //Toast.makeText(getActivity(),"Created 'log.txt'",Toast.LENGTH_SHORT).show();
                 FileOutputStream fOut = new FileOutputStream(myFile, true);
                 OutputStreamWriter myOutWriter =
                         new OutputStreamWriter(fOut);
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");//set time display format
                 String currentDateandTime = sdf.format(new Date());
-                myOutWriter.append("Created 'log.txt' at : " + currentDateandTime);
+                myOutWriter.append("Created 'log.txt' at : " + currentDateandTime);//display in log information
                 myOutWriter.append(separator);
                 myOutWriter.close();
                 fOut.close();
+                
+                
+                
             } else if (myFile.exists()) {
                 FileOutputStream fOut = new FileOutputStream(myFile, true);
                 OutputStreamWriter myOutWriter =
                         new OutputStreamWriter(fOut);
                 myOutWriter.append(separator);
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");//set time format
                 String currentDateandTime = sdf.format(new Date());
-                myOutWriter.append("Application started :" + currentDateandTime);
+                myOutWriter.append("Application started :" + currentDateandTime);//display in log info
                 myOutWriter.append("\n");
                 myOutWriter.close();
                 fOut.close();
@@ -231,7 +231,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
         } catch (Exception e) {
             Toast.makeText(getBaseContext(), e.getMessage(),
-                    Toast.LENGTH_SHORT).show();
+                    Toast.LENGTH_SHORT).show();//display message
         }
 
     }//end of error log
@@ -250,10 +250,10 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         final RadioGroup radioGroup;
         final EditText tvtime, tvwtime;
         final EditText pass;
-        pass = (EditText) findViewById(R.id.etPassword);
-        radioGroup = (RadioGroup) findViewById(R.id.myRadioGroup);
-        tvtime = (EditText) findViewById(R.id.edTvtime);
-        tvwtime = (EditText) findViewById(R.id.edTvwtime);
+        pass = (EditText) findViewById(R.id.etPassword);//password
+        radioGroup = (RadioGroup) findViewById(R.id.myRadioGroup);//radio group button
+        tvtime = (EditText) findViewById(R.id.edTvtime);//shutdown time
+        tvwtime = (EditText) findViewById(R.id.edTvwtime);//wake up time
 
 
         if (viewPager.getCurrentItem() == 0) {
@@ -261,9 +261,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
             if (tab.getPosition() == 1 || tab.getPosition() == 2 || tab.getPosition() == 3 || tab.getPosition() == 4) {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("SETTINGS");
-                builder.setMessage("Do you want to save the settings you have set?");
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);//alert dialog builder
+                builder.setTitle("SETTINGS");//set title
+                builder.setMessage("Do you want to save the settings you have set?");//set message
                 builder.setCancelable(false);
 
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -272,9 +272,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                         String shutdowntime = tvtime.getText().toString().trim();
                         String wakeuptime = tvwtime.getText().toString().trim();
                         String password = pass.getText().toString().trim();
-                        String defaultp = "mfusion";
-                        String s = "Landscape";
-                        String a = "Portrait";
+                        String defaultp = "mfusion";//default password
+                        String s = "Landscape";//landscape orientation
+                        String a = "Portrait";//portrait orientation
                         //String dis = ((RadioButton) getActivity().findViewById(radioGroup.getCheckedRadioButtonId())).getText().toString().trim();
 
 
@@ -284,19 +284,20 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                             if (password.isEmpty() && s != null) {
 
 
-                                DALSettings.getInstance().setShutDownTime(shutdowntime);
-                                DALSettings.getInstance().setWakeUpTime(wakeuptime);
-                                DALSettings.getInstance().setExitPassword(defaultp);
+                                DALSettings.getInstance().setShutDownTime(shutdowntime);//call setshutdowntime method
+                                DALSettings.getInstance().setWakeUpTime(wakeuptime);//call wakeuptime method
+                                DALSettings.getInstance().setExitPassword(defaultp);//call setexitpassword method
                                 Toast.makeText(MainActivity.this, "Saved with: " + s + "," + defaultp + "," + shutdowntime + "," + wakeuptime, Toast.LENGTH_SHORT).show();
                                 viewPager.setCurrentItem(tab.getPosition());
-                                configurationLogDefault();
+                                configurationLogDefault();//call configuration default method
+                                
                             } else if (password != null) {
                                 DALSettings.getInstance().setShutDownTime(shutdowntime);
                                 DALSettings.getInstance().setWakeUpTime(wakeuptime);
                                 DALSettings.getInstance().setExitPassword(password);
-                                Toast.makeText(MainActivity.this, "Saved with: " + s + "," + password + "," + shutdowntime + "," + wakeuptime, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this, "Saved with: " + s + "," + password + "," + shutdowntime + "," + wakeuptime, Toast.LENGTH_SHORT).show();//display when password is not null
                                 viewPager.setCurrentItem(tab.getPosition());
-                                configurationLog();
+                                configurationLog();//call configuration Log method
 
                             }
 
@@ -310,7 +311,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                                 DALSettings.getInstance().setExitPassword(defaultp);
                                 Toast.makeText(MainActivity.this, "Saved with: " + a + "," + defaultp + "," + shutdowntime + "," + wakeuptime, Toast.LENGTH_SHORT).show();
                                 viewPager.setCurrentItem(tab.getPosition());
-                                configurationLogDefault();
+                                configurationLogDefault();//call configuration default method
 
                             } else if (password != null) {
                                 DALSettings.getInstance().setShutDownTime(shutdowntime);
@@ -318,7 +319,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                                 DALSettings.getInstance().setExitPassword(password);
                                 Toast.makeText(MainActivity.this, "Saved with: " + a + "," + password + "," + shutdowntime + "," + wakeuptime, Toast.LENGTH_SHORT).show();
                                 viewPager.setCurrentItem(tab.getPosition());
-                                configurationLog();
+                                configurationLog();//call configuration Log method
 
                             }
 
@@ -327,21 +328,25 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
                     }
 
-                });
+                });//if user decided to save setting
+                
+                
                 builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        viewPager.setCurrentItem(tab.getPosition());
+                        viewPager.setCurrentItem(tab.getPosition());//view selected tab(page)
 
                     }
-                });
+                });//if user decide not to save setting
 
-                builder.show();
+                builder.show();//show pop up window
 
 
-            }
+            }//pop up window will appear if user click other page
 
         }//set start page as configuration page----------------------------------------------------
+
+
 
         if (viewPager.getCurrentItem() == 1) {
 
@@ -355,25 +360,25 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        Toast.makeText(MainActivity.this, "Saved ", Toast.LENGTH_SHORT).show();
-                        viewPager.setCurrentItem(tab.getPosition());
+                        Toast.makeText(MainActivity.this, "Saved ", Toast.LENGTH_SHORT).show();//display when user clicks yes
+                        viewPager.setCurrentItem(tab.getPosition());//view selected tab(page)
 
                     }
 
-                });
+                });//if user decides to save setting
 
                 builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        viewPager.setCurrentItem(tab.getPosition());
+                        viewPager.setCurrentItem(tab.getPosition());//view selected tab(page)
 
                     }
-                });
+                });//if user decides not to save setting
 
-                builder.show();
+                builder.show();//show alert dialop pop up window
             }
 
-            }//Template
+            }//pop up window for Template fragment
 
 
 
@@ -381,33 +386,33 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
                 if (tab.getPosition() == 0 || tab.getPosition() == 1 || tab.getPosition() == 3 || tab.getPosition() == 4) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle("Schedule Settings");
-                    builder.setMessage("Do you want to save  settings you have set?");
+                    builder.setTitle("Schedule Settings");//set title
+                    builder.setMessage("Do you want to save  settings you have set?");//set message
                     builder.setCancelable(false);
 
                     builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
 
-                            Toast.makeText(MainActivity.this, "Saved ", Toast.LENGTH_SHORT).show();
-                            viewPager.setCurrentItem(tab.getPosition());
+                            Toast.makeText(MainActivity.this, "Saved ", Toast.LENGTH_SHORT).show();//display when user clicks yes
+                            viewPager.setCurrentItem(tab.getPosition());//view selected tab(page)
 
                         }
 
-                    });
+                    });//if user decides to save setting
 
                     builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            viewPager.setCurrentItem(tab.getPosition());
+                            viewPager.setCurrentItem(tab.getPosition());//view selected tab(page)
 
                         }
-                    });
+                    });//if user decides not to save setting
 
-                    builder.show();
+                    builder.show();//show alert dialop pop up window
                 }
 
-            }//schedule
+            }//pop up window for schedule fragment
 
             if (viewPager.getCurrentItem() == 3) {
 
@@ -426,7 +431,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                     viewPager.setCurrentItem(tab.getPosition());
                 }
 
-            }//log
+            }//pop up window for log fragment
 
             if (viewPager.getCurrentItem() == 4) {
 
@@ -445,7 +450,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                     viewPager.setCurrentItem(tab.getPosition());
                 }
 
-            }//about
+            }//pop up window for about fragment
 
 
 
@@ -459,8 +464,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Password");
-            builder.setMessage("Enter Default or User set Password:");
+            builder.setTitle("Password");//setTitle
+            builder.setMessage("Enter Default or User set Password:");//set message
 
 // Set up the input
             final EditText input = new EditText(this);
@@ -478,10 +483,10 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                     String value = input.getText().toString().trim();
 
                     if (value.equals(DALSettings.getInstance().getExitPassword())) {
-                        Toast.makeText(MainActivity.this, "User Exit Successfully", Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this, "User Exit Successfully", Toast.LENGTH_LONG).show();//display when user enters password correctly
                         finish();
                     } else if (value != DALSettings.getInstance().getExitPassword()) {
-                        Toast.makeText(MainActivity.this, "Password Wrong", Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this, "Password Wrong", Toast.LENGTH_LONG).show();//display when user enters wrongly
                     }
 
 
@@ -492,9 +497,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.cancel();
                 }
-            });
+            });//if user decides not to exit this project
 
-            builder.show();
+            builder.show();//show alert dialop pop up window
 
             return true;
         }//keycode back
