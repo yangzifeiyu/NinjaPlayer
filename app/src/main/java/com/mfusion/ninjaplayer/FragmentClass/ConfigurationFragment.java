@@ -70,29 +70,29 @@ public class ConfigurationFragment extends Fragment {
         Portrait = (RadioButton) rootView.findViewById(R.id.portrait);// portrait orientation
         Landscape = (RadioButton) rootView.findViewById(R.id.landscape);//landscape orientation
 
-        
+
         ckshut = (CheckBox) rootView.findViewById(R.id.chshut3);//shutdown time checkbox
         shut = (ImageButton) rootView.findViewById(R.id.btnImgShut);//wake up image button
         tvtime = (EditText) rootView.findViewById(R.id.edTvtime);//text view for shutdown time
-        
+
+
         ckwake = (CheckBox) rootView.findViewById(R.id.chwake3);//wake up time checkboc
         wake = (ImageButton) rootView.findViewById(R.id.btnImgWake);//wake up time image button
         tvwtime = (EditText) rootView.findViewById(R.id.edTvwtime);//text view for shutdown time
-          
-        ckpass = (CheckBox) rootView.findViewById(R.id.chPassword2);//password checkbox
+
+
+       ckpass = (CheckBox) rootView.findViewById(R.id.chPassword2);//password checkbox
         pass = (EditText) rootView.findViewById(R.id.etPassword);//password
         passagain = (EditText) rootView.findViewById(R.id.etMatch);//confirm password
         status = (TextView) rootView.findViewById(R.id.txtStatusPa);//password validation text view
-        
+
         Save = (Button) rootView.findViewById(R.id.btnContinue);//save setting button
 
         viewPager = (ViewPager) getActivity().findViewById(R.id.photosViewPager);
 
         initmethodforeverything();//call initialisation method
-        
-        
-        
- radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
 
             @Override
@@ -113,9 +113,8 @@ public class ConfigurationFragment extends Fragment {
                 }
             }
         });//radio button for screen orientation
-        
-        
-        
+
+
         pass.addTextChangedListener(new TextWatcher() {
 
 
@@ -137,13 +136,12 @@ public class ConfigurationFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String strPass1 = pass.getText().toString();
 
-
-                if (isValidPassword(strPass1)) {
-                    status.setText("Password Accepted");
+             if (isValidPassword(strPass1)) {
+                    status.setText("Password Accepted");//display when password is valid
                 } else if (!isValidPassword(strPass1)) {
                     //pass.setError("Password must be min6,max12,0-9,a-z or A-Z");
 //                    status.setText("");
-                    status.setText("Password must be min6,max12,0-9,a-z or A-Z");
+                    status.setText("Password must be min6,max12,0-9,a-z or A-Z");//display when password is not valid
 
                 }
 
@@ -164,11 +162,11 @@ public class ConfigurationFragment extends Fragment {
                 String strPass1 = pass.getText().toString();
                 String strPass2 = passagain.getText().toString();
                 if (isValidPassword(strPass1) && strPass1.equals(strPass2)) {
-                    status.setText("Password match");
+                    status.setText("Password match");//display when passwords match
                 } else {
-                    //passagain.setError("Password do not match");
-                    status.setText("Password do not match");
-                    //status.setText("");
+                 
+                    status.setText("Password do not match");//display when passwords do not match
+                
 
                 }
             }
@@ -181,17 +179,32 @@ public class ConfigurationFragment extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 //do stuff
                 if (isChecked) {
+                    pass.setBackgroundResource(R.drawable.edittext_bg);
+                    pass.setHint("Enter your password");
+
+                    //pass.set(R.drawable.edittext_bg);
                     Toast.makeText(getActivity(), "User set password field unlocked", Toast.LENGTH_SHORT).show();
 
                     pass.setFocusableInTouchMode(true);
                     pass.setClickable(true);
 
+
+                    passagain.setBackgroundResource(R.drawable.edittext_bg);
+                    passagain.setHint("Enter your password Again");
                     passagain.setFocusableInTouchMode(true);
                     passagain.setClickable(true);
+
                 } else {
+                    pass.setHint("");
+                    pass.setBackgroundColor(Color.LTGRAY);
+
                     Toast.makeText(getActivity(), "Default password will be used, User set password field locked", Toast.LENGTH_SHORT).show();
                     pass.setFocusable(false);
                     pass.setClickable(false);
+
+
+                    passagain.setHint("");
+                    passagain.setBackgroundColor(Color.LTGRAY);
 
                     passagain.setFocusable(false);
                     passagain.setClickable(false);
@@ -202,7 +215,7 @@ public class ConfigurationFragment extends Fragment {
                 }
 
             }
-        });//password checkbox
+       });//password checkbox
 
         ckshut.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
@@ -237,7 +250,7 @@ public class ConfigurationFragment extends Fragment {
             }
         });//shutdown time check box
 
-        ckwake.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+ckwake.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -267,10 +280,10 @@ public class ConfigurationFragment extends Fragment {
                 }
 
             }
-        });//wake up time checkbox
-
-
-
+            });//wake up time checkbox
+        
+        
+        
         Save.setOnClickListener(new View.OnClickListener() {
             String password = pass.getText().toString().trim();
             String match = passagain.getText().toString().trim();
@@ -285,14 +298,6 @@ public class ConfigurationFragment extends Fragment {
             }
         });//save setting
 
-//        Check.setOnClickListener(new View.OnClickListener() {
-//
-//            @Override
-//            public void onClick(View v) {
-//                check();
-//            }
-//        });
-        
         //RetrieveSettings();//Retrieve settings from database if there is previous settings
 
 
@@ -300,6 +305,12 @@ public class ConfigurationFragment extends Fragment {
     }//oncreate
 
     private void initmethodforeverything() {
+
+        pass.setHint("");
+        pass.setBackgroundColor(Color.LTGRAY);
+
+        passagain.setHint("");
+        passagain.setBackgroundColor(Color.LTGRAY);
 
         Landscape.setChecked(true);
         Portrait.setChecked(false);
@@ -321,7 +332,6 @@ public class ConfigurationFragment extends Fragment {
 
         tvwtime.setFocusable(false);
         tvwtime.setClickable(false);
-//
 
     }//set all the intial settings
 
@@ -355,7 +365,9 @@ public class ConfigurationFragment extends Fragment {
 //
 //
 //    }//retrieve button listener
-private void setshut() {
+
+
+ private void setshut() {
 
         Calendar calendar = Calendar.getInstance();
 
@@ -363,8 +375,8 @@ private void setshut() {
         timePickerDialog.setTitle("Set Shutdown Time");
         timePickerDialog.show();
     }//set shudown time method
-
-    TimePickerDialog.OnTimeSetListener timePickerListener =
+        
+         TimePickerDialog.OnTimeSetListener timePickerListener =
             new TimePickerDialog.OnTimeSetListener() {
                 public void onTimeSet(TimePicker view, int selectedHour,
                                       int selectedMinute) {
@@ -378,8 +390,9 @@ private void setshut() {
                     tvtime.setText(time);
                 }
             };
-
-    private void setwake() {
+            
+            
+           private void setwake() {
         Calendar calendar = Calendar.getInstance();
         timePickerDialog = new TimePickerDialog(getActivity(), timePickerListener2, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false);
         timePickerDialog.setTitle("Set Wakeup Time");
@@ -397,10 +410,10 @@ private void setshut() {
                     String time = new SimpleDateFormat("HH:mm:ss").format(date.getTime());
                     tvwtime.setText(time);
                 }
-            };
+            }; 
             
-            
- public boolean isValidPassword(final String password) {
+    
+    public boolean isValidPassword(final String password) {
 
         Pattern pattern;
         Matcher matcher;
@@ -444,10 +457,7 @@ private void setshut() {
                 configurationLogDefault();
 
 
-            }
-
-
-            else if (ckpass.isChecked() && password != null) {
+            } else if (ckpass.isChecked() && password != null) {
 
                 if (isValidPassword(password) && password.equals(match)) {
                     //controller.insert_setting(dis, pa, shut, wake, auto);
@@ -460,7 +470,7 @@ private void setshut() {
 
 
                 } else if (!isValidPassword(password)) {
-                    Toast.makeText(getActivity(), "Set password field checked , Password must be min6,max12,0-9,a-z or A-Z =)", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Password field is checked pls enter a password which must be min6,max12,0-9,a-z or A-Z =)", Toast.LENGTH_SHORT).show();
                     PasswordLog();
                 } else if (isValidPassword(password) && password != match) {
                     Toast.makeText(getActivity(), "Password Not match", Toast.LENGTH_SHORT).show();
@@ -495,7 +505,7 @@ private void setshut() {
 
 
                 } else if (!isValidPassword(password)) {
-                    Toast.makeText(getActivity(), "Set password field checked , Password must be min6,max12,0-9,a-z or A-Z =)", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Password field is checked pls enter a password which must be min6,max12,0-9,a-z or A-Z =)", Toast.LENGTH_SHORT).show();
                     PasswordLog();
                 } else if (isValidPassword(password) && password != match) {
                     Toast.makeText(getActivity(), "Password Not match", Toast.LENGTH_SHORT).show();
@@ -504,7 +514,7 @@ private void setshut() {
 
             }
 
-        }//save setting method
+        }}//save setting method
 
 //        try {
 //
@@ -521,9 +531,7 @@ private void setshut() {
 
     }//save button listener
 
-    
-   
-
+ 
     private void PasswordLog() {
         String pa = pass.getText().toString().trim();
         String pass = passagain.getText().toString().trim();
@@ -576,7 +584,7 @@ private void setshut() {
                     Toast.LENGTH_SHORT).show();
         }
 
-    }//error log for configuration
+    }
 
     private void Oritantion() {
 
@@ -619,7 +627,7 @@ private void setshut() {
                     Toast.LENGTH_SHORT).show();
         }
 
-    }//error log for screen orientation
+    }
 
 
     private void configurationLog() {
@@ -681,7 +689,7 @@ private void setshut() {
 
         }
 
-    }//end of log (log info for configuration)
+    }//end of log
 
     private void configurationLogDefault() {
 
