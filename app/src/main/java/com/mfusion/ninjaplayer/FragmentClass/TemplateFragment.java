@@ -39,16 +39,16 @@ public class TemplateFragment extends Fragment implements View.OnClickListener{
         final View rootView = inflater.inflate(R.layout.fragment_template, container, false);
 
         //supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
-        gridView = (GridView) rootView.findViewById(R.id.template_list_grid_view);
+        gridView = (GridView) rootView.findViewById(R.id.template_list_grid_view);//grid view
         designer = (TemplateDesigner) rootView.findViewById(R.id.template_designer);
 
-        btnEdit = (Button) rootView.findViewById(R.id.template_btn_edit);
+        btnEdit = (Button) rootView.findViewById(R.id.template_btn_edit);//edit button
 
 
 
         try {
             ArrayList<VisualTemplate> visualTemplates= XMLTemplate.getInstance().getAllLocalSampleLayouts(getActivity().getAssets(),"template");
-            TemplateGridViewAdapter adapter=new TemplateGridViewAdapter(getActivity(),visualTemplates);
+            TemplateGridViewAdapter adapter=new TemplateGridViewAdapter(getActivity(),visualTemplates);//
             gridView.setAdapter(adapter);
             gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
