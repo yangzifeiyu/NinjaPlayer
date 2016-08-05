@@ -1,19 +1,15 @@
 package com.mfusion.ninjaplayer.view;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
-import com.mfusion.commons.data.XMLTemplate;
-import com.mfusion.commons.entity.template.TemplateEntity;
 import com.mfusion.commons.entity.template.VisualTemplate;
-import com.mfusion.templatedesigner.DesignerActivity;
-import com.mfusion.templatedesigner.TemplateDesigner;
 
 import java.util.ArrayList;
+
 
 public class TemplateGridView extends GridView {
     public TemplateGridView(Context context) {
@@ -37,7 +33,7 @@ public class TemplateGridView extends GridView {
         invalidate();
     }
 
-    private class OnTemplateGVClickListener implements GridView.OnItemClickListener{
+    private class OnTemplateGVClickListener implements OnItemClickListener{
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
