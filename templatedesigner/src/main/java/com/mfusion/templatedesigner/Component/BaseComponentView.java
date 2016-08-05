@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -50,8 +51,7 @@ public class BaseComponentView extends View{
     private int parentRight;
     private int parentBottom;
     
-    private long actionDownTimeStamp;
-    private long actionUpTimeStamp;
+
 
     private boolean editing;
     private int resizingPoint;
@@ -65,10 +65,18 @@ public class BaseComponentView extends View{
     private static final int RESIZE_INDICATOR_OUTER_LENGTH=20;
     private Paint resizeIndicatorInner;
     private static final int RESIZE_INDICATOR_INNER_LENGTH=15;
-    private Bitmap deleteBtnBmp;
     private Paint btnPaint;
+    private Bitmap deleteBtnBmp;
     private Bitmap editBtnBmp;
-    private static final int BTN_BMP_SIZE =50;
+    private Rect btnDeleteSizeRect;
+    private Rect btnEditSizeRect;
+
+
+
+
+    private static final float BTN_BMP_SIZE_RATIO =0.1f;
+    private static final int BTN_BMP_MAX_SIZE=50;
+    private static final int BTN_BMP_MIN_SIZE=30;
 
     private int oTopMargin;
     private int oHeight;
@@ -78,6 +86,7 @@ public class BaseComponentView extends View{
     private int oRightMargin;
     private int oBottomMargin;
     private int oWidth;
+    private int bmpSize;
 
     public BaseComponentView(Context context) {
         this(context,null);
@@ -97,9 +106,11 @@ public class BaseComponentView extends View{
         resizeIndicatorInner.setColor(Color.BLACK);
 
         deleteBtnBmp= BitmapFactory.decodeResource(getResources(), R.drawable.btn_close);
-        deleteBtnBmp=Bitmap.createScaledBitmap(deleteBtnBmp, BTN_BMP_SIZE, BTN_BMP_SIZE,false);
+        //deleteBtnBmp=Bitmap.createScaledBitmap(deleteBtnBmp, BTN_BMP_SIZE, BTN_BMP_SIZE,false);
         editBtnBmp=BitmapFactory.decodeResource(getResources(),R.drawable.btn_edit);
-        editBtnBmp=Bitmap.createScaledBitmap(editBtnBmp,BTN_BMP_SIZE,BTN_BMP_SIZE,false);
+        //editBtnBmp=Bitmap.createScaledBitmap(editBtnBmp,BTN_BMP_SIZE,BTN_BMP_SIZE,false);
+        btnDeleteSizeRect=new Rect();
+        btnEditSizeRect=new Rect();
         btnPaint =new Paint();
 
 
@@ -108,6 +119,7 @@ public class BaseComponentView extends View{
 
         this.componentEntity=entity;
         setBackgroundColor(componentEntity.backColor);
+        this.setAlpha(0.5f);
         setMeasuredDimension(componentEntity.width,componentEntity.height);
     }
 
@@ -119,7 +131,7 @@ public class BaseComponentView extends View{
         Log.i(TAG, "onDraw: editing="+ editing);
         if(editing)
         {
-            borderPaint.setColor(Color.RED);
+            //borderPaint.setColor(Color.RED);
             canvas.drawRect(getRectFByCenterLocation(0,0,RESIZE_INDICATOR_OUTER_LENGTH),resizeIndicatorOuter);
             canvas.drawRect(getRectFByCenterLocation(0,0,RESIZE_INDICATOR_INNER_LENGTH),resizeIndicatorInner);
             canvas.drawRect(getRectFByCenterLocation(0,getHeight()/2,RESIZE_INDICATOR_OUTER_LENGTH),resizeIndicatorOuter);
@@ -137,14 +149,25 @@ public class BaseComponentView extends View{
             canvas.drawRect(getRectFByCenterLocation(getWidth(),getHeight(),RESIZE_INDICATOR_OUTER_LENGTH),resizeIndicatorOuter);
             canvas.drawRect(getRectFByCenterLocation(getWidth(),getHeight(),RESIZE_INDICATOR_INNER_LENGTH),resizeIndicatorInner);
             //draw delete and edit btn
-            canvas.drawBitmap(deleteBtnBmp,getWidth()- BTN_BMP_SIZE,0, btnPaint);
-            canvas.drawBitmap(editBtnBmp,getWidth()-BTN_BMP_SIZE,getHeight()-BTN_BMP_SIZE,btnPaint);
+            bmpSize = (int) ((getWidth()<getHeight()?getWidth():getHeight())*BTN_BMP_SIZE_RATIO);
+            bmpSize=bmpSize>BTN_BMP_MAX_SIZE?BTN_BMP_MAX_SIZE:bmpSize;
+            bmpSize=bmpSize<BTN_BMP_MIN_SIZE?BTN_BMP_MIN_SIZE:bmpSize;
+            btnDeleteSizeRect.left= getWidth()-bmpSize;
+            btnDeleteSizeRect.top=0;
+            btnDeleteSizeRect.right=getWidth();
+            btnDeleteSizeRect.bottom= bmpSize;
+            btnEditSizeRect.left=getWidth()-bmpSize;
+            btnEditSizeRect.top= getHeight()-bmpSize;
+            btnEditSizeRect.right=getWidth();
+            btnEditSizeRect.bottom=getHeight();
+            canvas.drawBitmap(deleteBtnBmp,null,btnDeleteSizeRect, btnPaint);
+            canvas.drawBitmap(editBtnBmp,null,btnEditSizeRect,btnPaint);
         }
-        else
-        {
-            borderPaint.setColor(Color.BLACK);
-            borderPaint.setStrokeWidth(5.f);
-        }
+//        else
+//        {
+//            borderPaint.setColor(Color.BLACK);
+//            borderPaint.setStrokeWidth(5.f);
+//        }
         canvas.drawRect(0,0,getWidth(),getHeight(),borderPaint);
 
 
@@ -203,11 +226,11 @@ public class BaseComponentView extends View{
         return result;
     }
     private int checkBtnClicked(float x,float y){
-        if(x<getWidth()&&x>getWidth()- BTN_BMP_SIZE)
+        if(x<getWidth()&&x>getWidth()- bmpSize)
         {
-            if(y>0&&y< BTN_BMP_SIZE)
+            if(y>0&&y< bmpSize)
                 return DELETE_BTN_CLICKED;
-            else if(y>getHeight()-BTN_BMP_SIZE&&y<getHeight())
+            else if(y>getHeight()-bmpSize&&y<getHeight())
                 return EDIT_BTN_CLICKED;
         }
         return INVALID;
@@ -218,24 +241,24 @@ public class BaseComponentView extends View{
         invalidate();
     }
 
-    @Override
-    public boolean onGenericMotionEvent(MotionEvent event) {
-        if(whichEditingPoint(event.getX(),event.getY())!=EDITING_CENTER&&editing){
-            borderPaint.setStrokeWidth(EDITING_POINT_OFFSET);
-            invalidate();
-        }
-        else{
-            borderPaint.setStrokeWidth(5.f);
-            invalidate();
-        }
-        if(event.getAction()==MotionEvent.ACTION_HOVER_EXIT){
-            borderPaint.setStrokeWidth(5.f);
-            invalidate();
-        }
-
-
-        return super.onGenericMotionEvent(event);
-    }
+//    @Override
+//    public boolean onGenericMotionEvent(MotionEvent event) {
+//        if(whichEditingPoint(event.getX(),event.getY())!=EDITING_CENTER&&editing){
+//            borderPaint.setStrokeWidth(EDITING_POINT_OFFSET);
+//            invalidate();
+//        }
+//        else{
+//            borderPaint.setStrokeWidth(5.f);
+//            invalidate();
+//        }
+//        if(event.getAction()==MotionEvent.ACTION_HOVER_EXIT){
+//            borderPaint.setStrokeWidth(5.f);
+//            invalidate();
+//        }
+//
+//
+//        return super.onGenericMotionEvent(event);
+//    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -258,6 +281,7 @@ public class BaseComponentView extends View{
 //                    EditPropertyDialog.newInstance(componentEntity).show(((Activity)getContext()).getFragmentManager(),"a");
 //                }
 //                actionDownTimeStamp=System.currentTimeMillis();
+
                 int btnClicked=checkBtnClicked(event.getX(),event.getY());
                 if(btnClicked==EDIT_BTN_CLICKED){
                     try {
