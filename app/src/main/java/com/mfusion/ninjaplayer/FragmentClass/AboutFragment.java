@@ -20,9 +20,9 @@ public class AboutFragment extends Fragment {
 
 		View rootView = inflater.inflate(R.layout.fragment_about, container, false);
 
-		Company = (TextView)rootView.findViewById(R.id.Company);
-		Function= (TextView)rootView.findViewById(R.id.Function);
-		more= (Button)rootView.findViewById(R.id.btnMore);
+		Company = (TextView)rootView.findViewById(R.id.Company);//company textview
+		Function= (TextView)rootView.findViewById(R.id.Function);//app function
+		more= (Button)rootView.findViewById(R.id.btnMore);//click for more information
 
 
 
