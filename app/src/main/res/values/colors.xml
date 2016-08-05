@@ -26,4 +26,7 @@
         <item name="android:textColor">#8b9dc3</item>
         <item name="android:textSize">10dp</item>
     </style>
+
+
+    <color name="cyan">#33B5E5</color>
 </resources>
