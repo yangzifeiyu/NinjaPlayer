@@ -37,6 +37,7 @@ import java.util.List;
  * Created by ThinkPad on 2016/7/13.
  */
 public class TemplateDesigner extends AbstractTemplateDesigner {
+
     private static final String TAG = "TemplateDesigner";
     private static final int COLOR_READY_FOR_DROP=Color.parseColor("#2eb82e");
 
@@ -177,8 +178,18 @@ public class TemplateDesigner extends AbstractTemplateDesigner {
         for(ComponentEntity componentEntity:componentEntities){
             addComponentToDesigner(componentEntity);
         }
-
         invalidate();
+    }
+
+    /**
+     * to be fixed
+     * @param entity
+     */
+    public void bringToFront(ComponentEntity entity){
+        saveComponentEntityInfoFromDesigner();
+        componentEntities.remove(entity);
+        componentEntities.add(entity);
+        showTemplateOnScreen();
     }
 
     private void addComponentToDesigner(ComponentEntity entity){
