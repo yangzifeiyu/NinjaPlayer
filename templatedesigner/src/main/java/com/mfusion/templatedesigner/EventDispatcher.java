@@ -5,9 +5,6 @@ import android.app.ProgressDialog;
 
 import com.mfusion.commons.entity.template.ComponentEntity;
 
-/**
- * Created by 1B15182 on 27/7/2016 0027.
- */
 public class EventDispatcher {
     private static TemplateDesigner templateDesigner;
     private static AlertDialog progressDialog;
@@ -47,6 +44,18 @@ public class EventDispatcher {
             progressDialog.dismiss();
         else
             throw new Exception("Progress dialog is not registered");
+    }
+
+    /**
+     * to be fixed
+     * @param componentEntity
+     * @throws Exception
+     */
+    public static void dispatchBringToFront(ComponentEntity componentEntity) throws Exception {
+        if(templateDesigner!=null)
+            templateDesigner.bringToFront(componentEntity);
+        else
+            throw new Exception("Designer is not registered");
     }
 
 
