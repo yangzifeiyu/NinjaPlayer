@@ -14,8 +14,10 @@ import com.mfusion.ninjaplayer.R;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -37,52 +39,89 @@ public class LogFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         final View rootView = inflater.inflate(R.layout.fragment_log, container, false);
-        load = (Button) rootView.findViewById(R.id.btnReload);//load log
-        clear = (Button) rootView.findViewById(R.id.btnClear);//clear log information
-        logcat = (EditText) rootView.findViewById(R.id.etLog);//log info
+        load = (Button) rootView.findViewById(R.id.btnReload);
+        clear = (Button) rootView.findViewById(R.id.btnClear);
+        logcat = (EditText) rootView.findViewById(R.id.etLog);
 
+               /* try {
+                    StringBuffer sb = new StringBuffer();
+                    String logPath = Environment.getExternalStorageDirectory().getPath() + "/Log/" + "log.txt";
+                    BufferedReader br = new BufferedReader(new FileReader(new File(logPath)));
+                    String line = "";
+                    while ((line = br.readLine()) != null) {
+                        sb.append(line + "\n");
+                    }
+                    br.close();
+                    TextView tv = (TextView)rootView.findViewById(R.id.tvLog);
+                    tv.setText(sb.toString());
+                } catch (Exception e) {
+                    // TODO: handle exception
+                }*/
 
         load.setOnClickListener(new View.OnClickListener() {
 
-            int count = 0;
             @Override
             public void onClick(View arg0) {
                 // TODO Auto-generated method stub
 
 
+//                try {
+//                    File myFile = new File("/sdcard/Mfusion/log.txt");
+//                    FileInputStream fIn = new FileInputStream(myFile);
+//                    BufferedReader myReader = new BufferedReader(
+//                            new InputStreamReader(fIn));
+//                    String aDataRow = "";
+//                    String aBuffer = "";
+//
+//
+//                    while ((aDataRow = myReader.readLine()) != null) {
+//                        aBuffer += aDataRow + "\n";
+//
+//                    }
+//
+//                    logcat.setText(aBuffer);
+//                    logcat.append("\n");
+//
+//                    myReader.close();
+//                    Toast.makeText(getActivity(),
+//                            "Done reading SD 'log.txt'",
+//                            Toast.LENGTH_SHORT).show();
+//                } catch (Exception e) {
+//                    Error();
+//                }
+
+
                 try {
-                    File myFile = new File("/sdcard/Mfusion/log.txt");//file path
-                    FileInputStream fIn = new FileInputStream(myFile);// in order to retrive log
-                    BufferedReader myReader = new BufferedReader(
-                            new InputStreamReader(fIn));
-                    String aDataRow = "";
-                    String aBuffer = "";
+                    FileReader fr=new FileReader("/sdcard/Mfusion/log.txt");
+                    BufferedReader br=new BufferedReader(fr);
+                    String s;
 
+                    List<String> tmp = new ArrayList<String>();
+                    boolean appendSeparator = false;
+                    StringBuilder sb = new StringBuilder();
 
-                    while ((aDataRow = myReader.readLine()) != null) {
-                        aBuffer += aDataRow + "\n";
-
+                    while ((s=br.readLine()) != null ) {
+                        tmp.add(s);
                     }
 
+                    for(int i=tmp.size()-1;i>=0;i--) {
 
+                        if (appendSeparator)
+                            sb.append("\n"); // a comma
+                        appendSeparator = true;
 
-                    logcat.setText(aBuffer);//read line by line and setText
-                    logcat.append("\n");
+                        sb.append(tmp.get(i));
+                    }
 
-                    myReader.close();
-                    Toast.makeText(getActivity(),
-                            "Done reading SD 'log.txt'",
-                            Toast.LENGTH_SHORT).show();//display when loading finished
+                   logcat.setText(sb.toString());
+
                 } catch (Exception e) {
-                    Error();//call error method if loading failed
+                    Error();
                 }
-
-
-
 
             }
 
-        });//load log information method
+        });
 
 
         clear.setOnClickListener(new View.OnClickListener() {
@@ -92,58 +131,57 @@ public class LogFragment extends Fragment {
                 // TODO Auto-generated method stub
 
                 try {
-                    File myFile = new File("/sdcard/MFusion/log.txt");//file path
+                    File myFile = new File("/sdcard/MFusion/log.txt");
                     PrintWriter writer = new PrintWriter(myFile);
                     writer.print("");
                     writer.close();
                     Toast.makeText(getActivity(),
                             "Cleared everything from log.txt'",
-                            Toast.LENGTH_SHORT).show();//display when clearing log successfully
+                            Toast.LENGTH_SHORT).show();
                 } catch (Exception e) {
                     Toast.makeText(getActivity(), e.getMessage(),
-                            Toast.LENGTH_SHORT).show();//display when clearing log unsuccessfully
+                            Toast.LENGTH_SHORT).show();
                 }
 
 
-                logcat.setText("");//set editText to empty 
+                logcat.setText("");
 
             }
 
 
-        });//clear log information method
+        });
 
 
-        return rootView;//return statement
+        return rootView;
     }
 
 
-    private void Error()
-    {
+    private void Error() {
         try {
-            File myFile = new File("/sdcard/MFusion/log.txt");//file path
+            File myFile = new File("/sdcard/MFusion/log.txt");
 
             if (!myFile.exists()) {
-                myFile.createNewFile();//create new file
+                myFile.createNewFile();
                 //Toast.makeText(getActivity(),"Created 'log.txt'",Toast.LENGTH_SHORT).show();
             } else if (myFile.exists()) {
                 FileOutputStream fOut = new FileOutputStream(myFile, true);
                 OutputStreamWriter myOutWriter =
                         new OutputStreamWriter(fOut);
 
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");//set time display format
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
                 String currentDateandTime = sdf.format(new Date());
-                myOutWriter.append("Error Getting Data in LogFragment at : "+ currentDateandTime + "\n");//display when error occured
+                myOutWriter.append("Error Getting Data in LogFragment at : " + currentDateandTime + "\n");
                 myOutWriter.close();
                 fOut.close();
             }
 
         } catch (Exception e) {
             Toast.makeText(getActivity(), e.getMessage(),
-                    Toast.LENGTH_SHORT).show();//display message  
+                    Toast.LENGTH_SHORT).show();
         }
 
 
-    }//display error log
+    }
 
 
 }
