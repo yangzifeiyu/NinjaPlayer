@@ -42,7 +42,7 @@ public class LogFragment extends Fragment {
         load = (Button) rootView.findViewById(R.id.btnReload);//load log
         clear = (Button) rootView.findViewById(R.id.btnClear);//clear log information
         logcat = (EditText) rootView.findViewById(R.id.etLog);//log info
-
+        logcat.setMovementMethod(new ScrollingMovementMethod());//make editext scroll , scrollbar
                
 
         load.setOnClickListener(new View.OnClickListener() {
