@@ -37,6 +37,7 @@
         android:layout_alignParentEnd="true"
         android:layout_below="@+id/btnReload"
         android:textSize="15dp"
+        android:scrollbars = "vertical"
         android:gravity="top"/>
 
     <Button
