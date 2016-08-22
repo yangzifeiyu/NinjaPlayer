@@ -1,18 +1,14 @@
 package com.mfusion.scheduledesigner.subview;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -26,18 +22,21 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TimePicker;
 
 import com.mfusion.commons.tools.DateConverter;
+import com.mfusion.commons.tools.LogOperator;
 import com.mfusion.scheduledesigner.R;
 import com.mfusion.scheduledesigner.entity.BlockUIEntity;
-import com.mfusion.scheduledesigner.entity.CallbackBundle;
+import com.mfusion.commons.tools.CallbackBundle;
 import com.mfusion.scheduledesigner.entity.ScheduleDrawHelper;
-import com.mfusion.scheduledesigner.values.ButtonHoverStyle;
+import com.mfusion.commons.tools.ButtonHoverStyle;
+import com.mfusion.scheduledesigner.values.RangeTimePickerDialog;
 
 /**
  * Created by Guoyu on 2016/7/20.
  */
-public class BlockPropertyEditView extends LinearLayout {
+public class BlockPropertyEditView extends LinearLayout implements View.OnLayoutChangeListener{
 
     Context m_context;
+    int original_width=0,original_height=0;
 
     Button time_start_view,time_end_view;
     CheckBox recurrence_view;
@@ -92,6 +91,11 @@ public class BlockPropertyEditView extends LinearLayout {
                     date_end_bt.setEnabled(checked);
                     date_end_cb.setEnabled(checked);
                     date_no_end_cb.setEnabled(checked);
+
+                    if(checked){
+                        date_end_cb.setChecked(!checked);
+                        date_no_end_cb.setChecked(checked);
+                    }
                 }
             });
 
@@ -139,7 +143,14 @@ public class BlockPropertyEditView extends LinearLayout {
             // TODO: handle exception
             e.printStackTrace();
         }
+        this.addOnLayoutChangeListener(this);
+    }
 
+    public BlockPropertyEditView(Context context,int width,int height,final CallbackBundle editResponse) {
+        this(context,editResponse);
+
+        original_width=width;
+        original_height=height;
     }
 
     public void initPropertyView(){
@@ -206,14 +217,15 @@ public class BlockPropertyEditView extends LinearLayout {
             if(block_entity.isRecurrence){
                 for (int i = 0; i < block_entity.recurrence.length() ;i++) {
                     recurrence_list.get(i).setChecked(ScheduleDrawHelper.checkBlockRecurrence(block_entity, i));
+                    recurrence_list.get(i).setEnabled(true);
                 }
             }
 
         } catch (Exception e) {
             // TODO: handle exception
             e.printStackTrace();
+            LogOperator.WriteLogfortxt("BlockPropertyEditView==>bindingBlockInfo :"+e.getMessage());
         }
-
     }
 
     public void updateBlockInfo() {
@@ -276,6 +288,13 @@ public class BlockPropertyEditView extends LinearLayout {
             DatePickerDialog dpd=new DatePickerDialog(m_context,Datelistener,date.get(Calendar.YEAR),date.get(Calendar.MONTH),date.get(Calendar.DAY_OF_MONTH));
             dpd.setTitle(dialogTitle);
             dpd.getDatePicker().setCalendarViewShown(false);
+            if(view==date_start_bt) {
+                if(!date_no_end_cb.isChecked())
+                    dpd.getDatePicker().setMaxDate(block_entity.endDate.getTime());
+            }
+            else {
+                dpd.getDatePicker().setMinDate(block_entity.startDate.getTime());;
+            }
             dpd.show();
 
         }
@@ -312,12 +331,26 @@ public class BlockPropertyEditView extends LinearLayout {
                 }
             };
 
-            TimePickerDialog tpd=new TimePickerDialog(m_context,timeListener,date.get(Calendar.HOUR_OF_DAY),date.get(Calendar.MINUTE),false);
+            RangeTimePickerDialog tpd=new RangeTimePickerDialog(m_context,timeListener,date.get(Calendar.HOUR_OF_DAY),date.get(Calendar.MINUTE),false);
             tpd.setTitle(dialogTitle);
+            if(view==time_start_view) {
+                tpd.setMax(block_entity.endTime.getHours(),block_entity.endTime.getMinutes());
+            }
+            else {
+                tpd.setMin(block_entity.startTime.getHours(),block_entity.startTime.getMinutes());
+            }
             tpd.show();
 
         }
     };
+
+    @Override
+    public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+        if(top!=oldTop||bottom!=oldBottom){
+            //ScreenAdjustHelper.getScaleValusByHeight(original_height,bottom-top,propertiesLayout);
+        }
+    }
+
     class EditChangedListener implements TextWatcher {
 
         EditText inpuText;

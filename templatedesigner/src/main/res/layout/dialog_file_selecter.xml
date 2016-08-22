@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/file_dialog" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+ 		<com.mfusion.commons.view.ImageTextView
+ 		    android:id="@+id/btn_selectfiles"
+ 		    android:layout_width="wrap_content"
+ 		    android:layout_height="24dp"
+ 		    android:layout_alignParentRight="true"
+ 		    android:layout_alignParentTop="true"
+ 		    android:adjustViewBounds="false"
+ 		    android:padding="2dp"
+			android:layout_marginRight="5dp" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/file_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+    </LinearLayout>
+
+</LinearLayout>

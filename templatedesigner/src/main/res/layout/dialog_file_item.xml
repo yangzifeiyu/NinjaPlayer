@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/vw1"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffff"
+    android:orientation="horizontal"
+    android:padding="4dp" >
+
+    <CheckBox
+        android:id="@+id/filedialogitem_check"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:focusable="false" />
+
+    <ImageView
+        android:id="@+id/filedialogitem_img"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="8dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/filedialogitem_name"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="name"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/filedialogitem_path"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:text="path"
+            android:textColor="#000000"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+</LinearLayout>

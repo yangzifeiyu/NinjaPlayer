@@ -2,6 +2,8 @@ package com.mfusion.commons.entity.template;
 
 import android.graphics.Bitmap;
 
+import com.mfusion.commons.entity.values.ResourceSourceType;
+
 /**
  * Created by jimmy on 7/12/2016.
  *
@@ -12,6 +14,8 @@ import android.graphics.Bitmap;
 public class VisualTemplate {
 
     public String id;
+
+    public ResourceSourceType templateOriginal= ResourceSourceType.local;
 
     public Bitmap thumbImageBitmap;
 

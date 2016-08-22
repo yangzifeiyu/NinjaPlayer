@@ -1,12 +1,15 @@
 package com.mfusion.scheduledesigner;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+//import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class ScheduleFragment extends Fragment {
+public class ScheduleFragment{
+
+}
+/*public class ScheduleFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -15,4 +18,4 @@ public class ScheduleFragment extends Fragment {
 
         return rootView;
     }
-}
+}*/

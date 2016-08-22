@@ -1,5 +1,6 @@
 package com.mfusion.commons.controllers;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
@@ -11,6 +12,8 @@ import com.mfusion.commons.entity.template.TemplateEntity;
  */
 public abstract class AbstractTemplateDesigner extends LinearLayout {
 
+    private ProgressDialog loadingDialog;
+
     //private TemplateEntity m_template;
     public AbstractTemplateDesigner(Context context) {
         super(context);
@@ -21,6 +24,15 @@ public abstract class AbstractTemplateDesigner extends LinearLayout {
         super(context, attrs);
     }
 
+    public void showLoadingPage(){
+        loadingDialog = ProgressDialog.show(getContext(), null, "Loading...");
+        loadingDialog.show();
+    }
+
+    public void hiheLoadingPage(){
+        if(loadingDialog.isShowing())
+            loadingDialog.dismiss();
+    }
     /**
      * Open a template entity
      * @param template
@@ -32,5 +44,7 @@ public abstract class AbstractTemplateDesigner extends LinearLayout {
      *Save a template entity
      * @return
      */
-    public  abstract TemplateEntity saveTemplate();
+    public  abstract TemplateEntity saveTemplate() throws Exception;
+
+    public abstract void closeTemplate();
 }

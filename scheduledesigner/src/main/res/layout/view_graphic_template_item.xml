@@ -33,9 +33,10 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="Temp_1"
-            android:textSize="11sp"
+            android:textSize="@dimen/textSize"
             android:layout_gravity="center_horizontal"
-            android:singleLine="false" />
+            android:singleLine="false"
+            style="@style/myTextStyle" />
 
     </LinearLayout>
 

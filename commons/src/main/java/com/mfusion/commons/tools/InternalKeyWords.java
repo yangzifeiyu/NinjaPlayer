@@ -8,17 +8,23 @@ import java.io.File;
  */
 public class InternalKeyWords {
 
-	public static String Config_DBPath="/data/data/common.Player/database/PlayerConfig.db";
+	public static String Log_Path=Environment.getExternalStorageDirectory().getPath()+"/Log/log.txt";
+
+	public static String Config_DBPath="/data/data/com.mfusion.player/database/PlayerConfig.db";
 
 	public static String Config_TableName="setting";
 
 	public static String Config_PlayingSchedule="PlayingSchedule";
+
+	public static String Config_Orientation="ScreenOrientation";
 
 	public static String Config_ShutDownTime="ShutDownTime";
 
 	public static String Config_WakeUpTime="WakeUpTime";
 
 	public static String Config_ExitPassword="ExitPassword";
+
+	public static String Config_DefaulttPassword="mfusion";
 
 	public static String DefaultTemplateXmlPath= Environment.getExternalStorageDirectory().getPath()+"/Storage/Template/";
 
@@ -33,6 +39,5 @@ public class InternalKeyWords {
 	public static String AssignedXmlName="MFusion.xml";
 
 	public static String AssignedXmlFolder=Environment.getExternalStorageDirectory().getPath()+"/Data/XML/";
-
 
 }

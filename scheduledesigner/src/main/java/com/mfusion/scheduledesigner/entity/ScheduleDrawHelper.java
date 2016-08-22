@@ -38,9 +38,9 @@ public class ScheduleDrawHelper {
 	}
 
 	private static int minsInDaily=1440;
-	public static void initBlockBylocation(BlockUIEntity block, float mins_w, int x, int lineH, int y, Calendar calendar){
+	public static void initBlockBylocation(BlockUIEntity block, float mins_w, int x, float lineH, int y, Calendar calendar){
 		
-		int line_num=y/lineH;
+		int line_num=(int) (y/lineH);
 		String recurrence="0000000";
 		block.recurrence=recurrence.substring(0, line_num)+"1"+recurrence.substring(line_num+1);
 		calendar.add(Calendar.DAY_OF_WEEK, line_num+1);
@@ -73,7 +73,7 @@ public class ScheduleDrawHelper {
 	}
 	
 	public static int getBlockLeftMargin(Date startTime,float per_mins_w) {
-		return (int) ((startTime.getHours()*60+startTime.getMinutes())*per_mins_w);
+		return (int) Math.ceil((startTime.getHours()*60+startTime.getMinutes())*per_mins_w);
 	}
 	
 	public static void getBlockTime(BlockUIEntity block, float per_mins_w, int leftMargin) {

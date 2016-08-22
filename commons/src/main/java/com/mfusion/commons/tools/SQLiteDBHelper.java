@@ -1,5 +1,6 @@
 package com.mfusion.commons.tools;
 
+import java.io.File;
 import java.util.HashMap;
 
 import android.content.ContentValues;
@@ -30,8 +31,8 @@ public class SQLiteDBHelper {
 	}
 	
 	public static String getConfiguration(String dbPath,String tableName,String key){
-		
-		String value="";
+
+		String value=null;
 		try{
 			SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(dbPath,null);
 			Cursor c = db.rawQuery("SELECT * FROM "+tableName+" where key='"+key+"'",new String[] {  });
@@ -49,23 +50,16 @@ public class SQLiteDBHelper {
 		return value;
 	}
 	
-	public static Boolean updateDB(String dbPath,String tableName,String key,String value) {
-		try {
-			SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(dbPath,null);
-			db.execSQL("create table if not exists '"+tableName+"'(key VARCHAR, value VARCHAR)");
-			ContentValues values = new ContentValues();
-			values.put("key", key);//keyΪ�ֶ���valueΪֵ
-			values.put("value", value);//keyΪ�ֶ���valueΪֵ
-			int result = db.update(tableName, values, "key=?", new String[]{key}); 
-			if(result<=0){
-				db.insert(tableName, null, values);
-			}
-			return true;
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
+	public static Boolean updateDB(String dbPath,String tableName,String key,String value){
+		SQLiteDatabase db = SQLiteDatabase.openOrCreateDatabase(dbPath,null);
+		db.execSQL("create table if not exists '"+tableName+"'(key VARCHAR, value VARCHAR)");
+		ContentValues values = new ContentValues();
+		values.put("key", key);//keyΪ�ֶ���valueΪֵ
+		values.put("value", value);//keyΪ�ֶ���valueΪֵ
+		int result = db.update(tableName, values, "key=?", new String[]{key});
+		if(result<=0){
+			db.insert(tableName, null, values);
 		}
-		
-		return false;
+		return true;
 	}
 }

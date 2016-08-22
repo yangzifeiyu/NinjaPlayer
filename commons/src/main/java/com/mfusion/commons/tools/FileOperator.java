@@ -21,6 +21,7 @@ public class FileOperator {
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
+			LogOperator.WriteLogfortxt("FileOperator==>createDir "+folder+" :"+e.getMessage());
 		}
 		return false;
 	}
@@ -37,6 +38,7 @@ public class FileOperator {
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
+			LogOperator.WriteLogfortxt("FileOperator==>createWithDeleteDir "+folder+" :"+e.getMessage());
 		}
 		return false;
 	}
@@ -72,6 +74,7 @@ public class FileOperator {
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
+			LogOperator.WriteLogfortxt("FileOperator==>deleteFile "+filePath+" :"+e.getMessage());
 		}
 		return false;
 	}
@@ -85,6 +88,7 @@ public class FileOperator {
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
+			LogOperator.WriteLogfortxt("FileOperator==>existFile "+filePath+" :"+e.getMessage());
 		}
 		return false;
 	}
@@ -98,12 +102,12 @@ public class FileOperator {
 			if(tempfile.exists())
 				tempfile.delete();
 			tempfile.createNewFile();
-			InputStream inStream = new FileInputStream(oldPath); //����ԭ�ļ�   
+			InputStream inStream = new FileInputStream(oldPath);
 			FileOutputStream fs = new FileOutputStream(tempPath);   
 			byte[] buffer = new byte[1444];   
 			int length;   
 			while ( (byteread = inStream.read(buffer)) != -1) {   
-				bytesum += byteread; //�ֽ��� �ļ���С   
+				bytesum += byteread;
 				System.out.println(bytesum);   
 				fs.write(buffer, 0, byteread);   
 			}   
@@ -114,7 +118,8 @@ public class FileOperator {
 			return true;
 		}   
 		catch (Exception e) {    
-			e.printStackTrace();   
+			e.printStackTrace();
+			LogOperator.WriteLogfortxt("FileOperator==>copyFile "+oldPath+"("+newPath+")"+" :"+e.getMessage());
 		} 
 		return false;
 	} 
@@ -139,6 +144,7 @@ public class FileOperator {
 		}   
 		catch (Exception e) {    
 			e.printStackTrace();
+			LogOperator.WriteLogfortxt("FileOperator==>copyFolder "+oldFolder+"("+newFolder+")"+" :"+e.getMessage());
 			throw e;
 		}
 	} 
@@ -163,6 +169,7 @@ public class FileOperator {
 			});
 		} catch (Exception e) {
 			// TODO: handle exception
+			LogOperator.WriteLogfortxt("FileOperator==>getAllSubFolder "+rootPath+" :"+e.getMessage());
 			throw e;
 		}
 
@@ -189,6 +196,7 @@ public class FileOperator {
 			});
 		} catch (Exception e) {
 			// TODO: handle exception
+			LogOperator.WriteLogfortxt("FileOperator==>getAllSubFolder "+rootPath+" :"+e.getMessage());
 			throw e;
 		}
 	}

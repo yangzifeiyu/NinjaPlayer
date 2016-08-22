@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_settings"
+        android:orderInCategory="1"
+        android:icon="@drawable/apply"
+        android:title="settings"/>
+    <item
+        android:id="@+id/menu_search"
+        android:orderInCategory="2"
+        android:actionViewClass="android.widget.SearchView"
+        android:icon="@drawable/apply"
+        android:showAsAction="ifRoom"
+        android:title="搜索"/>
+    <item
+        android:id="@+id/menu_share"
+        android:orderInCategory="3"
+        android:actionProviderClass="android.widget.ShareActionProvider"
+        android:showAsAction="always"
+        android:title="分享"/>
+ <!--   <item
+        android:id="@+id/menu_setting"
+        android:actionProviderClass="com.example.tabdemo.MyActionProvider"
+        android:showAsAction="never"
+        android:title="设置">
+        <menu>
+            <item
+                android:id="@+id/menu_theme"
+                android:actionProviderClass="com.example.tabdemo.MyActionProvider"
+                android:showAsAction="always|withText"
+                android:title="更换主题"/>
+            <item
+                android:id="@+id/menu_system"
+                android:actionProviderClass="com.example.tabdemo.MyActionProvider"
+                android:showAsAction="always|withText"
+                android:title="系统设置"/>
+        </menu>
+    </item>-->
+</menu>  

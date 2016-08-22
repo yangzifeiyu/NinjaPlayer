@@ -1,32 +1,22 @@
 package com.mfusion.scheduledesigner.subview;
 
-import android.content.ClipData;
-import android.content.ClipDescription;
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Point;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.mfusion.commons.data.XMLTemplate;
 import com.mfusion.commons.entity.exception.PathAccessException;
 import com.mfusion.commons.entity.template.VisualTemplate;
+import com.mfusion.commons.tools.ImageHelper;
+import com.mfusion.commons.tools.LogOperator;
 import com.mfusion.scheduledesigner.R;
-import com.mfusion.scheduledesigner.values.ButtonHoverStyle;
-import com.mfusion.scheduledesigner.values.ScaleDragShadowBuilder;
+import com.mfusion.commons.tools.ButtonHoverStyle;
 import com.mfusion.scheduledesigner.values.TemplateThumbAdapter;
 
 import java.util.List;
@@ -45,6 +35,8 @@ public class GraphicTemplateListLayout extends LinearLayout{
     private LinearLayout templates_container;
 
     private GridView template_grid;
+
+    private TemplateThumbAdapter template_adapter;
 
     private ImageButton btn_refresh;
 
@@ -83,37 +75,21 @@ public class GraphicTemplateListLayout extends LinearLayout{
             }
         });
         ButtonHoverStyle.bindingHoverEffect(btn_refresh,getResources());
-
-        bindingTemplates();
     }
 
     public void bindingTemplates(){
         template_grid.setVisibility(GONE);
+        if(template_adapter!=null){
+            template_adapter.clearImageResource();
+            template_adapter=null;
+        }
+        if(template_list!=null){
+            template_list.clear();
+            template_list=null;
+        }
         LoadingAsyncTask async=new LoadingAsyncTask(this.context,template_grid);
         async.execute("");
-
-        /*this.getAllTemplates();
-
-        template_grid.setAdapter(new FileThumbAdapter(this.context,this.template_list));*/
     }
-
-    /*private void getAllTemplates(){
-        try{
-
-            if(template_list!=null) {
-                for(VisualTemplate template:template_list){
-                    template.thumbImageBitmap.recycle();
-                }
-                template_list.clear();
-                System.gc();
-            }
-            template_list = XMLTemplate.getInstance().getAllTemplates();
-        }catch (PathAccessException ex){
-            ex.printStackTrace();
-        }catch (Exception ex){
-            ex.printStackTrace();
-        }
-    }*/
 
     class LoadingAsyncTask extends AsyncTask<String, Integer, String> {
 
@@ -141,16 +117,16 @@ public class GraphicTemplateListLayout extends LinearLayout{
         @Override
         protected void onPostExecute(String result) {
             try {
-                gridView.setAdapter(new TemplateThumbAdapter(this.context,owner,template_list));
+
+                template_adapter=new TemplateThumbAdapter(this.context,owner,template_list);
+                gridView.setAdapter(template_adapter);
                 gridView.setVisibility(VISIBLE);
                 btn_refresh.setEnabled(true);
                 super.cancel(true);
             } catch (Exception e) {
                 // TODO: handle exception
                 e.printStackTrace();
-            }catch (Throwable e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                LogOperator.WriteLogfortxt("GraphicTemplateListLayout==>onPostExecute :"+e.getMessage());
             }
         }
 
@@ -159,7 +135,7 @@ public class GraphicTemplateListLayout extends LinearLayout{
 
                 if(template_list!=null) {
                     for(VisualTemplate template:template_list){
-                        template.thumbImageBitmap.recycle();
+                        ImageHelper.recycleBitmap(template.thumbImageBitmap);
                     }
                     template_list.clear();
                     System.gc();
@@ -167,8 +143,10 @@ public class GraphicTemplateListLayout extends LinearLayout{
                 template_list = XMLTemplate.getInstance().getAllTemplates();
             }catch (PathAccessException ex){
                 ex.printStackTrace();
+                LogOperator.WriteLogfortxt("GraphicTemplateListLayout==>getAllTemplates :"+ex.getMessage());
             }catch (Exception ex){
                 ex.printStackTrace();
+                LogOperator.WriteLogfortxt("GraphicTemplateListLayout==>getAllTemplates :"+ex.getMessage());
             }
         }
 

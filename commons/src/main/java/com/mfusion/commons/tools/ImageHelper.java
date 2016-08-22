@@ -15,6 +15,9 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Bitmap.Config;
 import android.graphics.Paint.Style;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
+import android.widget.ImageView;
 
 import com.mfusion.commons.entity.values.ResourceSourceType;
 import com.mfusion.commons.entity.template.ComponentEntity;
@@ -24,6 +27,9 @@ import com.mfusion.commons.entity.template.TemplateEntity;
  */
 public class ImageHelper {
 
+	public static Bitmap getBitmap(String imagePath){
+		return  getBitmap(imagePath,ResourceSourceType.local,null);
+	}
 	public static Bitmap getBitmap(String imagePath, ResourceSourceType sourceType, AssetManager assetManager){
 
 		Bitmap bitmap=null;
@@ -64,6 +70,7 @@ public class ImageHelper {
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
+			LogOperator.WriteLogfortxt("ImageHelper==>getBitmap "+imagePath+":"+e.getMessage());
 		}finally {
 			try{
 				if(imageStream!=null){
@@ -99,11 +106,29 @@ public class ImageHelper {
 			return true;
 		} catch (Exception e) {
 			// TODO: handle exception
+			LogOperator.WriteLogfortxt("ImageHelper==>saveBitmap :"+e.getMessage());
 			e.printStackTrace();
 		}
 		return false;
 	}
-	
+
+	public static Bitmap createTemplateThumb(int width,int height,int color) {
+		try{
+
+			Bitmap bmp=Bitmap.createBitmap(width, height, Config.RGB_565);
+			Canvas canvas=new Canvas(bmp);
+			canvas.drawColor(color);
+			canvas.save(Canvas.ALL_SAVE_FLAG);
+			canvas.restore();
+			return bmp;
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			LogOperator.WriteLogfortxt("ImageHelper==>createTemplateThumb :"+e.getMessage());
+		}
+		return null;
+	}
+
 	public static Boolean createTemplateThumb(TemplateEntity templateInfo, String thumbPath) {
 		try {
 			
@@ -156,6 +181,7 @@ public class ImageHelper {
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
+			LogOperator.WriteLogfortxt("ImageHelper==>createTemplateThumb :"+e.getMessage());
 		}
 		return false;
 	}
@@ -169,5 +195,30 @@ public class ImageHelper {
 		Matrix matrix=new Matrix();
 		matrix.postScale(scale, scale);
 		return Bitmap.createBitmap(sourceBitmap, 0, 0, width, height,matrix, true);
+	}
+
+	public static void clearImageView(ImageView imageView){
+		try{
+
+			Drawable drawable=imageView.getDrawable();
+			if(drawable!=null)
+				drawable.setCallback(null);
+			imageView.setImageDrawable(null);
+			imageView.setBackground(null);
+		}catch (Exception ex){
+			ex.printStackTrace();
+			LogOperator.WriteLogfortxt("ImageHelper==>clearImageView :"+ex.getMessage());
+		}
+	}
+
+	public static void recycleBitmap(Bitmap bitmap){
+		try{
+
+			if(bitmap!=null&&bitmap.isRecycled())
+				bitmap.recycle();
+		}catch (Exception ex){
+			ex.printStackTrace();
+			LogOperator.WriteLogfortxt("ImageHelper==>recycleBitmap :"+ex.getMessage());
+		}
 	}
 }

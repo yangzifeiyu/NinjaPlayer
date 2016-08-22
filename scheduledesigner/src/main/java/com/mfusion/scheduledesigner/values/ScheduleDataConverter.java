@@ -4,6 +4,7 @@ import com.mfusion.commons.entity.schedule.BlockEntity;
 import com.mfusion.commons.entity.schedule.Schedule;
 import com.mfusion.scheduledesigner.entity.BlockUIEntity;
 import com.mfusion.scheduledesigner.entity.BlockUIItemEntity;
+import com.mfusion.scheduledesigner.entity.ScheduleDrawHelper;
 
 import java.util.List;
 
@@ -55,6 +56,7 @@ public class ScheduleDataConverter {
                 blockUI.endDate=block.endDate;
                 blockUI.startTime=block.startTime;
                 blockUI.endTime=block.endTime;
+                blockUI.duration= ScheduleDrawHelper.getDurtion(block.startTime, block.endTime);
                 blockUI.isRecurrence=block.isRecurrence;
                 blockUI.recurrence=block.recurrence;
 

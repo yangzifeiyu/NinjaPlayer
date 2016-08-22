@@ -13,6 +13,12 @@ public class DateConverter {
 	static SimpleDateFormat short_time_format=new SimpleDateFormat("HH:mm");
 	static SimpleDateFormat long_time_format=new SimpleDateFormat("yyyy,MM,dd,HH,mm,ss");
 
+	public static String convertDateToStr(String format,Date date){
+		if(date==null)
+			date=Calendar.getInstance().getTime();
+		return (new SimpleDateFormat(format)).format(date);
+	}
+
 	public static String convertCurrentFullTimeToStr(){
 		return long_time_format.format(Calendar.getInstance().getTime());
 	}
@@ -20,7 +26,11 @@ public class DateConverter {
 	public static String convertCurrentDateToStr(){
 		return date_format.format(Calendar.getInstance().getTime());
 	}
-	
+
+	public static String convertCurrentDateToStr(String format){
+		return (new SimpleDateFormat(format)).format(Calendar.getInstance().getTime());
+	}
+
 	public static String convertTimeToStrNoSecond(Date time){
 		return short_time_format.format(time)+":00";
 	}

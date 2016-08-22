@@ -17,8 +17,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mfusion.commons.entity.template.VisualTemplate;
+import com.mfusion.commons.tools.ImageHelper;
 import com.mfusion.scheduledesigner.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,6 +34,8 @@ public class TemplateThumbAdapter extends BaseAdapter {
 
     List<VisualTemplate> temp_list=null;
 
+    List<ImageView> imageViewList;
+
     int layout= R.layout.view_graphic_template_item;
 
     public TemplateThumbAdapter(Context context,View parent,List<VisualTemplate> temp_list) {
@@ -39,6 +43,7 @@ public class TemplateThumbAdapter extends BaseAdapter {
         this.context=context;
         this.parentView=parent;
         this.temp_list=temp_list;
+        this.imageViewList=new ArrayList<ImageView>();
     }
 
     Boolean isPrepareDrag=false;
@@ -48,7 +53,9 @@ public class TemplateThumbAdapter extends BaseAdapter {
         convertView = LayoutInflater.from(context).inflate(layout, null);
         convertView.setTag(temp_info.id);
 
-        ((ImageView)convertView.findViewById(R.id.temp_img_thumb)).setImageBitmap(temp_info.thumbImageBitmap);
+        ImageView imageView=(ImageView)convertView.findViewById(R.id.temp_img_thumb);
+        imageViewList.add(imageView);
+        imageView.setImageBitmap(temp_info.thumbImageBitmap);
 
         final TextView nameView=(TextView)convertView.findViewById(R.id.temp_tv_name);
         nameView.setSingleLine(true);
@@ -119,6 +126,12 @@ public class TemplateThumbAdapter extends BaseAdapter {
     public long getItemId(int arg0) {
         // TODO Auto-generated method stub
         return 0;
+    }
+
+    public void clearImageResource(){
+        for(ImageView imageView :imageViewList){
+            ImageHelper.clearImageView(imageView);
+        }
     }
 }
 

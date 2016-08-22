@@ -10,8 +10,8 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
 import com.mfusion.scheduledesigner.R;
-import com.mfusion.scheduledesigner.entity.CallbackBundle;
-import com.mfusion.scheduledesigner.values.ButtonHoverStyle;
+import com.mfusion.commons.tools.CallbackBundle;
+import com.mfusion.commons.tools.ButtonHoverStyle;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -58,6 +58,8 @@ public class WeekSelectView extends RelativeLayout {
     }
 
     public void initWeek(Calendar calendar){
+        if(this.calendar!=null&&calendar!=null&&this.calendar.getTime().compareTo(calendar.getTime())==0)
+            return;
         this.calendar=(Calendar)calendar.clone();
 
         this.calendar.add(Calendar.DAY_OF_WEEK, 1);

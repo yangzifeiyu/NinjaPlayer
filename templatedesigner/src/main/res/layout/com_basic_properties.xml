@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/temp_comp_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:text="DataTime 1"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="@dimen/textSizeBig" />
+
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Basic Properties :"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="@dimen/textSizeBig" />
+
+    </LinearLayout>
+
+	<LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_marginBottom="3dp"
+	    android:layout_marginLeft="10dp"
+	    android:layout_marginTop="3dp"
+	    android:orientation="vertical" >
+
+	    <LinearLayout
+	        android:id="@+id/temp_comp_size_layout"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+			android:layout_marginTop="@dimen/propertyHSpace">
+	         
+	        <TextView
+	            android:id="@+id/textView1"
+	            android:layout_width="@dimen/propertyName"
+	            android:layout_height="match_parent"
+	            android:gravity="left|center"
+	            android:text="Size "
+	            android:textAppearance="?android:attr/textAppearanceSmall"
+	            android:textSize="@dimen/textSize" />
+	
+	        <TextView
+	            android:id="@+id/temp_comp_size_text"
+	            android:layout_width="wrap_content"
+	            android:layout_height="match_parent"
+	            android:gravity="center"
+	            android:text="1280, 760"
+	            android:textAppearance="?android:attr/textAppearanceSmall"
+	            android:textSize="@dimen/textSize"
+	            android:typeface="monospace" />
+	
+	        <ImageButton
+	            android:id="@+id/temp_comp_size_btn"
+	            android:layout_width="24dp"
+	            android:layout_height="24dp"
+	            android:layout_gravity="left|top"
+	            android:background="#00ffffff"
+	            android:src="@drawable/edit" />
+	        
+	    </LinearLayout>
+ 
+ 		<LinearLayout
+	        android:id="@+id/temp_comp_bgimage_layout"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+			android:layout_marginTop="@dimen/propertyHSpace">
+	         
+	        <TextView
+	            android:id="@+id/textView7"
+	            android:layout_width="@dimen/propertyName"
+	            android:layout_height="match_parent"
+	            android:gravity="left|center"
+	            android:text="Back Image "
+	            android:textAppearance="?android:attr/textAppearanceSmall"
+	            android:textSize="@dimen/textSize" />
+
+	        <ImageButton
+	            android:id="@+id/temp_comp_bgimage_btn"
+	            android:layout_width="24dp"
+	            android:layout_height="24dp"
+	            android:layout_gravity="left|top"
+	            android:background="#00ffffff"
+	            android:src="@drawable/edit" />
+	        
+	    </LinearLayout>
+	    
+		<LinearLayout
+		    android:id="@+id/temp_comp_location_layout"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:orientation="horizontal"
+			android:layout_marginTop="@dimen/propertyHSpace">
+	         
+	        <TextView
+	            android:id="@+id/textView2"
+	            android:layout_width="@dimen/propertyName"
+	            android:layout_height="match_parent"
+	            android:gravity="left|center"
+	            android:text="Location "
+	            android:textAppearance="?android:attr/textAppearanceSmall"
+	            android:textSize="@dimen/textSize" />
+	
+	        <TextView
+	            android:id="@+id/temp_comp_location_text"
+	            android:layout_width="wrap_content"
+	            android:layout_height="match_parent"
+	            android:gravity="center"
+	            android:text="0, 0"
+	            android:textAppearance="?android:attr/textAppearanceSmall"
+	            android:textSize="@dimen/textSize" />
+	
+	        <ImageButton
+	            android:id="@+id/temp_comp_location_btn"
+	            android:layout_width="24dp"
+	            android:layout_height="24dp"
+	            android:layout_gravity="left|top"
+	            android:background="#00ffffff"
+	            android:src="@drawable/edit" />
+	        
+	    </LinearLayout>
+	    
+		<LinearLayout
+		    android:id="@+id/temp_comp_bg_layout"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:orientation="horizontal"
+			android:layout_marginTop="@dimen/propertyHSpace">
+	         
+	        <TextView
+	            android:id="@+id/textView3"
+	            android:layout_width="@dimen/propertyName"
+	            android:layout_height="match_parent"
+	            android:gravity="left|center"
+	            android:text="Back Color "
+	            android:textAppearance="?android:attr/textAppearanceSmall"
+	            android:textSize="@dimen/textSize" />
+		
+			<Button
+			    android:id="@+id/temp_comp_color_btn"
+			    android:layout_width="@dimen/colorEditBtn"
+			    android:layout_height="@dimen/colorEditBtn"
+			    android:layout_gravity="left|top"
+			    android:background="#000000" />
+
+	    </LinearLayout>
+	    
+		<LinearLayout
+		    android:id="@+id/temp_comp_zindex_layout"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:orientation="horizontal"
+			android:layout_marginTop="@dimen/propertyHSpace">
+	         
+	        <TextView
+	            android:id="@+id/textView4"
+	            android:layout_width="@dimen/propertyName"
+	            android:layout_height="match_parent"
+	            android:gravity="left|center"
+	            android:text="Overlap "
+	            android:textAppearance="?android:attr/textAppearanceSmall"
+	            android:textSize="@dimen/textSize" />
+	
+	        <ImageButton
+	            android:id="@+id/temp_comp_moveup_btn"
+	            android:layout_width="24dp"
+	            android:layout_height="24dp"
+	            android:layout_gravity="left|top"
+	            android:background="#00ffffff"
+	            android:src="@drawable/move_forward"
+	            android:tag="1"
+				android:layout_marginRight="5dp" />
+	        
+	        <ImageButton
+	            android:id="@+id/temp_comp_movedown_btn"
+	            android:layout_width="24dp"
+	            android:layout_height="24dp"
+	            android:layout_gravity="left|top"
+	            android:background="#00ffffff"
+	            android:src="@drawable/move_backward"
+	            android:tag="-1"
+				android:layout_marginLeft="5dp" />
+
+	    </LinearLayout>
+	</LinearLayout>
+
+	
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Other Properties :"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="@dimen/textSizeBig" />
+
+    </LinearLayout>
+
+	<LinearLayout
+	    android:id="@+id/temp_comp_other_properties"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_marginBottom="3dp"
+	    android:layout_marginLeft="10dp"
+	    android:layout_marginTop="3dp"
+	    android:orientation="vertical" >
+	    
+    </LinearLayout>
+</LinearLayout>

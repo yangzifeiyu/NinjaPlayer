@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+		android:layout_marginTop="@dimen/propertyHSpace">
+	         
+	        <TextView
+	            android:id="@+id/textView1"
+	            android:layout_width="@dimen/propertyName"
+	            android:layout_height="match_parent"
+	            android:gravity="left|center"
+	            android:text="Font "
+	            android:textAppearance="?android:attr/textAppearanceSmall"
+	            android:textSize="@dimen/textSize" />
+	
+	        <TextView
+	            android:id="@+id/comp_ticker_font"
+	            style="@style/myFontStrStyle"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_gravity="center"
+	            android:ellipsize="end"
+	            android:text="0, 0"
+	            android:textAppearance="?android:attr/textAppearanceSmall"
+	            android:textSize="@dimen/textSize" />
+	
+	        <ImageButton
+	            android:id="@+id/comp_ticker_font_btn"
+	            android:layout_width="24dp"
+	            android:layout_height="24dp"
+	            android:layout_gravity="left|top|center"
+	            android:background="#00ffffff"
+	            android:src="@drawable/edit" />
+	        
+	    </LinearLayout>
+	    
+		<LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+			android:layout_marginTop="@dimen/propertyHSpace">
+	         
+	        <TextView
+	            android:id="@+id/textView2"
+	            android:layout_width="@dimen/propertyName"
+	            android:layout_height="match_parent"
+	            android:gravity="left|center"
+	            android:text="Font Color "
+	            android:textAppearance="?android:attr/textAppearanceSmall"
+	            android:textSize="@dimen/textSize" />
+		
+			<Button
+			    android:id="@+id/comp_ticker_font_color_btn"
+			    android:layout_width="@dimen/colorEditBtn"
+			    android:layout_height="@dimen/colorEditBtn"
+			    android:layout_gravity="left|top"
+			    android:background="#000000" />
+
+	    </LinearLayout>
+	    
+		<LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="@dimen/propertyHSpace"
+	        android:orientation="horizontal" >
+	         
+	        <TextView
+	            android:id="@+id/textView4"
+	            android:layout_width="@dimen/propertyName"
+	            android:layout_height="match_parent"
+	            android:layout_gravity="left|center"
+	            android:gravity="center|left"
+	            android:text="Speed "
+	            android:textAppearance="?android:attr/textAppearanceSmall"
+	            android:textSize="@dimen/textSize" />
+		
+			<com.mfusion.templatedesigner.previewcomponent.subview.DropDownView
+			    android:id="@+id/comp_ticker_speed"
+			    style="?android:attr/buttonStyleSmall"
+			    android:layout_width="65dp"
+			    android:layout_height="24dp"
+			    android:background="@drawable/button_style"
+			    android:text="VeryFast"
+			    android:textSize="@dimen/textSize" />
+
+	    </LinearLayout>
+
+		<LinearLayout
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_marginTop="@dimen/propertyHSpace"
+		    android:orientation="vertical" >
+	         
+	        <TextView
+	            android:id="@+id/textView3"
+	            android:layout_width="@dimen/propertyName"
+	            android:layout_height="match_parent"
+	            android:gravity="left|center"
+	            android:text="Content "
+	            android:textAppearance="?android:attr/textAppearanceSmall"
+	            android:textSize="@dimen/textSize" />
+
+	        <EditText
+	            android:id="@+id/comp_ticker_content"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:ems="10"
+	            android:inputType="textMultiLine|textFilter"
+	            android:maxLines="5"
+	            android:minLines="1"
+	            android:textSize="@dimen/textSize" >
+
+	        </EditText>
+
+	        <!-- <TextView
+	            android:id="@+id/textView5"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"
+	            android:ellipsize="end"
+	            android:maxLines="5"
+	            android:minLines="1"
+	            android:text="TextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextView" /> -->
+
+	    </LinearLayout>
+</LinearLayout>

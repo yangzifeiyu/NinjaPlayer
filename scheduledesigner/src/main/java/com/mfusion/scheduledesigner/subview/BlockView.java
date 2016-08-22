@@ -11,7 +11,7 @@ import android.widget.RelativeLayout;
 import com.mfusion.commons.entity.values.BlockType;
 import com.mfusion.scheduledesigner.entity.BlockUIEntity;
 import com.mfusion.scheduledesigner.entity.BlockUIItemEntity;
-import com.mfusion.scheduledesigner.entity.CallbackBundle;
+import com.mfusion.commons.tools.CallbackBundle;
 import com.mfusion.scheduledesigner.entity.ScheduleDrawHelper;
 import com.mfusion.scheduledesigner.values.CompOperateType;
 
@@ -36,9 +36,9 @@ public class BlockView extends RelativeLayout{
     Boolean block_selected=false;
 
     float per_mins_w;
-    int pre_day_h;
+    float pre_day_h;
 
-    public BlockView(Context context,float mins_w,int day_h,int x,int y,OnTouchListener block_touch_listener) {
+    public BlockView(Context context,float mins_w,float day_h,int x,int y,OnTouchListener block_touch_listener) {
         super(context);
         // TODO Auto-generated constructor stub
 
@@ -50,7 +50,7 @@ public class BlockView extends RelativeLayout{
         this.refreshBlockView();
     }
 
-    public BlockView(Context context, BlockUIEntity block, float mins_w, int day_h, OnTouchListener block_touch_listener, Calendar calendar) {
+    public BlockView(Context context, BlockUIEntity block, float mins_w, float day_h, OnTouchListener block_touch_listener, Calendar calendar) {
         super(context);
         // TODO Auto-generated constructor stub
         this.block_info=block;
@@ -84,12 +84,13 @@ public class BlockView extends RelativeLayout{
             if(ScheduleDrawHelper.checkBlockRecurrence(block_info, i)){
 
                 BlockDailyView itemView=new BlockDailyView(getContext(),this.block_info,block_selected);
-                RelativeLayout.LayoutParams layoutParams=new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, this.pre_day_h);
+                RelativeLayout.LayoutParams layoutParams=new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, (int)this.pre_day_h);
 
                 this.addView(itemView,layoutParams);
 
                 layoutParams=(RelativeLayout.LayoutParams)itemView.getLayoutParams();
-                this.topMargin=layoutParams.topMargin=i*this.pre_day_h;
+                float top=i*this.pre_day_h;
+                this.topMargin=layoutParams.topMargin=(int)(i*this.pre_day_h);
                 itemView.setLayoutParams(layoutParams);
 
                 itemView.setClickable(true);
@@ -156,7 +157,7 @@ public class BlockView extends RelativeLayout{
 
             int oldDateIndex=this.block_info.recurrence.indexOf("1");
 
-            this.block_info.recurrence=ScheduleDrawHelper.getRecurrenceBylocation(this.pre_day_h, location);
+            this.block_info.recurrence=ScheduleDrawHelper.getRecurrenceBylocation((int)this.pre_day_h, location);
 
             layout.topMargin=0;
 
@@ -168,7 +169,7 @@ public class BlockView extends RelativeLayout{
             this.block_info.endDate=this.block_info.startDate;
         }
 
-        this.block_info.duration=(int) (layout.width/this.per_mins_w);
+        this.block_info.duration=(int) Math.ceil(layout.width/this.per_mins_w);
 
         ScheduleDrawHelper.getBlockTime(block_info, per_mins_w, layout.leftMargin);
 
@@ -179,7 +180,7 @@ public class BlockView extends RelativeLayout{
 
         RelativeLayout.LayoutParams layout=(RelativeLayout.LayoutParams)this.getLayoutParams();
         layout.leftMargin=ScheduleDrawHelper.getBlockLeftMargin(block_info.startTime, per_mins_w);
-        layout.width=(int)(block_info.duration*this.per_mins_w);
+        layout.width=(int)Math.ceil(block_info.duration*this.per_mins_w);
         this.setLayoutParams(layout);
 
         this.refreshBlockView();
@@ -216,7 +217,7 @@ public class BlockView extends RelativeLayout{
             // TODO Auto-generated method stub
             RelativeLayout.LayoutParams layout=(RelativeLayout.LayoutParams)getLayoutParams();
 
-            layout.width=(int) (block_info.duration*per_mins_w);
+            layout.width=(int) Math.ceil(block_info.duration*per_mins_w);
             layout.leftMargin=ScheduleDrawHelper.getBlockLeftMargin(block_info.startTime, per_mins_w);
 
             setLayoutParams(layout);

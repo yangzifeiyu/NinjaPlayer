@@ -1,5 +1,6 @@
 package com.mfusion.scheduledesigner;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.ClipData;
 import android.content.ClipDescription;
@@ -7,6 +8,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.AttributeSet;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -17,13 +19,14 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 
+import com.mfusion.commons.controllers.AbstractFragment;
 import com.mfusion.commons.controllers.AbstractScheduleDesigner;
 import com.mfusion.commons.entity.schedule.Schedule;
 import com.mfusion.commons.entity.values.BlockType;
 import com.mfusion.commons.entity.values.SchedulePlayType;
 import com.mfusion.scheduledesigner.entity.BlockUIEntity;
 import com.mfusion.scheduledesigner.entity.BlockUIItemEntity;
-import com.mfusion.scheduledesigner.entity.CallbackBundle;
+import com.mfusion.commons.tools.CallbackBundle;
 import com.mfusion.scheduledesigner.entity.ScheduleDrawHelper;
 import com.mfusion.scheduledesigner.entity.SelectedCompProperty;
 import com.mfusion.scheduledesigner.subview.BlockDailyView;
@@ -35,6 +38,7 @@ import com.mfusion.scheduledesigner.subview.TimeRuleView;
 import com.mfusion.scheduledesigner.subview.WeekSelectView;
 import com.mfusion.scheduledesigner.values.CompOperateType;
 import com.mfusion.scheduledesigner.values.ScheduleDataConverter;
+import com.mfusion.scheduledesigner.values.ScreenAdjustHelper;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -53,7 +57,17 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
 
         this.addOnLayoutChangeListener(this);
     }
+    public ScheduleDesigner(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        this.m_context=context;
+        this.addOnLayoutChangeListener(this);
+    }
 
+    public ScheduleDesigner(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        this.m_context=context;
+        this.addOnLayoutChangeListener(this);
+    }
     Context m_context;
 
     boolean isInitUI=false;
@@ -63,6 +77,8 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
     RelativeLayout property_layout;
 
     BlockPropertyEditView property_view;
+
+    LinearLayout sche_pbu_layut=null;
 
     GraphicTemplateListLayout sche_pbu_view;
 
@@ -78,11 +94,12 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
 
     Button sche_idle_view;
 
+    int screen_w,screen_h;
     int sche_container_w,sche_container_h;
     int sche_ws_w,sche_ws_h;
     int sche_ws_left,sche_ws_top;
     float per_mins_w;
-    int pre_day_h;
+    float pre_day_h;
 
     SelectedCompProperty selectedComp=new SelectedCompProperty();
 
@@ -96,12 +113,23 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
 
     Schedule m_schedule_data =null;
 
+    public AbstractFragment parentFragment;
+    /**
+     * init all subview in schedule designer
+     */
     public void Init() {
+
+        if(this.isInitUI)
+            return;
+
+        screen_w=((Activity)this.m_context).getWindowManager().getDefaultDisplay().getWidth();
+        screen_h=((Activity)this.m_context).getWindowManager().getDefaultDisplay().getHeight();
 
         scheduleLayout=LayoutInflater.from(this.getContext()).inflate(R.layout.view_schedule_designer, this,true);
 
         property_layout =(RelativeLayout)scheduleLayout.findViewById(R.id.sche_property_layout);
-        property_view=new BlockPropertyEditView(this.getContext(),new CallbackBundle() {
+        ViewGroup.LayoutParams propertyLayoutParams=property_layout.getLayoutParams();
+        property_view=new BlockPropertyEditView(this.getContext(),propertyLayoutParams.width,propertyLayoutParams.height,new CallbackBundle() {
 
             @Override
             public void callback(Bundle bundle) {
@@ -109,10 +137,14 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
                 if(selectedComp.selectedView==null)
                     return;
 
+                if(parentFragment!=null)
+                    parentFragment.isEditing=true;
                 ((BlockView)selectedComp.selectedView).changeBlockProperty();
             }
         });
         property_layout.addView(property_view, new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
+        propertyLayoutParams.height =(int)(screen_h*ScreenAdjustHelper.BlockPropertyLayoutScale);
+        property_layout.setLayoutParams(propertyLayoutParams);
 
         sche_ws_layout=(RelativeLayout)scheduleLayout.findViewById(R.id.sche_workspace);
         sche_ws_layout.addOnLayoutChangeListener(workspace_layoutChangeListener);
@@ -139,11 +171,16 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
         sche_timeline_layout.removeAllViews();
         sche_timeline_layout.addView(new TimeRuleView(m_context), new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 
+        sche_pbu_layut=(LinearLayout) scheduleLayout.findViewById(R.id.sche_pbu);
+        ViewGroup.LayoutParams pbuLayoutParams=sche_pbu_layut.getLayoutParams();
+        pbuLayoutParams.width =(int)(screen_w*ScreenAdjustHelper.TemplateLayoutScale);
+        sche_pbu_layut.setLayoutParams(pbuLayoutParams);
+
         sche_pbu_view=(GraphicTemplateListLayout)scheduleLayout.findViewById(R.id.sche_pbu_list);
         sche_pbu_view.bindingTemplates();
         sche_pbu_view.setEnabled(false);
 
-        sche_ws_left=((LinearLayout)scheduleLayout.findViewById(R.id.sche_pbu)).getLayoutParams().width;
+        sche_ws_left=sche_pbu_layut.getLayoutParams().width;
         sche_ws_top=((LinearLayout)scheduleLayout.findViewById(R.id.sche_base_info)).getLayoutParams().height +sche_timeline_layout.getLayoutParams().height;
 
         android.view.ViewGroup.LayoutParams ws_layoutParams = sche_ws_layout.getLayoutParams();
@@ -152,6 +189,7 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
 
         sche_idle_view=(Button)scheduleLayout.findViewById(R.id.sche_default);
         sche_idle_view.setOnDragListener(idle_dragListener);
+        sche_idle_view.setPadding(5,0,5,0);
         if(this.m_schedule_data!=null)
             sche_idle_view.setText(m_schedule_data.idleItem);
 
@@ -160,7 +198,13 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
         this.initCalendar();
     }
 
+    /**
+     * add a new block by drag
+     */
     private void insertBlock(String temp_name,int x,int y,ViewGroup container) {
+
+        if(parentFragment!=null)
+            parentFragment.isEditing=true;
 
         BlockUIEntity block_info=new BlockUIEntity();
         block_info.blockType= BlockType.Single;
@@ -173,7 +217,7 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
         ScheduleDrawHelper.initBlockBylocation(block_info,this.per_mins_w, x,pre_day_h, y,(Calendar)calendar.clone());
 
         BlockView blockView=new BlockView(m_context,block_info,per_mins_w,pre_day_h,this.block_touch_listener,this.calendar);
-        container.addView(blockView, new RelativeLayout.LayoutParams((int)(block_info.duration*this.per_mins_w),sche_ws_h));
+        container.addView(blockView, new RelativeLayout.LayoutParams((int)Math.ceil(block_info.duration*this.per_mins_w),sche_ws_h));
 
         RelativeLayout.LayoutParams layoutParams=(RelativeLayout.LayoutParams)blockView.getLayoutParams();
         layoutParams.leftMargin=ScheduleDrawHelper.getBlockLeftMargin(block_info.startTime, per_mins_w);
@@ -183,6 +227,8 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
     }
 
     private void deleteBlock(View deletedView) {
+        if(parentFragment!=null)
+            parentFragment.isEditing=true;
 
         BlockView deletedBlock = (BlockView) deletedView;
         block_list.remove(deletedBlock.block_info);
@@ -190,6 +236,9 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
         property_view.setPropertyEditability(false);
     }
 
+    /**
+     * search block in specified week
+     */
     private void changeWeek() {
 
         this.sche_ws_layout.removeAllViews();
@@ -211,7 +260,7 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
         for (BlockUIEntity blockEntity : blockInWeek) {
 
             BlockView blockView=new BlockView(m_context,blockEntity,per_mins_w,pre_day_h,this.block_touch_listener,this.calendar);
-            sche_ws_layout.addView(blockView, new RelativeLayout.LayoutParams((int)(blockEntity.duration*this.per_mins_w),sche_ws_h));
+            sche_ws_layout.addView(blockView, new RelativeLayout.LayoutParams((int)(Math.ceil(blockEntity.duration*this.per_mins_w)),sche_ws_h));
 
             RelativeLayout.LayoutParams layoutParams=(RelativeLayout.LayoutParams)blockView.getLayoutParams();
             layoutParams.leftMargin=ScheduleDrawHelper.getBlockLeftMargin(blockEntity.startTime, per_mins_w);
@@ -237,10 +286,12 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
         public void onLayoutChange(View view, int l, int t, int r,
                                    int b, int oldl, int oldt, int oldr,int oldb) {
             // TODO Auto-generated method stub
+           /* if(l==oldl&&t==oldt&&r==oldr&&b==oldb)
+                return;*/
             sche_ws_w=r-l;
             sche_ws_h=b-t;
             per_mins_w=sche_ws_w/(24*60.0f);
-            pre_day_h=sche_ws_h/7;
+            pre_day_h=sche_ws_h/7.0f;
 
             if(sche_weekly_view==null){
 
@@ -250,9 +301,14 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
             sche_weekly_view.refreshFirstWeek(calendar);
 
             mHandler.sendEmptyMessage(0);
+
+            System.out.println("layout change");
         }
     };
 
+    /**
+     * receive dragged template, and insert into schedule
+     */
     OnDragListener temp_dragListener = new OnDragListener() {
 
         @Override
@@ -287,7 +343,9 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
             return false;
         }
     };
-
+    /**
+     * receive dragged template, and create as default template for schedule
+     */
     OnDragListener idle_dragListener = new OnDragListener() {
 
         @Override
@@ -314,6 +372,9 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
                     String dragData = item.getText().toString();
 
                     sche_idle_view.setText(dragData);
+                    if(parentFragment!=null)
+                        parentFragment.isEditing=true;
+
                     return true;
                 case DragEvent.ACTION_DRAG_ENDED:
                     //拖放事件完成
@@ -322,7 +383,9 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
             return false;
         }
     };
-
+    /**
+     * listen block operate about move, drag
+     */
     OnTouchListener block_touch_listener = new OnTouchListener() {
 
         @Override
@@ -368,13 +431,17 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
             return false;
         }
     };
-
+    /**
+     * move template or,change it size
+     */
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
 
         if(selectedComp.operateType!= CompOperateType.none){
             if (ev.getAction() == MotionEvent.ACTION_MOVE) {
                 if(selectedComp.selectedView!=null){
+                    if(parentFragment!=null)
+                        parentFragment.isEditing=true;
 
                     ((BlockView)selectedComp.selectedView).isLayoutChange=true;
                     RelativeLayout.LayoutParams layout=(RelativeLayout.LayoutParams)selectedComp.selectedView.getLayoutParams();
@@ -391,7 +458,7 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
                             if(layout_item_top<0)
                                 layout.topMargin=-((BlockView)selectedComp.selectedView).topMargin;
                             else if(layout_item_top>(this.sche_ws_h-this.pre_day_h))
-                                layout.topMargin=this.sche_ws_h-this.pre_day_h-((BlockView)selectedComp.selectedView).topMargin;
+                                layout.topMargin=this.sche_ws_h-(int)this.pre_day_h-((BlockView)selectedComp.selectedView).topMargin;
                         }
                     }else{
                         float mouseAddX=0,mouseAddY=0;
@@ -405,10 +472,17 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
                                 layout.leftMargin=0;
                             else
                                 layout.width-=mouseAddX;
+                            if(layout.width<=0){
+                                layout.width=(int)Math.ceil(per_mins_w);
+                                layout.leftMargin-=layout.width;
+                            }
                         }else if(operateString.contains("e")){
                             layout.width+=mouseAddX;
                             if(layout.leftMargin>(this.sche_ws_w-layout.width))
                                 layout.width-=mouseAddX;
+                            if(layout.width<=0){
+                                layout.width=(int)Math.ceil(per_mins_w);
+                            }
                         }
                         selectedComp.height=layout.height;
                         selectedComp.width=layout.width;
@@ -481,23 +555,22 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
     @Override
     public Boolean openSchedule(Schedule schedule) {
         // TODO Auto-generated method stub
+
         m_schedule_data = schedule;
         ScheduleDataConverter.convertToDisplay(m_schedule_data,block_list);
 
         if(this.isInitUI){
 
-            if(m_schedule_data.idleItem==null||m_schedule_data.idleItem.isEmpty())
-                sche_idle_view.setText(getResources().getString(R.string.sche_idle_template_tip));
-            else
-                sche_idle_view.setText(m_schedule_data.idleItem);
-            sche_playmode_view.setChecked(m_schedule_data.playType== SchedulePlayType.Sequence);
-
             this.initCalendar();
+
             changeWeek();
 
-            sche_pbu_view.setEnabled(true);
-
             property_view.initPropertyView();
+
+            Message msg=new Message();
+            msg.what=0;
+            handler.sendMessage(msg);
+
         }
         return true;
     }
@@ -508,11 +581,41 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
             sche_container_w=right-left;
             sche_container_h=bottom-top;
 
-            this.Init();
-
-            this.isInitUI=true;
+            Message msg=new Message();
+            msg.what=1;
+            handler.sendMessage(msg);
         }
     }
+
+    Handler handler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+
+            switch (msg.what){
+                case 0:
+                    sche_pbu_view.bindingTemplates();
+
+                    break;
+                case 1:
+                    Init();
+
+                    isInitUI=true;
+
+                    break;
+            }
+
+            if(m_schedule_data.idleItem==null||m_schedule_data.idleItem.isEmpty())
+                sche_idle_view.setText(getResources().getString(R.string.sche_idle_template_tip));
+            else
+                sche_idle_view.setText(m_schedule_data.idleItem);
+            sche_playmode_view.setChecked(m_schedule_data.playType== SchedulePlayType.Sequence);
+
+            sche_pbu_view.setEnabled(true);
+
+            invalidate();
+        }
+    };
 
     private void initCalendar(){
         calendar = Calendar.getInstance();

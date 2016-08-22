@@ -107,7 +107,7 @@ public class XMLSchedule {
 
         ArrayList<Element> blockElementList=this.m_XMLHelper.getSubNodeList(runElement, "TimeLine");
         if(blockElementList==null)
-            throw new IllegalScheduleException(scheduleName+" block");
+            throw new IllegalScheduleException(scheduleName+" block is invalid");
 
         BlockEntity blockEntity=null;
         ArrayList<Element> blockItemElementList=null;
@@ -156,7 +156,7 @@ public class XMLSchedule {
     public boolean SaveSchedule(Schedule sch,String XMLFolder) throws Exception
     {
         if(sch==null||sch.idleItem==null||sch.idleItem==null||sch.idleItem.isEmpty())
-            throw new IllegalScheduleException("No Default Template");
+            throw new IllegalScheduleException("No default template");
 
         if(sch.id==null||sch.id.isEmpty())
             sch.id=InternalKeyWords.DefaultScheduleName;
@@ -210,6 +210,7 @@ public class XMLSchedule {
 
             Element idlItemElement=scheduleDocument.createElement("IdlePBU");
             idlItemElement.setAttribute("Id", scheduleEntity.idleItem);
+            XMLTemplate.getInstance().existTemplate(scheduleEntity.idleItem);
             runElement.appendChild(idlItemElement);
 
             Integer blockItemIndex=0;
@@ -226,6 +227,7 @@ public class XMLSchedule {
                 blockItemIndex=0;
                 for (String item : block.itemList) {
                     blockItemElement=scheduleDocument.createElement("PBU");
+                    XMLTemplate.getInstance().existTemplate(item);
                     blockItemElement.setAttribute("Id", item);
                     blockItemElement.setAttribute("Index", String.valueOf(blockItemIndex++));
                     timelineElement.appendChild(blockItemElement);
@@ -242,11 +244,11 @@ public class XMLSchedule {
         }
     }
 
-    public Boolean assignSchedule(String scheName) {
+    public Boolean assignSchedule(String scheName) throws Exception{
         return this.assignSchedule(scheName,InternalKeyWords.DefaultScheduleXmlPath,InternalKeyWords.DefaultTemplateXmlPath,InternalKeyWords.AssignedXmlFolder);
     }
 
-    private Boolean assignSchedule(String scheName,String ScheXMLFolder,String TemplateXMLFolder,String assignDestFolder) {
+    private Boolean assignSchedule(String scheName,String ScheXMLFolder,String TemplateXMLFolder,String assignDestFolder) throws Exception{
         // TODO Auto-generated method stub
         try {
             HashSet<String> blockItemSet=null;
@@ -301,9 +303,8 @@ public class XMLSchedule {
 
         } catch (Exception e) {
             // TODO: handle exception
-            e.printStackTrace();
+            throw e;
         }
-        return false;
     }
 
     private Element createDeviceCmdNode(Document document) {

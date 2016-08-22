@@ -14,6 +14,8 @@ import android.text.format.DateFormat;
 import android.view.View;
 import android.view.View.OnLayoutChangeListener;
 
+import com.mfusion.scheduledesigner.R;
+
 /**
  * Created by Guoyu on 2016/7/20.
  */
@@ -21,11 +23,13 @@ public class ScheduleWeeklyView  extends View implements OnLayoutChangeListener{
 
     int width=0,height=0;
 
-    TextPaint paint_line=null;
+    TextPaint paint_line=null,paint_expiry=null;
 
     SimpleDateFormat date_format=new SimpleDateFormat("yyyy-MM-dd E");
 
-    Calendar calendar=Calendar.getInstance();
+    Calendar sche_calendar=Calendar.getInstance();
+
+    Date current_date;
 
     public ScheduleWeeklyView(Context context) {
         super(context);
@@ -33,16 +37,31 @@ public class ScheduleWeeklyView  extends View implements OnLayoutChangeListener{
 
         this.paint_line=new TextPaint();
         this.paint_line.setAntiAlias(true);
+        float size=R.dimen.textSize;
+        this.paint_line.setTextSize(context.getResources().getDimension(R.dimen.textSize));
         this.paint_line.setColor(Color.GRAY);
         this.paint_line.setTypeface(Typeface.create(Typeface.DEFAULT,Typeface.ITALIC));
         this.paint_line.setStyle(Style.STROKE);
+
+        this.paint_expiry=new TextPaint();
+        this.paint_expiry.setAntiAlias(true);
+        this.paint_expiry.setColor(Color.LTGRAY);
+        this.paint_expiry.setStyle(Style.FILL);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        this.current_date=calendar.getTime();
 
         this.addOnLayoutChangeListener(this);
     }
 
     public void refreshFirstWeek(Calendar calendar) {
-        this.calendar=(Calendar)calendar.clone();
-
+        if(this.sche_calendar!=null&&calendar!=null&&this.sche_calendar.getTime().compareTo(calendar.getTime())==0)
+            return;
+        this.sche_calendar=(Calendar)calendar.clone();
         this.invalidate();
     }
 
@@ -59,10 +78,14 @@ public class ScheduleWeeklyView  extends View implements OnLayoutChangeListener{
             canvas.drawColor(Color.WHITE);
             float day_h=height/7.0f;
             float line_y=0;
-            Calendar currentCalendar=(Calendar)calendar.clone();
+            Calendar currentCalendar=(Calendar)sche_calendar.clone();
             for (int i = 1; i <= 7; i++) {
                 line_y+=day_h;
                 currentCalendar.add(Calendar.DAY_OF_WEEK, 1);
+                Date test=currentCalendar.getTime();
+                if(currentCalendar.getTime().compareTo(this.current_date)<0) {
+                    canvas.drawRect(0, line_y-day_h+2, width,line_y, this.paint_expiry);
+                }
 
                 canvas.drawLine(0, line_y, width, line_y, this.paint_line);
                 canvas.drawText(date_format.format(currentCalendar.getTime()), 20, line_y-day_h/2+6, this.paint_line);

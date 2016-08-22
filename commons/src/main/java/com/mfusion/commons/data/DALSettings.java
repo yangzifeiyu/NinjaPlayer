@@ -1,5 +1,7 @@
 package com.mfusion.commons.data;
 
+import android.content.pm.ActivityInfo;
+
 import com.mfusion.commons.tools.DateConverter;
 import com.mfusion.commons.tools.InternalKeyWords;
 import com.mfusion.commons.tools.SQLiteDBHelper;
@@ -39,6 +41,17 @@ public class DALSettings {
         return SQLiteDBHelper.getConfiguration(InternalKeyWords.Config_DBPath,InternalKeyWords.Config_TableName);
     }
 
+    public int getOrientation(){
+        String orientation=this.getSettingByKey(InternalKeyWords.Config_Orientation);
+        if(orientation==null||orientation.isEmpty())
+            return ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+        return Integer.parseInt(orientation);
+    }
+
+    public Boolean setOrientation(int orientation){
+        return this.updateSetting(InternalKeyWords.Config_Orientation,String.valueOf(orientation));
+    }
+
     public String getShutDownTime(){
         return this.getSettingByKey(InternalKeyWords.Config_ShutDownTime);
     }
@@ -48,7 +61,11 @@ public class DALSettings {
     }
 
     public String getExitPassword(){
-        return this.getSettingByKey(InternalKeyWords.Config_ExitPassword);
+        String password=this.getSettingByKey(InternalKeyWords.Config_ExitPassword);
+        if(password==null)
+            return InternalKeyWords.Config_DefaulttPassword;
+
+        return password;
     }
 
     public Boolean setExitPassword(String password){

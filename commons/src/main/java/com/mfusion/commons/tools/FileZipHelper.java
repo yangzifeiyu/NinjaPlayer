@@ -38,6 +38,7 @@ public class FileZipHelper {
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
+			LogOperator.WriteLogfortxt("FileZipHelper==>compressionFolder "+zipFileFath+"("+inputPath+")"+" :"+e.getMessage());
 			throw e;
 		}
 	}
@@ -145,6 +146,7 @@ public class FileZipHelper {
 		   return true;
 	   } catch (IOException ex) {
 		   ex.printStackTrace();
+			LogOperator.WriteLogfortxt("FileZipHelper==>deCompressionFolder "+outputPath+" :"+ex.getMessage());
 		   return false;
 	   } finally {
 		   if (zipFile != null) {

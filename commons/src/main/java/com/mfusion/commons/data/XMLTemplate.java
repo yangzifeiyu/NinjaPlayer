@@ -2,6 +2,7 @@ package com.mfusion.commons.data;
 
 import android.content.res.AssetManager;
 import android.graphics.Color;
+import android.util.DisplayMetrics;
 
 import com.mfusion.commons.entity.exception.IllegalTemplateException;
 import com.mfusion.commons.entity.exception.PathAccessException;
@@ -244,6 +245,7 @@ public class XMLTemplate {
             template=new VisualTemplate();
             template.id=folder.getName();
             template.path=folder.getPath()+File.separator;
+            template.templateOriginal=ResourceSourceType.local;
             template.thumbImageBitmap=ImageHelper.getBitmap(template.path+InternalKeyWords.TemplateResourceFolder+"thumb.jpg", ResourceSourceType.local,null);
 
             this.addToListWithSort(tempList,template);
@@ -390,6 +392,7 @@ public class XMLTemplate {
         ArrayList<VisualTemplate> templateList=new ArrayList<VisualTemplate>();
         for (String name : files) {
             templateEntity=new VisualTemplate();
+            templateEntity.templateOriginal=ResourceSourceType.internal;
             templateEntity.id=name;
             templateEntity.path=path+File.separator+name+File.separator;
             templateEntity.thumbImageBitmap=ImageHelper.getBitmap(templateEntity.path+InternalKeyWords.TemplateResourceFolder+"thumb.jpg", ResourceSourceType.internal,assetManager);
@@ -439,12 +442,15 @@ public class XMLTemplate {
 
     private TemplateEntity readTemplateInfoFromAsset(AssetManager assetManager,String path,String tempName) {
         try {
+            if(path==null||path.isEmpty())
+                return null;
+
             String tempXmlPath=path+tempName+".xml";
             InputStream xmlStream=assetManager.open(tempXmlPath);
 
             Document templateDocument=this.m_XMLHelper.getXmlDocument(xmlStream);
 
-            return this.readTemplateInfo(path,tempName, templateDocument, ResourceSourceType.internal,assetManager);
+            return this.readTemplateInfo(path,"", templateDocument, ResourceSourceType.internal,assetManager);
         } catch (Exception e) {
             // TODO: handle exception
             e.printStackTrace();
@@ -460,6 +466,7 @@ public class XMLTemplate {
 
             TemplateEntity entity=new TemplateEntity();
             entity.id=tempXmlName;
+            entity.templateOriginal=sourceType;
 
             String thumbImagePath=tempFolder+InternalKeyWords.TemplateResourceFolder+"thumb.jpg";
             entity.thumbImageBitmap= ImageHelper.getBitmap(thumbImagePath, sourceType,assetManager);
@@ -488,6 +495,7 @@ public class XMLTemplate {
                     componentEntity.type= ComponentType.fromString(element.getAttribute("Type"));
                     if(componentEntity.type== ComponentType.Unkown)
                         continue;
+                    componentEntity.componentName=element.getAttribute("Name");
                     componentEntity.backColor=this.convertColorStrToInt(element.getAttribute("BackColor"));
                     componentEntity.left=Integer.valueOf(element.getAttribute("Left"));
                     componentEntity.top=Integer.valueOf(element.getAttribute("Top"));
@@ -530,19 +538,22 @@ public class XMLTemplate {
                 try {
                     File bgImage=new File(templateEntity.backImagePath);
                     imagePath=bgImage.getName();
+                    imagePath=InternalKeyWords.TemplateResourceFolder+imagePath;
+                    if(!templateEntity.backImagePath.equalsIgnoreCase(tempFolder+imagePath))
+                        FileOperator.copyFile(templateEntity.backImagePath,tempFolder+imagePath);
                 } catch (Exception e) {
                     // TODO: handle exception
                     e.printStackTrace();
                 }
             }
 
-            if(templateEntity.backImageBitmap!=null){
+            /*if(templateEntity.backImageBitmap!=null){
 
                 if(imagePath.isEmpty())
                     imagePath="bg.jpg";
                 imagePath=InternalKeyWords.TemplateResourceFolder+imagePath;
                 ImageHelper.saveBitmap(templateEntity.backImageBitmap, tempFolder+imagePath);
-            }
+            }*/
 
             bgElement.setAttribute("ImagePath", imagePath);
             rootElement.appendChild(bgElement);
@@ -554,6 +565,7 @@ public class XMLTemplate {
             for (ComponentEntity compEntity : templateEntity.compList) {
                 compElement=tempDocument.createElement("Component");
                 compElement.setAttribute("Type", compEntity.type.toString());
+                compElement.setAttribute("Name", compEntity.componentName);
                 compElement.setAttribute("BackColor", String.valueOf(compEntity.backColor));
                 compElement.setAttribute("Top", String.valueOf(compEntity.top));
                 compElement.setAttribute("Left", String.valueOf(compEntity.left));

@@ -41,6 +41,7 @@ public class XmlOperator {
 			
 		} catch (Exception e) {
 			// TODO: handle exception
+			LogOperator.WriteLogfortxt("XmlOperator==>"+e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -54,6 +55,7 @@ public class XmlOperator {
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
+			LogOperator.WriteLogfortxt("XmlOperator==>createXmlDocument :"+e.getMessage());
 		}
 		
 		return null;
@@ -71,6 +73,7 @@ public class XmlOperator {
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
+			LogOperator.WriteLogfortxt("XmlOperator==>createXmlDocument :"+e.getMessage());
 		}
 		
 		return null;
@@ -90,6 +93,7 @@ public class XmlOperator {
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
+			LogOperator.WriteLogfortxt("XmlOperator==>getXmlDocument :"+e.getMessage());
 		}
 		
 		return null;
@@ -104,6 +108,7 @@ public class XmlOperator {
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
+			LogOperator.WriteLogfortxt("XmlOperator==>getXmlDocument :"+e.getMessage());
 		}
 
 		return null;
@@ -117,6 +122,7 @@ public class XmlOperator {
 			
 		} catch (Exception e) {
 			// TODO: handle exception
+			LogOperator.WriteLogfortxt("XmlOperator==>getXmlDocument :"+e.getMessage());
 		}
 		
 		return null;
@@ -149,7 +155,7 @@ public class XmlOperator {
 		catch (Exception e)
 		{
 			e.printStackTrace();
-			
+			LogOperator.WriteLogfortxt("XmlOperator==>saveXmlDocument :"+e.getMessage());
 			File oldFlie=new File(xmlPath+".old");
 			if(oldFlie.exists())
 				oldFlie.renameTo(new File(xmlPath));
@@ -203,6 +209,7 @@ public class XmlOperator {
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
+			LogOperator.WriteLogfortxt("XmlOperator==>getSubNodeList :"+e.getMessage());
 		}
 		return null;
 	}
@@ -226,6 +233,7 @@ public class XmlOperator {
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
+			LogOperator.WriteLogfortxt("XmlOperator==>getSubNode :"+e.getMessage());
 		}
 		return null;
 	}
@@ -274,7 +282,7 @@ public class XmlOperator {
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
+			LogOperator.WriteLogfortxt("XmlOperator==>copyNode :"+e.getMessage());
 		}
-		
 	}
 }

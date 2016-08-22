@@ -9,17 +9,17 @@
         android:layout_height="26dp">
 
         <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:text="Template List"
-            android:typeface="normal"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true"
-            android:textStyle="italic"
-            android:textSize="12sp"
-            android:hint="test" />
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:text="Template List"
+        android:typeface="normal"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:textSize="@dimen/textSize"
+        android:hint="test"
+            style="@style/myTextStyle" />
 
         <ImageButton
             android:layout_width="20dp"
@@ -30,7 +30,8 @@
             android:src="@drawable/refresh"
             android:scaleType="fitXY"
             android:background="@android:color/transparent"
-            android:layout_margin="3dp" />
+            android:layout_margin="3dp"
+            android:visibility="gone"/>
     </RelativeLayout>
 
     <LinearLayout

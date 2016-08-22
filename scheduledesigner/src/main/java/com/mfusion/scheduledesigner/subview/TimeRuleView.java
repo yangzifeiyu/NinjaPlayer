@@ -34,7 +34,7 @@ public class TimeRuleView  extends View implements View.OnLayoutChangeListener {
 
         this.paint_time=new TextPaint();
         this.paint_time.setAntiAlias(true);
-        this.paint_time.setTextSize(12);
+        this.paint_time.setTextSize(context.getResources().getDimension(R.dimen.textSize));
         this.paint_time.setColor(Color.BLACK);
         this.paint_time.setTypeface(Typeface.create(Typeface.DEFAULT,Typeface.ITALIC));
         this.paint_time.setStyle(Paint.Style.STROKE);

@@ -4,7 +4,12 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
+import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.graphics.PathEffect;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -14,6 +19,7 @@ import android.view.View;
 import android.view.View.OnLayoutChangeListener;
 import android.view.View.OnHoverListener;
 
+import com.mfusion.commons.tools.DateConverter;
 import com.mfusion.scheduledesigner.R;
 import com.mfusion.scheduledesigner.entity.BlockUIEntity;
 
@@ -28,7 +34,9 @@ public class BlockDailyView extends View implements OnHoverListener,OnLayoutChan
 
     public BlockUIEntity block_info;
 
-    TextPaint paint_body,paint_item;
+    TextPaint paint_title,paint_body,paint_item,paint_border;
+
+    PathEffect effects =null;
 
     int width,height,title_h=20;
 
@@ -55,15 +63,28 @@ public class BlockDailyView extends View implements OnHoverListener,OnLayoutChan
 
     private void initView() {
 
+        this.paint_title=new TextPaint();
+        this.paint_title.setAntiAlias(true);
+        paint_title.setColor(this.m_context.getResources().getColor(R.color.colorBlockTitle));
+        this.paint_title.setStyle(Style.FILL);
+
         this.paint_body=new TextPaint();
         this.paint_body.setAntiAlias(true);
-        this.paint_body.setTextSize(12);
+        this.paint_body.setTextSize(m_context.getResources().getDimension(R.dimen.textSizeSmall));
+        this.paint_body.setColor(Color.DKGRAY);
         this.paint_body.setStyle(Style.STROKE);
+
+        this.paint_border=new TextPaint();
+        this.paint_border.setAntiAlias(true);
+        this.paint_border.setColor(Color.DKGRAY);
+        this.paint_border.setStyle(Style.STROKE);
 
         this.paint_item=new TextPaint();
         this.paint_item.setAntiAlias(true);
-        this.paint_item.setColor(this.m_context.getResources().getColor(R.color.colorPrimary));
+        this.paint_item.setColor(this.m_context.getResources().getColor(R.color.colorBlockItem));
         this.paint_item.setStyle(Style.FILL);
+
+        this.effects = new DashPathEffect(new float[] { 8, 8}, 1);
 
         this.setOnHoverListener(this);
         this.addOnLayoutChangeListener(this);
@@ -74,8 +95,11 @@ public class BlockDailyView extends View implements OnHoverListener,OnLayoutChan
     public void onSelected(Boolean selected,Boolean isRefresh){
 
         this.block_selected=selected;
-        this.paint_body.setColor(selected?Color.RED:Color.GRAY);
-
+        //this.paint_body.setColor(selected?Color.RED:Color.DKGRAY);
+        if(selected)
+            this.paint_border.setPathEffect(effects);
+        else
+            this.paint_border.setPathEffect(null);
         if(isRefresh)
             refresh();
     }
@@ -111,17 +135,17 @@ public class BlockDailyView extends View implements OnHoverListener,OnLayoutChan
         if(canvas!=null)
         {
             //all block
-            canvas.drawColor(Color.YELLOW);
-            canvas.drawRect(0, 0, width+1, height+1, this.paint_body);
+            canvas.drawRect(0, 0, width, title_h, this.paint_title);
+            canvas.drawRect(1, 1, width-1, height-1, this.paint_border);
             //title
-            canvas.drawText(this.block_info.blockType.toString(), 5, 16, this.paint_body);
-            canvas.drawLine(0, title_h, width, title_h, this.paint_body);
+            canvas.drawText(DateConverter.convertShortTimeToStr(this.block_info.startTime)+"-"+DateConverter.convertShortTimeToStr(this.block_info.endTime), 5, 16, this.paint_body);
+            canvas.drawLine(0, title_h, width, title_h, this.paint_border);
             //item list
             canvas.drawRect(0, title_h, width, height, this.paint_item);
 
             canvas.drawBitmap(BitmapFactory.decodeResource(getResources(), android.R.drawable.ic_menu_close_clear_cancel), null,new Rect(width-15, 5, width, 20), this.paint_body);
 
-            this.paint_body.setTextSize(10);
+            //this.paint_body.setTextSize(10);
             if(this.block_info!=null&&this.block_info.itemList.size()>0){
                 int item_count=this.block_info.itemList.size();
                 StaticLayout item_layout=null;
@@ -140,7 +164,7 @@ public class BlockDailyView extends View implements OnHoverListener,OnLayoutChan
                     }
                 }
             }
-            this.paint_body.setTextSize(12);
+            //this.paint_body.setTextSize(12);
 
         }
     }

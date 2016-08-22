@@ -1,12 +1,17 @@
 package com.mfusion.scheduledesigner;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout.LayoutParams;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
+import com.mfusion.commons.data.DALSettings;
 import com.mfusion.commons.data.XMLSchedule;
 import com.mfusion.commons.tools.InternalKeyWords;
 
@@ -17,6 +22,7 @@ public class TestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
+
 
         LayoutParams layoutParams=new LayoutParams(android.app.ActionBar.LayoutParams.MATCH_PARENT, android.app.ActionBar.LayoutParams.MATCH_PARENT);
 
@@ -29,7 +35,6 @@ public class TestActivity extends AppCompatActivity {
             public void onClick(View arg0) {
                 // TODO Auto-generated method stub
                 try{
-
                     scheduleView.openSchedule(XMLSchedule.getInstance().LoadSchedule());
                 }catch (Exception ex) {
                     ex.printStackTrace();
@@ -65,4 +70,25 @@ public class TestActivity extends AppCompatActivity {
             }
         });
     }
+
+    /*private Menu menu;
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.options, menu);
+
+        this.menu=menu;
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId())
+        {
+            case R.id.menu_search:
+                System.out.println(item.getTitle());
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }*/
 }
