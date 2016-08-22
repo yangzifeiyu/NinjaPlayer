@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Template>
+  
+  <Size Width="1920" Height="1080"/>
+  <!--Color属性有两种值，1："A,R,G,B"格式的字符串(需要解析转换成Android中的Int值) 2：Int值(Android中Color值为Int类型)-->
+  <!--ImagePath为Template背景图片，非必须属性，背景图片的存储路径相对于Template.xml的路劲 -->
+  <Background Color="255,0,0,0" ImagePath="res/Koala.jpg"/>
+
+  <Components>
+    <Component Type="DateTime" Index="" Left="0" Top="0" Width="230" Height="70" BackColor="255,0,255,255">
+      <Property name="Font">Sans,16.0pt,style=Bold</Property>
+      <Property name="ForeColor">255,255,255,255</Property>
+      <Property name="TimeFormat">yyyy-MM-dd</Property>
+    </Component>
+    <Component Type="TickerText" Index="" Left="230" Top="0" Width="1690" Height="70" BackColor="255,0,255,255">
+      <Property name="Font">Sans,16.0pt,style=Bold</Property>
+      <Property name="ForeColor">255,255,255,255</Property>
+      <Property name="TextString">Welcome ... ...</Property>
+      <Property name="Speed">100</Property>
+    </Component>
+    <Component Type="ScheduleMedia" Index="" Left="0" Top="70" Width="1920" Height="1020" BackColor="255,0,255,255">
+      <Property name="PlayMode">Random</Property>
+      <Property name="Mute">false</Property>
+      <Property name="PlayList"></Property>
+    </Component>
+  </Components>
+</Template>

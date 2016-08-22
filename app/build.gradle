@@ -1,5 +1,5 @@
-apply plugin: 'com.android.application'
-
+//apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 
 
 android {
@@ -7,7 +7,7 @@ android {
     buildToolsVersion '23.0.3'
 
     defaultConfig {
-        applicationId "com.mfusion.ninjaplayer"
+        //applicationId "com.mfusion.ninjaplayer"
         minSdkVersion 17
         targetSdkVersion 23
         versionCode 1
@@ -20,7 +20,9 @@ android {
         }
     }
 
-
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {

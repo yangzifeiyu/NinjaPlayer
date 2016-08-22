@@ -4,27 +4,34 @@
     android:layout_height="match_parent"
     android:layout_weight="9">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="35dp">
+
+        <com.mfusion.commons.view.ImageTextView
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:text="Back"
+            android:id="@+id/template_sample_view_btn_back"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Please select a template sample"
+            android:id="@+id/textView9"
+            android:layout_alignParentLeft="true"
+            android:gravity="center"
+            android:textStyle="bold|italic" />
+    </RelativeLayout>
 
     <GridView
 
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:numColumns="3"
+        android:layout_height="match_parent"
+        android:numColumns="4"
         android:id="@+id/template_sample_grid_view"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="8"/>
+        android:layout_gravity="center_horizontal" />
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layoutDirection="rtl"
-        android:layout_weight="1">
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Back"
-            android:id="@+id/template_sample_view_btn_back" />
-    </LinearLayout>
 </LinearLayout>

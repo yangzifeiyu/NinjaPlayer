@@ -1,7 +1,8 @@
 package com.mfusion.ninjaplayer.FragmentClass;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.mfusion.commons.controllers.AbstractFragment;
+import com.mfusion.commons.tools.InternalKeyWords;
 import com.mfusion.ninjaplayer.R;
 
 import java.io.BufferedReader;
@@ -16,21 +19,19 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Stack;
 
-public class LogFragment extends Fragment {
+public class LogFragment extends AbstractFragment {
 
     EditText logcat;
     Button load, clear;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,49 +42,17 @@ public class LogFragment extends Fragment {
         clear = (Button) rootView.findViewById(R.id.btnClear);//clear log information
         logcat = (EditText) rootView.findViewById(R.id.etLog);//log info
 
-
         load.setOnClickListener(new View.OnClickListener() {
 
             int count = 0;
             @Override
             public void onClick(View arg0) {
                 // TODO Auto-generated method stub
-
-
-                try {
-                    File myFile = new File("/sdcard/Mfusion/log.txt");//file path
-                    FileInputStream fIn = new FileInputStream(myFile);// in order to retrive log
-                    BufferedReader myReader = new BufferedReader(
-                            new InputStreamReader(fIn));
-                    String aDataRow = "";
-                    String aBuffer = "";
-
-
-                    while ((aDataRow = myReader.readLine()) != null) {
-                        aBuffer += aDataRow + "\n";
-
-                    }
-
-
-
-                    logcat.setText(aBuffer);//read line by line and setText
-                    logcat.append("\n");
-
-                    myReader.close();
-                    Toast.makeText(getActivity(),
-                            "Done reading SD 'log.txt'",
-                            Toast.LENGTH_SHORT).show();//display when loading finished
-                } catch (Exception e) {
-                    Error();//call error method if loading failed
-                }
-
-
-
-
+                load.setText("Loading ...");
+                Thread m_loading_thread=new Thread(log_runnable);
+                m_loading_thread.start();
             }
-
         });//load log information method
-
 
         clear.setOnClickListener(new View.OnClickListener() {
 
@@ -92,18 +61,13 @@ public class LogFragment extends Fragment {
                 // TODO Auto-generated method stub
 
                 try {
-                    File myFile = new File("/sdcard/MFusion/log.txt");//file path
-                    PrintWriter writer = new PrintWriter(myFile);
-                    writer.print("");
-                    writer.close();
-                    Toast.makeText(getActivity(),
-                            "Cleared everything from log.txt'",
-                            Toast.LENGTH_SHORT).show();//display when clearing log successfully
+                    File logFile = new File(InternalKeyWords.Log_Path);//file path
+                    if(logFile.exists())
+                        logFile.delete();
                 } catch (Exception e) {
                     Toast.makeText(getActivity(), e.getMessage(),
                             Toast.LENGTH_SHORT).show();//display when clearing log unsuccessfully
                 }
-
 
                 logcat.setText("");//set editText to empty 
 
@@ -112,38 +76,59 @@ public class LogFragment extends Fragment {
 
         });//clear log information method
 
-
         return rootView;//return statement
     }
 
-
-    private void Error()
-    {
-        try {
-            File myFile = new File("/sdcard/MFusion/log.txt");//file path
-
-            if (!myFile.exists()) {
-                myFile.createNewFile();//create new file
-                //Toast.makeText(getActivity(),"Created 'log.txt'",Toast.LENGTH_SHORT).show();
-            } else if (myFile.exists()) {
-                FileOutputStream fOut = new FileOutputStream(myFile, true);
-                OutputStreamWriter myOutWriter =
-                        new OutputStreamWriter(fOut);
-
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");//set time display format
-                String currentDateandTime = sdf.format(new Date());
-                myOutWriter.append("Error Getting Data in LogFragment at : "+ currentDateandTime + "\n");//display when error occured
-                myOutWriter.close();
-                fOut.close();
+    private Boolean isLoadingLog;
+    private Stack<String> logList=new Stack<String>();
+    Runnable log_runnable = new Runnable() {
+        @Override
+        public void run() {//run()���µ��߳�������
+            try {
+                logList.clear();
+                BufferedReader br = new BufferedReader(new FileReader(new File(InternalKeyWords.Log_Path)));
+                String line = "";
+                int index=0;
+                while((line = br.readLine())!=null){
+                    logList.push(line);
+                }
+                br.close();
+                mHandler.obtainMessage(0,"").sendToTarget();
+            } catch (Exception e) {
+                e.printStackTrace();
+                // TODO: handle exception
             }
-
-        } catch (Exception e) {
-            Toast.makeText(getActivity(), e.getMessage(),
-                    Toast.LENGTH_SHORT).show();//display message  
         }
+    };
 
+    Handler mHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            StringBuilder logs=new StringBuilder();
+            while (logList.size()>0){
+                logs.append(logList.pop()+"\n");
+            }
+            logcat.setText(logs);
+            load.setText("Load Log");
+        }
+    };
 
-    }//display error log
+    @Override
+    public Boolean saveModification() {
+        return true;
+    }
 
+    @Override
+    public void cancelSaveModification() {
 
+    }
+
+    @Override
+    public void showFragment() {
+
+    }
+
+    @Override
+    public void hideFragment() {
+
+    }
 }

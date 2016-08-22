@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RelativeLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <ListView
+        android:id="@+id/lv_download"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="false"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="30dp" >
+
+    </ListView>
+
+    <TextView
+        android:id="@+id/tv_mediapath"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tv_log_warning"
+        android:layout_alignBottom="@+id/tv_log_warning"
+        android:layout_toRightOf="@+id/tv_log_warning"
+        android:text="/mnt/storage"
+        android:textColor="@color/black" />
+    
+    <TextView
+        android:id="@+id/tv_log_warning"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/lv_download"
+        android:layout_marginTop="6dp"
+        android:text="MediaPath :"
+        android:textColor="@color/black"
+        android:textSize="17sp" />
+
+</RelativeLayout>

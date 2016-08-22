@@ -28,5 +28,7 @@
     </style>
 
 
-    <color name="cyan">#33B5E5</color>
+    <color name="cyan">#5533b5e5</color>
+    <color name="warningColor">#ff0000</color>
+    <color name="config_text">#3b5998</color>
 </resources>

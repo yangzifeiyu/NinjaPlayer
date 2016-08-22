@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TableLayout
+        android:layout_width="255dp"
+        android:layout_height="135dp"
+        android:layout_x="42dp"
+        android:layout_y="158dp" >
+
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/tv_log_warning"
+                android:layout_width="86dp"
+                android:layout_height="32dp"
+                android:text="Server IP :" />
+
+            <EditText
+                android:id="@+id/server_ip"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:text="127.0.0.1" >
+                <requestFocus />
+    		</EditText>
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="86dp"
+                android:layout_height="32dp"
+                android:text="Server Port :" />
+
+            <EditText
+                android:id="@+id/server_port"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:text="6060" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="100dp"
+                android:layout_height="32dp"
+                android:text="Download Port :" />
+
+            <EditText
+                android:id="@+id/download_port"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:text="4041" />
+
+        </TableRow>
+    </TableLayout>
+
+    <Button
+        android:id="@+id/btn_apply"
+        android:layout_width="111dp"
+        android:layout_height="wrap_content"
+        android:layout_x="146dp"
+        android:layout_y="325dp"
+        android:text="Apply" />
+
+</AbsoluteLayout>

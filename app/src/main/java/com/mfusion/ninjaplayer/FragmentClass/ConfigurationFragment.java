@@ -1,23 +1,18 @@
 package com.mfusion.ninjaplayer.FragmentClass;
 
 import android.app.TimePickerDialog;
-import android.app.TimePickerDialog.OnTimeSetListener;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -30,24 +25,21 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 
+import com.mfusion.commons.controllers.AbstractFragment;
 import com.mfusion.commons.data.DALSettings;
+import com.mfusion.commons.tools.DateConverter;
 import com.mfusion.commons.tools.InternalKeyWords;
-import com.mfusion.commons.tools.SQLiteDBHelper;
-import com.mfusion.ninjaplayer.New.MainActivity;
+import com.mfusion.commons.tools.LogOperator;
 import com.mfusion.ninjaplayer.R;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class ConfigurationFragment extends Fragment {
-    ViewPager viewPager;
+public class ConfigurationFragment extends AbstractFragment {
+
     Button Save, Check;
     ImageButton shut, wake;
     EditText pass, passagain;
@@ -58,316 +50,287 @@ public class ConfigurationFragment extends Fragment {
     TimePickerDialog timePickerDialog;
     CheckBox ckpass, ckwake, ckshut;
 
+    TextView m_warning_view;
 
+    Boolean isCreated=false;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if(rootView!=null){
+            return rootView;
+        }
 
-
-        View rootView = inflater.inflate(R.layout.fragment_configuration, container, false);
+        rootView = inflater.inflate(R.layout.fragment_configuration, container, false);
+        rootView.setFocusable(true);
+        rootView.setFocusableInTouchMode(true);
+        m_warning_view = (TextView) rootView.findViewById(R.id.config_warning_view);
 
         radioGroup = (RadioGroup) rootView.findViewById(R.id.myRadioGroup);
         Portrait = (RadioButton) rootView.findViewById(R.id.portrait);// portrait orientation
         Landscape = (RadioButton) rootView.findViewById(R.id.landscape);//landscape orientation
 
-
         ckshut = (CheckBox) rootView.findViewById(R.id.chshut3);//shutdown time checkbox
         shut = (ImageButton) rootView.findViewById(R.id.btnImgShut);//wake up image button
+        shut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setshut();
+            }
+        });
         tvtime = (EditText) rootView.findViewById(R.id.edTvtime);//text view for shutdown time
-
 
         ckwake = (CheckBox) rootView.findViewById(R.id.chwake3);//wake up time checkboc
         wake = (ImageButton) rootView.findViewById(R.id.btnImgWake);//wake up time image button
+        wake.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setwake();
+            }
+        });
         tvwtime = (EditText) rootView.findViewById(R.id.edTvwtime);//text view for shutdown time
 
-
-       ckpass = (CheckBox) rootView.findViewById(R.id.chPassword2);//password checkbox
+        ckpass = (CheckBox) rootView.findViewById(R.id.chPassword2);//password checkbox
         pass = (EditText) rootView.findViewById(R.id.etPassword);//password
+        pass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(pass.isClickable()) {
+                    pass.setFocusableInTouchMode(true);
+                    pass.setFocusable(true);
+                }
+            }
+        });
         passagain = (EditText) rootView.findViewById(R.id.etMatch);//confirm password
+        passagain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(passagain.isClickable()) {
+                    passagain.setFocusable(true);
+                    passagain.setFocusableInTouchMode(true);
+                }
+            }
+        });
         status = (TextView) rootView.findViewById(R.id.txtStatusPa);//password validation text view
 
         Save = (Button) rootView.findViewById(R.id.btnContinue);//save setting button
 
-        viewPager = (ViewPager) getActivity().findViewById(R.id.photosViewPager);
-
-        initmethodforeverything();//call initialisation method
-
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-
-
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-
-                if (checkedId == R.id.landscape) {
-                    // getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-//                    getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-                    //Oritantion();
-                    //Toast.makeText(getActivity(), "Landscape", Toast.LENGTH_SHORT).show();
-
-                } else if (checkedId == R.id.portrait) {
-
-                    //getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-//                    getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-                    // Oritantion();
-                    //Toast.makeText(getActivity(), "Portrait", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });//radio button for screen orientation
-
-
-        pass.addTextChangedListener(new TextWatcher() {
-
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                // TODO Auto-generated method stub
-
-
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // TODO Auto-generated method stub
-
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String strPass1 = pass.getText().toString();
-
-             if (isValidPassword(strPass1)) {
-                    status.setText("Password Accepted");//display when password is valid
-                } else if (!isValidPassword(strPass1)) {
-                    //pass.setError("Password must be min6,max12,0-9,a-z or A-Z");
-//                    status.setText("");
-                    status.setText("Password must be min6,max12,0-9,a-z or A-Z");//display when password is not valid
-
-                }
-
-            }
-
-        });//check password
-
-        passagain.addTextChangedListener(new TextWatcher() {
-            public void afterTextChanged(Editable s) {
-
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                String strPass1 = pass.getText().toString();
-                String strPass2 = passagain.getText().toString();
-                if (isValidPassword(strPass1) && strPass1.equals(strPass2)) {
-                    status.setText("Password match");//display when passwords match
-                } else {
-                 
-                    status.setText("Password do not match");//display when passwords do not match
-                
-
-                }
-            }
-        });//confirm password validation
-
-
-       ckpass.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                //do stuff
-                if (isChecked) {
-                    pass.setBackgroundResource(R.drawable.edittext_bg);
-                    pass.setHint("Enter your password");
-
-                    //pass.set(R.drawable.edittext_bg);
-                    Toast.makeText(getActivity(), "User set password field unlocked", Toast.LENGTH_SHORT).show();
-
-                    pass.setFocusableInTouchMode(true);
-                    pass.setClickable(true);
-
-
-                    passagain.setBackgroundResource(R.drawable.edittext_bg);
-                    passagain.setHint("Enter your password Again");
-                    passagain.setFocusableInTouchMode(true);
-                    passagain.setClickable(true);
-
-                } else {
-                    pass.setHint("");
-                    pass.setBackgroundColor(Color.LTGRAY);
-
-                    Toast.makeText(getActivity(), "Default password will be used, User set password field locked", Toast.LENGTH_SHORT).show();
-                    pass.setFocusable(false);
-                    pass.setClickable(false);
-
-
-                    passagain.setHint("");
-                    passagain.setBackgroundColor(Color.LTGRAY);
-
-                    passagain.setFocusable(false);
-                    passagain.setClickable(false);
-
-                    pass.setText("");
-                    passagain.setText("");
-                    status.setText("");
-                }
-
-            }
-       });//password checkbox
-
-        ckshut.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                //do stuff
-                if (isChecked) {
-                    Toast.makeText(getActivity(), "Shutdown Button and field unlocked", Toast.LENGTH_SHORT).show();
-
-                    shut.setOnClickListener(new View.OnClickListener() {
-
-                        @Override
-                        public void onClick(View v) {
-
-                            //set shudown settings
-
-                            setshut();
-
-                        }
-                    });
-                } else {
-                    Toast.makeText(getActivity(), "Shutdown Button and field locked", Toast.LENGTH_SHORT).show();
-                    shut.setFocusable(false);
-                    shut.setClickable(false);
-
-                    tvtime.setFocusable(false);
-                    tvtime.setClickable(false);
-
-                    tvtime.setText("");
-                }
-
-            }
-        });//shutdown time check box
-
-ckwake.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                //do stuff
-                if (isChecked) {
-                    Toast.makeText(getActivity(), "Wakeup Button and field unlocked", Toast.LENGTH_SHORT).show();
-
-                    wake.setOnClickListener(new View.OnClickListener() {
-
-
-                        @Override
-                        public void onClick(View v) {
-
-                            setwake();
-
-                        }
-                    });
-                } else {
-                    Toast.makeText(getActivity(), "Wakeup Button and field locked", Toast.LENGTH_SHORT).show();
-                    wake.setFocusable(false);
-                    wake.setClickable(false);
-
-                    tvwtime.setFocusable(false);
-                    tvwtime.setClickable(false);
-
-                    tvwtime.setText("");
-                }
-
-            }
-            });//wake up time checkbox
-        
-        
-        
         Save.setOnClickListener(new View.OnClickListener() {
-            String password = pass.getText().toString().trim();
-            String match = passagain.getText().toString().trim();
-
-
             @Override
             public void onClick(View v) {
-
-                SaveSettings();
-
-
+                saveModification();
             }
         });//save setting
 
-        //RetrieveSettings();//Retrieve settings from database if there is previous settings
+        bindingConfiguration();
 
-
+        isCreated=true;
         return rootView;
     }//oncreate
 
-    private void initmethodforeverything() {
+    TextWatcher passwordWatcher= new TextWatcher() {
 
-        pass.setHint("");
-        pass.setBackgroundColor(Color.LTGRAY);
+        @Override
+        public void afterTextChanged(Editable s) {
+            // TODO Auto-generated method stub
+            if(ckpass.isChecked())
+                isEditing=true;
+        }
 
-        passagain.setHint("");
-        passagain.setBackgroundColor(Color.LTGRAY);
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            // TODO Auto-generated method stub
 
-        Landscape.setChecked(true);
-        Portrait.setChecked(false);
+        }
 
-        pass.setFocusable(false);
-        pass.setClickable(false);
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if(!ckpass.isChecked())
+                return;
 
-        passagain.setFocusable(false);
-        passagain.setClickable(false);
+            String strPass1 = pass.getText().toString();
+            if (isValidPassword(strPass1)) {
+                status.setText("Password Accepted");//display when password is valid
+            } else if (!isValidPassword(strPass1)) {
+                status.setText("Password must be min6,max12,0-9,a-z or A-Z");//display when password is not valid
+            }
+        }
+    };
 
-        shut.setFocusable(false);
-        shut.setClickable(false);
+    TextWatcher passwordAgainWatcher= new TextWatcher() {
+        public void afterTextChanged(Editable s) {
+            if(ckpass.isChecked())
+                isEditing=true;
+        }
 
-        wake.setFocusable(false);
-        wake.setClickable(false);
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
 
-        tvtime.setFocusable(false);
-        tvtime.setClickable(false);
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-        tvwtime.setFocusable(false);
-        tvwtime.setClickable(false);
+            if(!ckpass.isChecked())
+                return;
+            String strPass1 = pass.getText().toString();
+            String strPass2 = passagain.getText().toString();
+            if (isValidPassword(strPass1) && strPass1.equals(strPass2)) {
+                status.setText("Password match");//display when passwords match
+            } else {
+                status.setText("Password do not match");//display when passwords do not match
+            }
+        }
+    };
 
-    }//set all the intial settings
+    CompoundButton.OnCheckedChangeListener checkedPasswordListener = new CompoundButton.OnCheckedChangeListener() {
 
-//    private void RetrieveSettings() {
-////        DALSettings.getInstance().getSystemSetting();
-//        String shut = DALSettings.getInstance().getShutDownTime();
-//        String wake = DALSettings.getInstance().getWakeUpTime();
-//
-//
-//        if(shut.equals("") || wake.equals(""))
-//        {
-//            tvtime.setText("");
-//            tvwtime.setText("");
-//        }
-//
-//        else if(shut != null || wake != null)
-//        {
-//            try {
-//
-//
-//                tvtime.setText(shut);
-//                tvwtime.setText(wake);
-//
-//                Toast.makeText(getActivity(), "retrieve..I think ... NOT", Toast.LENGTH_SHORT).show();
-//            } catch (Exception e) {
-//                Toast.makeText(getActivity(), "ERRORR2222222222222222222", Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//
-//
-//
-//
-//    }//retrieve button listener
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        //do stuff
+            isEditing=true;
+            int textColor=Color.LTGRAY;
+            if (isChecked) {
+                textColor=getResources().getColor(R.color.config_text);
+            } else {
+                status.setText("");
+            }
 
+            pass.setTextColor(textColor);
+            pass.setHintTextColor(textColor);
+            passagain.setTextColor(textColor);
+            passagain.setHintTextColor(textColor);
 
- private void setshut() {
+            pass.setFocusableInTouchMode(isChecked);
+            passagain.setFocusableInTouchMode(isChecked);
+            pass.setFocusable(isChecked);
+            pass.setClickable(isChecked);
+            passagain.setFocusable(isChecked);
+            passagain.setClickable(isChecked);
+        }
+    };
+
+    CompoundButton.OnCheckedChangeListener checkedShutdownListener = new CompoundButton.OnCheckedChangeListener() {
+
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            //do stuff
+            isEditing=true;
+            if (isChecked) {
+                tvtime.setTextColor(getResources().getColor(R.color.config_text));
+            } else {
+                tvtime.setText("00:00:00");
+                tvtime.setTextColor(Color.LTGRAY);
+            }
+
+            shut.setFocusable(isChecked);
+            shut.setClickable(isChecked);
+        }
+    };
+
+    CompoundButton.OnCheckedChangeListener checkedWakeupListener = new CompoundButton.OnCheckedChangeListener() {
+
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            //do stuff
+            isEditing=true;
+            if (isChecked) {
+                tvwtime.setTextColor(getResources().getColor(R.color.config_text));
+            } else {
+                tvwtime.setText("00:00:00");
+                tvwtime.setTextColor(Color.LTGRAY);
+            }
+            wake.setFocusable(isChecked);
+            wake.setClickable(isChecked);
+        }
+    };
+
+    private void bindingConfiguration(){
+
+        pass.removeTextChangedListener(passwordWatcher);//check password
+
+        passagain.removeTextChangedListener(passwordAgainWatcher);//confirm password validation
+
+        ckpass.setOnCheckedChangeListener(null);//password checkbox
+
+        ckshut.setOnCheckedChangeListener(null);//shutdown time check box
+
+        ckwake.setOnCheckedChangeListener(null);//wake up time checkbox
+
+        int orientation=DALSettings.getInstance().getOrientation();
+        if(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE==orientation)
+            Landscape.setChecked(true);
+        else Portrait.setChecked(true);
+
+        String passwordStr=DALSettings.getInstance().getExitPassword();
+        Boolean enabled=false;
+        int textColor=Color.LTGRAY;
+
+        if(passwordStr!=null&&!passwordStr.isEmpty()){
+            enabled=true;
+            textColor=getResources().getColor(R.color.config_text);
+        }
+        ckpass.setChecked(enabled);
+        pass.setText(passwordStr);
+        passagain.setText(passwordStr);
+
+        pass.setTextColor(textColor);
+        pass.setHintTextColor(textColor);
+        passagain.setTextColor(textColor);
+        passagain.setHintTextColor(textColor);
+
+        pass.setClickable(enabled);
+        passagain.setClickable(enabled);
+
+        enabled=false;
+        textColor=Color.LTGRAY;
+        String shutdowndStr=DALSettings.getInstance().getShutDownTime();
+        if(shutdowndStr!=null&&!shutdowndStr.isEmpty()){
+            enabled=true;
+            textColor=getResources().getColor(R.color.config_text);
+        }else
+            shutdowndStr="00:00:00";
+
+        ckshut.setChecked(enabled);
+        tvtime.setText(shutdowndStr);
+        tvtime.setTextColor(textColor);
+
+        shut.setFocusable(enabled);
+        shut.setClickable(enabled);
+
+        tvtime.setFocusable(enabled);
+        tvtime.setClickable(enabled);
+
+        enabled=false;
+        textColor=Color.LTGRAY;
+        String wakeupdStr=DALSettings.getInstance().getWakeUpTime();
+        if(wakeupdStr!=null&&!wakeupdStr.isEmpty()){
+            enabled=true;
+            textColor=getResources().getColor(R.color.config_text);
+        }else
+            wakeupdStr="00:00:00";
+
+        ckwake.setChecked(enabled);
+        tvwtime.setText(wakeupdStr);
+        tvwtime.setTextColor(textColor);
+
+        wake.setFocusable(enabled);
+        wake.setClickable(enabled);
+
+        tvwtime.setFocusable(enabled);
+        tvwtime.setClickable(enabled);
+
+        pass.addTextChangedListener(passwordWatcher);//check password
+
+        passagain.addTextChangedListener(passwordAgainWatcher);//confirm password validation
+
+        ckpass.setOnCheckedChangeListener(checkedPasswordListener);//password checkbox
+
+        ckshut.setOnCheckedChangeListener(checkedShutdownListener);//shutdown time check box
+
+        ckwake.setOnCheckedChangeListener(checkedWakeupListener);//wake up time checkbox
+
+        m_warning_view.setText("");
+        isEditing=false;
+    }
+
+    private void setshut() {
 
         Calendar calendar = Calendar.getInstance();
 
@@ -376,23 +339,20 @@ ckwake.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
         timePickerDialog.show();
     }//set shudown time method
         
-         TimePickerDialog.OnTimeSetListener timePickerListener =
-            new TimePickerDialog.OnTimeSetListener() {
-                public void onTimeSet(TimePicker view, int selectedHour,
-                                      int selectedMinute) {
+     TimePickerDialog.OnTimeSetListener timePickerListener = new TimePickerDialog.OnTimeSetListener() {
+         public void onTimeSet(TimePicker view, int selectedHour,
+                              int selectedMinute) {
+             // set time into textview
+             Calendar date = Calendar.getInstance();
+             date.set(Calendar.HOUR_OF_DAY, selectedHour);
+             date.set(Calendar.MINUTE, selectedMinute);
+             date.set(Calendar.AM_PM, date.get(Calendar.AM_PM));
+             String time = DateConverter.convertShortTimeToStr(date.getTime());
+             tvtime.setText(time);
+         }
+    };
 
-                    // set time into textview
-                    Calendar date = Calendar.getInstance();
-                    date.set(Calendar.HOUR_OF_DAY, selectedHour);
-                    date.set(Calendar.MINUTE, selectedMinute);
-                    date.set(Calendar.AM_PM, date.get(Calendar.AM_PM));
-                    String time = new SimpleDateFormat("HH:mm:ss").format(date.getTime());
-                    tvtime.setText(time);
-                }
-            };
-            
-            
-           private void setwake() {
+    private void setwake() {
         Calendar calendar = Calendar.getInstance();
         timePickerDialog = new TimePickerDialog(getActivity(), timePickerListener2, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false);
         timePickerDialog.setTitle("Set Wakeup Time");
@@ -403,17 +363,19 @@ ckwake.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             new TimePickerDialog.OnTimeSetListener() {
                 public void onTimeSet(TimePicker view, int selectedHour,
                                       int selectedMinute) {
-                    Calendar date = Calendar.getInstance();
-                    date.set(Calendar.HOUR_OF_DAY, selectedHour);
-                    date.set(Calendar.MINUTE, selectedMinute);
-                    date.set(Calendar.AM_PM, date.get(Calendar.AM_PM));
-                    String time = new SimpleDateFormat("HH:mm:ss").format(date.getTime());
-                    tvwtime.setText(time);
-                }
-            }; 
-            
-    
+        Calendar date = Calendar.getInstance();
+        date.set(Calendar.HOUR_OF_DAY, selectedHour);
+        date.set(Calendar.MINUTE, selectedMinute);
+        date.set(Calendar.AM_PM, date.get(Calendar.AM_PM));
+        String time = DateConverter.convertShortTimeToStr(date.getTime());
+        tvwtime.setText(time);
+        }
+    };
+
     public boolean isValidPassword(final String password) {
+
+        if(password==null||password.isEmpty())
+            return false;
 
         Pattern pattern;
         Matcher matcher;
@@ -426,332 +388,71 @@ ckwake.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
         return matcher.matches();
 
     }//valid password
-    
-    
-    
-    private void SaveSettings() {
 
-
-        String shutdowntime = tvtime.getText().toString().trim();
-        String wakeuptime = tvwtime.getText().toString().trim();
-        String password = pass.getText().toString().trim();
-        String match = passagain.getText().toString().trim();
-
-
-        //String dis = ((RadioButton) getActivity().findViewById(radioGroup.getCheckedRadioButtonId())).getText().toString().trim();
-
-        if (radioGroup.getCheckedRadioButtonId() == R.id.landscape) {
-            String s = "Landscape";
-            String defaultp = "mfusion";
-
-
-            if (!ckpass.isChecked() && password.isEmpty() && password.equals(match) && s != null) {
-                //controller.insert_setting(dis, pa, shut, wake, auto);
-                // controller.insert_setting2(s, pa, shut, wake);
-                DALSettings.getInstance().setShutDownTime(shutdowntime);
-                DALSettings.getInstance().setWakeUpTime(wakeuptime);
-                DALSettings.getInstance().setExitPassword(defaultp);
-
-                Toast.makeText(getActivity(), "Saved with: " + s + "," + defaultp + "," + shutdowntime + "," + wakeuptime, Toast.LENGTH_SHORT).show();
-
-                configurationLogDefault();
-
-
-            } else if (ckpass.isChecked() && password != null) {
-
-                if (isValidPassword(password) && password.equals(match)) {
-                    //controller.insert_setting(dis, pa, shut, wake, auto);
-                    DALSettings.getInstance().setShutDownTime(shutdowntime);
-                    DALSettings.getInstance().setWakeUpTime(wakeuptime);
-                    DALSettings.getInstance().setExitPassword(password);
-                    Toast.makeText(getActivity(), "Saved with: " + s + "," + password + "," + shutdowntime + "," + wakeuptime, Toast.LENGTH_SHORT).show();
-
-                    configurationLog();
-
-
-                } else if (!isValidPassword(password)) {
-                    Toast.makeText(getActivity(), "Password field is checked pls enter a password which must be min6,max12,0-9,a-z or A-Z =)", Toast.LENGTH_SHORT).show();
-                    PasswordLog();
-                } else if (isValidPassword(password) && password != match) {
-                    Toast.makeText(getActivity(), "Password Not match", Toast.LENGTH_SHORT).show();
-                    PasswordLog();
-                }
-
-            }
-
-
-        } else if (radioGroup.getCheckedRadioButtonId() == R.id.portrait) {
-            String a = "Portrait";
-            String defaultp = "mfusion";
-
-            if (password.isEmpty() && password.equals(match) && a != null) {
-                //controller.insert_setting(dis, pa, shut, wake, auto);
-                DALSettings.getInstance().setShutDownTime(shutdowntime);
-                DALSettings.getInstance().setWakeUpTime(wakeuptime);
-                DALSettings.getInstance().setExitPassword(defaultp);
-                Toast.makeText(getActivity(), "Saved with: " + a + "," + defaultp + "," + shutdowntime + "," + wakeuptime, Toast.LENGTH_SHORT).show();
-                configurationLogDefault();
-
-
-            } else if (ckpass.isChecked() && password != null) {
-
-                if (isValidPassword(password) && password.equals(match)) {
-                    //controller.insert_setting(dis, pa, shut, wake, auto);
-                    DALSettings.getInstance().setShutDownTime(shutdowntime);
-                    DALSettings.getInstance().setWakeUpTime(wakeuptime);
-                    DALSettings.getInstance().setExitPassword(password);
-                    Toast.makeText(getActivity(), "Saved with: " + a + "," + password + "," + shutdowntime + "," + wakeuptime, Toast.LENGTH_SHORT).show();
-                    configurationLog();
-
-
-                } else if (!isValidPassword(password)) {
-                    Toast.makeText(getActivity(), "Password field is checked pls enter a password which must be min6,max12,0-9,a-z or A-Z =)", Toast.LENGTH_SHORT).show();
-                    PasswordLog();
-                } else if (isValidPassword(password) && password != match) {
-                    Toast.makeText(getActivity(), "Password Not match", Toast.LENGTH_SHORT).show();
-                    PasswordLog();
-                }
-
-            }
-
-        }}//save setting method
-
-//        try {
-//
-//            //DALSettings settings;
-//
-//            DALSettings.getInstance().setShutDownTime(shutdowntime);
-//            DALSettings.getInstance().setWakeUpTime(wakeuptime);
-//            DALSettings.getInstance().setExitPassword(password);
-//
-//            Toast.makeText(getActivity(), "saved..I think ... NOT", Toast.LENGTH_SHORT).show();
-//        } catch (Exception e) {
-//            Toast.makeText(getActivity(), "ERRORRRRRRRRRRRRRRRR", Toast.LENGTH_SHORT).show();
-//        }
-
-    }//save button listener
-
- 
-    private void PasswordLog() {
-        String pa = pass.getText().toString().trim();
-        String pass = passagain.getText().toString().trim();
-        try {
-            File myFile = new File("/sdcard/MFusion/log.txt");
-
-            if (!myFile.exists()) {
-                myFile.createNewFile();
-                //Toast.makeText(getActivity(),"Created 'log.txt'",Toast.LENGTH_SHORT).show();
-            } else if (myFile.exists()) {
-                FileOutputStream fOut = new FileOutputStream(myFile, true);
-                OutputStreamWriter myOutWriter =
-                        new OutputStreamWriter(fOut);
-
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                String currentDateandTime = sdf.format(new Date());
-                myOutWriter.append("Attempted to change password but failed due to wrong requirement or Password does not match/wrong match format at : " + currentDateandTime + "\n" + pa + ":" + pass + "\n");
-
-                myOutWriter.close();
-                fOut.close();
-            }
-        } catch (Exception e) {
-            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-            Execerror();
-        }
-    }//eng of passwordlog
-
-    private void Execerror() {
+    @Override
+    public Boolean saveModification() {
 
         try {
-            File myFile = new File("/sdcard/MFusion/log.txt");
+            int orientation=ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+            if(Portrait.isChecked())
+                orientation=ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
 
-            if (!myFile.exists()) {
-                myFile.createNewFile();
-                //Toast.makeText(getActivity(),"Created 'log.txt'",Toast.LENGTH_SHORT).show();
-            } else if (myFile.exists()) {
-                FileOutputStream fOut = new FileOutputStream(myFile, true);
-                OutputStreamWriter myOutWriter =
-                        new OutputStreamWriter(fOut);
-
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                String currentDateandTime = sdf.format(new Date());
-                myOutWriter.append("Exception Error in ConfigurationFragment at : " + currentDateandTime + "\n");
-                myOutWriter.close();
-                fOut.close();
+            String password="";
+            if (ckpass.isChecked()) {
+                String inputPassword=pass.getText().toString().trim();
+                Boolean checkResult=isValidPassword(inputPassword);
+                if(!checkResult){
+                    m_warning_view.setText("Password field is checked pls enter a password which must be min6,max12,0-9,a-z or A-Z =)");
+                    return false;
+                }
+                if (!inputPassword.equals( passagain.getText().toString().trim())) {
+                    m_warning_view.setText("Password not match");
+                    return false;
+                }
+                password=inputPassword;
             }
 
-        } catch (Exception e) {
-            Toast.makeText(getActivity(), e.getMessage(),
-                    Toast.LENGTH_SHORT).show();
-        }
+            DALSettings.getInstance().setOrientation(orientation);
+            DALSettings.getInstance().setExitPassword(password);
 
+            String shutdownValue="";
+            if(ckshut.isChecked()){
+                shutdownValue=tvtime.getText().toString();
+            }
+            DALSettings.getInstance().setShutDownTime(shutdownValue);
+
+            String wakeupValue="";
+            if(ckwake.isChecked()){
+                wakeupValue=tvwtime.getText().toString();
+            }
+            DALSettings.getInstance().setWakeUpTime(wakeupValue);
+
+            m_warning_view.setText("Save Successfully");
+            isEditing=false;
+            return true;
+        }catch (Exception ex){
+            ex.printStackTrace();
+            LogOperator.WriteLogfortxt("ConfigurationFragment==>"+ex.getMessage());
+            m_warning_view.setText("Save Failed");
+        }
+        return false;
+    }//save setting method
+
+    @Override
+    public void cancelSaveModification() {
+        bindingConfiguration();
     }
 
-    private void Oritantion() {
-
-        try {
-            File myFile = new File("/sdcard/MFusion/log.txt");
-
-            if (!myFile.exists()) {
-                myFile.createNewFile();
-                //Toast.makeText(getActivity(),"Created 'log.txt'",Toast.LENGTH_SHORT).show();
-            } else if (myFile.exists()) {
-
-                if (radioGroup.getCheckedRadioButtonId() == R.id.landscape) {
-                    FileOutputStream fOut = new FileOutputStream(myFile, true);
-                    OutputStreamWriter myOutWriter =
-                            new OutputStreamWriter(fOut);
-
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                    String currentDateandTime = sdf.format(new Date());
-                    myOutWriter.append("Oritantion change to Landscape at : " + currentDateandTime + "\n");
-                    myOutWriter.close();
-                    fOut.close();
-
-                } else if (radioGroup.getCheckedRadioButtonId() == R.id.portrait) {
-                    FileOutputStream fOut = new FileOutputStream(myFile, true);
-                    OutputStreamWriter myOutWriter =
-                            new OutputStreamWriter(fOut);
-
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                    String currentDateandTime = sdf.format(new Date());
-                    myOutWriter.append("Oritantion change to Portrait at : " + currentDateandTime + "\n");
-                    myOutWriter.close();
-                    fOut.close();
-
-                }
-
-            }
-
-        } catch (Exception e) {
-            Toast.makeText(getActivity(), e.getMessage(),
-                    Toast.LENGTH_SHORT).show();
+    @Override
+    public void showFragment() {
+        if(isCreated){
+            bindingConfiguration();
         }
-
     }
 
+    @Override
+    public void hideFragment() {
 
-    private void configurationLog() {
-
-        String pa = pass.getText().toString().trim();
-        String shut = tvtime.getText().toString().trim();
-        String wake = tvwtime.getText().toString().trim();
-
-
-        if (radioGroup.getCheckedRadioButtonId() == R.id.landscape) {
-            String s = "Landscape";
-            try {
-                File myFile = new File("/sdcard/MFusion/log.txt");
-
-                if (!myFile.exists()) {
-                    myFile.createNewFile();
-                    //Toast.makeText(getActivity(),"Created 'log.txt'",Toast.LENGTH_SHORT).show();
-                } else if (myFile.exists()) {
-                    FileOutputStream fOut = new FileOutputStream(myFile, true);
-                    OutputStreamWriter myOutWriter =
-                            new OutputStreamWriter(fOut);
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                    String currentDateandTime = sdf.format(new Date());
-                    myOutWriter.append("Configuration Settings saved to log.txt at : " + currentDateandTime + "\n" + s + "," + pa + "," + shut + "," + wake + "\n");
-                    myOutWriter.close();
-                    fOut.close();
-                }
-
-            } catch (Exception e) {
-                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                Execerror();
-            }
-        } else if (radioGroup.getCheckedRadioButtonId() == R.id.portrait) {
-
-            String a = "Landscape";
-            try {
-                File myFile = new File("/sdcard/MFusion/log.txt");
-
-                if (!myFile.exists()) {
-                    myFile.createNewFile();
-                    //Toast.makeText(getActivity(),"Created 'log.txt'",Toast.LENGTH_SHORT).show();
-                } else if (myFile.exists()) {
-                    FileOutputStream fOut = new FileOutputStream(myFile, true);
-                    OutputStreamWriter myOutWriter =
-                            new OutputStreamWriter(fOut);
-
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                    String currentDateandTime = sdf.format(new Date());
-                    myOutWriter.append("Configuration Settings saved to log.txt at : " + currentDateandTime + "\n" + a + "," + pa + "," + shut + "," + wake + "\n");
-
-                    myOutWriter.close();
-                    fOut.close();
-                }
-
-            } catch (Exception e) {
-                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                Execerror();
-            }
-
-        }
-
-    }//end of log
-
-    private void configurationLogDefault() {
-
-        String pa = pass.getText().toString().trim();
-        String shut = tvtime.getText().toString().trim();
-        String wake = tvwtime.getText().toString().trim();
-
-
-        if (radioGroup.getCheckedRadioButtonId() == R.id.landscape) {
-            String s = "Landscape";
-            try {
-                File myFile = new File("/sdcard/MFusion/log.txt");
-
-                if (!myFile.exists()) {
-                    myFile.createNewFile();
-                    //Toast.makeText(getActivity(),"Created 'log.txt'",Toast.LENGTH_SHORT).show();
-                } else if (myFile.exists()) {
-                    FileOutputStream fOut = new FileOutputStream(myFile, true);
-                    OutputStreamWriter myOutWriter =
-                            new OutputStreamWriter(fOut);
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                    String currentDateandTime = sdf.format(new Date());
-                    myOutWriter.append("Configuration Settings saved to log.txt at : " + currentDateandTime + "\n" + s + "," + "mfusion" + "," + shut + "," + wake + "\n");
-                    myOutWriter.close();
-                    fOut.close();
-                }
-
-            } catch (Exception e) {
-                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                Execerror();
-            }
-        } else if (radioGroup.getCheckedRadioButtonId() == R.id.portrait) {
-
-            String a = "Landscape";
-            try {
-                File myFile = new File("/sdcard/MFusion/log.txt");
-
-                if (!myFile.exists()) {
-                    myFile.createNewFile();
-                    //Toast.makeText(getActivity(),"Created 'log.txt'",Toast.LENGTH_SHORT).show();
-                } else if (myFile.exists()) {
-                    FileOutputStream fOut = new FileOutputStream(myFile, true);
-                    OutputStreamWriter myOutWriter =
-                            new OutputStreamWriter(fOut);
-
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                    String currentDateandTime = sdf.format(new Date());
-                    myOutWriter.append("Configuration Settings saved to log.txt at : " + currentDateandTime + "\n" + a + "," + "mfusion" + "," + shut + "," + wake + "\n");
-
-                    myOutWriter.close();
-                    fOut.close();
-                }
-
-            } catch (Exception e) {
-                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                Execerror();
-            }
-
-        }
-
-    }//end of default log
-
-
+    }
 }//clase
 

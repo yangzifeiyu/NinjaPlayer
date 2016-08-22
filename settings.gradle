@@ -1,1 +1,2 @@
-include ':app', ':scheduledesigner', ':templatedesigner', ':commons'
+include ':app', ':scheduledesigner', ':templatedesigner', ':commons', ':player'
+//include ':app', ':scheduledesigner', ':templatedesigner', ':commons', ':player'

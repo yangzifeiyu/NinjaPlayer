@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RelativeLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TableLayout
+        android:id="@+id/TableLayout1"
+        android:layout_width="300dp"
+        android:layout_height="265dp"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="false"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="false"
+        android:layout_marginTop="50dp" ><TableRow
+            android:id="@+id/tableRow4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/tv_log_warning1"
+                android:layout_width="140dp"
+                android:layout_height="40dp"
+                android:paddingTop="10dp"
+                android:text="Player Display :"
+                android:textAlignment="center"
+                android:textColor="@color/black"  />
+
+            <TextView
+                    android:id="@+id/tv_playerscreen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="false"
+                    android:layout_centerVertical="true"
+                    android:text="N/A" 
+                android:textColor="@color/black" 
+                android:textSize="12sp" />
+
+        </TableRow>
+        <TableRow
+            android:id="@+id/tableRow3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/tv_log_warning"
+                android:layout_width="140dp"
+                android:layout_height="50dp"
+                android:paddingTop="10dp"
+                android:text="Player IP :"
+                android:textAlignment="center"
+                android:textColor="@color/black"  />
+
+            <RelativeLayout
+                android:layout_width="100dp"
+                android:layout_height="35dp" >
+
+                <TextView
+                    android:id="@+id/tv_playerip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="false"
+                    android:layout_centerVertical="true"
+                    android:text="127.0.0.1" 
+                android:textColor="@color/black" 
+                android:textSize="12sp" />
+            </RelativeLayout>
+
+            <ImageButton
+                android:id="@+id/btn_setip"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:background="@drawable/button_style"
+                android:src="@drawable/setting" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="130dp"
+                android:layout_height="30dp"
+                android:text="Player License :"
+                android:textColor="@color/black"  />
+
+            <TextView
+                android:id="@+id/tv_playerlicense"
+                android:layout_width="120dp"
+                android:layout_height="30dp"
+                android:text=""
+                android:textColor="@color/black"
+                android:textSize="12sp" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/list_loading_time"
+                android:layout_width="130dp"
+                android:layout_height="40dp"
+                android:text="Server IP :"
+                android:textColor="@color/black" />
+
+            <Button
+                android:id="@+id/server_ip"
+                android:layout_width="100dp"
+                android:layout_height="35dp"
+                android:background="@drawable/button_style"
+                android:text="127.0.0.1"
+                android:textSize="12sp" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/tv_volume"
+                android:layout_width="130dp"
+                android:layout_height="40dp"
+                android:text="Server Port :" 
+                android:textColor="@color/black" />
+
+            <Button
+                android:id="@+id/server_port"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:background="@drawable/button_style"
+                android:text="6060"
+                android:textSize="12sp" />
+        </TableRow>
+
+    </TableLayout>
+
+</RelativeLayout>

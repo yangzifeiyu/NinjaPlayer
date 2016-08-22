@@ -7,31 +7,57 @@
     android:weightSum="9"
     tools:context=".New.MainActivity">
 
-    <GridView
-        android:id="@+id/template_list_user_created_grid_view"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:numColumns="3"
-        android:layout_weight="8"></GridView>
-    <!--<com.mfusion.templatedesigner.TemplateDesigner-->
-        <!--android:id="@+id/template_designer"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:layout_weight="8"></com.mfusion.templatedesigner.TemplateDesigner>-->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layoutDirection="rtl"
-        android:layout_weight="1">
+        android:layout_height="35dp">
 
-
-        <Button
-            android:text="New"
-            android:id="@+id/template_btn_new"
+        <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="fill_parent"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Template List"
+            android:id="@+id/textView10"
+            android:layout_marginLeft="5dp"
+            android:layout_alignParentLeft="true"
+            android:gravity="center"
+            android:textStyle="bold|italic" />
+
+        <com.mfusion.commons.view.ImageTextView
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:id="@+id/template_new"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <GridView
+            android:id="@+id/template_list_user_created_grid_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:numColumns="4"></GridView>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/template_load_image"
+            android:src="@drawable/loading"
+            android:scaleType="center"
+            android:maxWidth="20dp"
+            android:maxHeight="20dp"
+            android:adjustViewBounds="false" />
 
     </LinearLayout>
 
+    <!--<com.mfusion.templatedesigner.olddesigner.TemplateDesigner-->
+        <!--android:id="@+id/template_designer"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_weight="8"></com.mfusion.templatedesigner.olddesigner.TemplateDesigner>-->
 
 </LinearLayout>

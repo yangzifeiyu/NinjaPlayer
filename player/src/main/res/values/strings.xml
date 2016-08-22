@@ -1,0 +1,10 @@
+<resources>
+    <string name="connectserver">(Trying connecting to server...)</string>
+    <string name="app_name">MF Player</string>
+    <string name="copyright">copyright 2017 m-fusion pte ltd</string>
+    <string name="version_number">Version:</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_player_ipsetting">PlayerIPSetting</string>
+    <string name="title_activity_player_config">PlayerConfig</string>
+    <string name="title_activity_player_menu">Android Player 2.0 (Release Time 2016-7-27)</string>
+</resources>
