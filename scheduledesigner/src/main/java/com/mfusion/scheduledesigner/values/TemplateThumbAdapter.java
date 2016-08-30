@@ -3,11 +3,6 @@ package com.mfusion.scheduledesigner.values;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Point;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,6 +13,7 @@ import android.widget.TextView;
 
 import com.mfusion.commons.entity.template.VisualTemplate;
 import com.mfusion.commons.tools.ImageHelper;
+import com.mfusion.commons.view.ScaleDragShadowBuilder;
 import com.mfusion.scheduledesigner.R;
 
 import java.util.ArrayList;

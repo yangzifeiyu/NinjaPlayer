@@ -57,7 +57,17 @@ public class DALSettings {
     }
 
     public Boolean setShutDownTime(String timeString){
-        return this.updateSetting(InternalKeyWords.Config_ShutDownTime,timeString);
+        String oldDatas=getShutDownTime();
+        Boolean result =this.updateSetting(InternalKeyWords.Config_ShutDownTime,timeString);
+        if(timeString!=null&&!timeString.equalsIgnoreCase(oldDatas)){
+            try {
+                XMLSchedule.getInstance().assignDeviceSchedule();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        return result;
     }
 
     public String getExitPassword(){

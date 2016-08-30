@@ -40,6 +40,8 @@ public class BasicComponentView extends RelativeLayout implements OnLongClickLis
 	
 	public Boolean isLayoutChange=false;
 
+	private Boolean isSelected=false;
+
 	public int c_w=200,c_h=200,c_left,c_top;
 
 	public int c_back_color=Color.GRAY;
@@ -50,7 +52,7 @@ public class BasicComponentView extends RelativeLayout implements OnLongClickLis
 	
 	private BasicComponentView compView;
 	
-	protected TextPaint paint_border,paint_bg;
+	protected TextPaint paint_border,paint_bg,paint_selectd;
 
 	private DashPathEffect effects;
 
@@ -96,7 +98,7 @@ public class BasicComponentView extends RelativeLayout implements OnLongClickLis
 
 		this.paint_border=new TextPaint();
 		this.paint_border.setAntiAlias(true);
-		this.paint_border.setColor(Color.WHITE);
+		this.paint_border.setColor(Color.RED);
 		this.paint_border.setStyle(Style.STROKE);
 
 		this.paint_bg=new TextPaint();
@@ -104,14 +106,18 @@ public class BasicComponentView extends RelativeLayout implements OnLongClickLis
 		this.paint_bg.setColor(this.c_back_color);
 		this.paint_bg.setStyle(Style.FILL);
 
+		this.paint_selectd=new TextPaint();
+		this.paint_selectd.setAntiAlias(true);
+		this.paint_selectd.setColor(Color.RED);
+		this.paint_selectd.setStyle(Style.STROKE);
+
 	    this.effects = new DashPathEffect(new float[] { 8, 8}, 1);
 	    
 		this.setOnHoverListener(this);
 		this.setOnLongClickListener(this);  
 		this.addOnLayoutChangeListener(this);
 	}
-	
-	
+
 	@Override  
     protected void onDraw(Canvas canvas)  
     {  
@@ -120,9 +126,35 @@ public class BasicComponentView extends RelativeLayout implements OnLongClickLis
 		if(canvas!=null)
 		{
 			canvas.drawRect(0, 0, this.getLayoutParams().width,  this.getLayoutParams().height, paint_bg);
+
+			if(isSelected) {
+				//顶角的选择标志
+				//左上
+				canvas.drawRect(1, 1, distance - 1, distance - 1, paint_selectd);
+				//左下
+				canvas.drawRect(1, this.getLayoutParams().height - distance + 1, distance - 1, this.getLayoutParams().height - 1, paint_selectd);
+				//右上
+				canvas.drawRect(this.getLayoutParams().width - distance + 1, 1, this.getLayoutParams().width - 1, distance - 1, paint_selectd);
+				//右下
+				canvas.drawRect(this.getLayoutParams().width - distance + 1, this.getLayoutParams().height - distance + 1, this.getLayoutParams().width - 1, this.getLayoutParams().height - 1, paint_selectd);
+
+				int half_distance = distance / 2;
+				if (this.getLayoutParams().width > distance * 4) {
+					int width_center = this.getLayoutParams().width / 2;
+					//上下边的选择标志
+					canvas.drawRect(width_center - half_distance, 1, width_center + half_distance, distance - 1, paint_selectd);
+					canvas.drawRect(width_center - half_distance, this.getLayoutParams().height - distance + 1, width_center + half_distance, this.getLayoutParams().height - 1, paint_selectd);
+				}
+				if (this.getLayoutParams().height > distance * 4) {
+					int height_center = this.getLayoutParams().height / 2;
+					//左右边的选择标志
+					canvas.drawRect(1, height_center - half_distance, distance - 1, height_center + half_distance, paint_selectd);
+					canvas.drawRect(this.getLayoutParams().width - distance + 1, height_center - half_distance, this.getLayoutParams().width - 1, height_center + half_distance, paint_selectd);
+				}
+			}
+
 			canvas.drawRect(1, 1, this.getLayoutParams().width-1,  this.getLayoutParams().height-1, paint_border);
-			canvas.drawBitmap(BitmapFactory.decodeResource(getResources(), android.R.drawable.ic_menu_close_clear_cancel), null,new Rect(getLayoutParams().width-15, 5, getLayoutParams().width, 20), paint_border);
-			//canvas.drawBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.delete_rubbish), null,new Rect(getLayoutParams().width-15, 5, getLayoutParams().width, 20), paint_border);
+			//canvas.drawBitmap(BitmapFactory.decodeResource(getResources(), android.R.drawable.ic_menu_close_clear_cancel), null,new Rect(getLayoutParams().width-15-distance, distance, getLayoutParams().width-distance, distance+15), paint_border);
 		}
     }
 	
@@ -131,20 +163,25 @@ public class BasicComponentView extends RelativeLayout implements OnLongClickLis
 			int b, int oldl, int oldt, int oldr,int oldb) {
 		// TODO Auto-generated method stub
 
-		if(oldl==0&&oldt==0&&oldr==0&&oldb==0)
+		if(oldl==l&&oldt==t&&oldr==r&&oldb==b)
 			return;
 
 		if(view!=null){
-			if(l!=oldl)
-				c_left=(int)(l/ TemplateDesignerKeys.temp_scale);
-			if(t!=oldt)
-				c_top=(int)(t/TemplateDesignerKeys.temp_scale);
-			if(l!=oldl||r!=oldr)
-				c_w=(int)((r-l)/TemplateDesignerKeys.temp_scale);
-			if(t!=oldt||b!=oldb)
-				c_h=(int)((b-t)/TemplateDesignerKeys.temp_scale);
+			c_left=getNewSize(l,c_left);
+			c_top=getNewSize(t,c_top);
+			c_w=getNewSize(r-l,c_w);
+			c_h=getNewSize(b-t,c_h);
 		}
-		
+	}
+
+	/*
+	界面像素对实际像素的影响超过1的，才能采用
+	 */
+	private int getNewSize(int displayData,int realData){
+		int new_data=(int)(displayData/ TemplateDesignerKeys.temp_scale);
+		if(Math.abs(new_data-realData)>2)
+			realData=new_data;
+		return realData;
 	}
 
 	protected Boolean checkComponetValid() throws Exception{
@@ -172,12 +209,21 @@ public class BasicComponentView extends RelativeLayout implements OnLongClickLis
 	public void render(){
 	
 	}
-	
+
+	public void refreshLayout(){
+		RelativeLayout.LayoutParams layoutParams=(RelativeLayout.LayoutParams)this.getLayoutParams();
+		layoutParams.leftMargin=(int)(c_left*TemplateDesignerKeys.temp_scale);
+		layoutParams.topMargin=(int)(c_top*TemplateDesignerKeys.temp_scale);
+		layoutParams.width=(int)(c_w*TemplateDesignerKeys.temp_scale);
+		layoutParams.height=(int)(c_h*TemplateDesignerKeys.temp_scale);
+		this.setLayoutParams(layoutParams);
+	}
+
 	public void stop(){
 		
 	}
 
-	int diatance=15;
+	int distance=10;
 	@Override
 	public boolean onHover(View arg0, MotionEvent event) {
 		// TODO Auto-generated method stub
@@ -208,30 +254,31 @@ public class BasicComponentView extends RelativeLayout implements OnLongClickLis
             this.paint_border.setPathEffect(effects);
         else
             this.paint_border.setPathEffect(null);
-		
+
+		isSelected=selected;
 		invalidate();
 	}
 
 	public Boolean isDeleteComponent(MotionEvent event) {
-		
-		if(event.getX()>(getLayoutParams().width-20)&&event.getY()<20)
+		/*
+		if(event.getX()>(getLayoutParams().width-20-distance)&&event.getX()<(getLayoutParams().width-distance)&&event.getY()>5&&event.getY()<20)
 			return true;
-		
+		*/
 		return false;
 	}
 	
 	public CompOperateType getOperateTypeByLocation(LayoutParams layout,MotionEvent event) {
 		String operateString="";
-		if(event.getY()<diatance){
+		if(event.getY()<distance){
 			operateString="n";
 		}
-		else if(event.getY()>(layout.height-diatance)){
+		else if(event.getY()>(layout.height-distance)){
 			operateString="s";
 		}
-		if(event.getX()<diatance){
+		if(event.getX()<distance){
 			operateString=operateString+"w";
 		}
-		else if(event.getX()>(layout.width-diatance)){
+		else if(event.getX()>(layout.width-distance)){
 			operateString=operateString+"e";
 		}
 
@@ -274,7 +321,7 @@ public class BasicComponentView extends RelativeLayout implements OnLongClickLis
 		}
 	};
 	
-	private void updateViewLayout(Integer width,Integer height,Integer left,Integer top){
+	protected void updateViewLayout(Integer width,Integer height,Integer left,Integer top){
 		c_w=width;
 		c_h=height;
 		c_left=left;

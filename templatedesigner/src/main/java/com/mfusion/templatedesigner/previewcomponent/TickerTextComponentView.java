@@ -137,15 +137,35 @@ public class TickerTextComponentView extends BasicComponentView {
 				left=this.getLayoutParams().width;
 		}
     }
-	
+
+	@Override
+	public void refreshLayout(){
+		super.refreshLayout();
+		this.paint_content.setTextSize(c_font.size* TemplateDesignerKeys.temp_scale);
+		m_content_baseline= getTextBaseline();
+	}
+
 	@Override
 	public void render(){
 		left=this.getLayoutParams().width;
-		FontMetricsInt fontMetrics = this.paint_content.getFontMetricsInt();  
-		m_content_baseline= (this.getLayoutParams().height - fontMetrics.bottom + fontMetrics.top) / 2 - fontMetrics.top; 
+		m_content_baseline= getTextBaseline();
 		this.m_content_lenght=this.paint_content.measureText(this.c_content);
 		
 		this.timer.start(10);
+	}
+
+	@Override
+	public void onLayoutChange(View view, int l, int t, int r,
+							   int b, int oldl, int oldt, int oldr,int oldb) {
+		super.onLayoutChange(view,l,t,r,b,oldl,oldt,oldr,oldb);
+
+		if(oldt!=t||oldb!=b)
+			m_content_baseline= getTextBaseline();
+	}
+
+	private float getTextBaseline(){
+		FontMetricsInt fontMetrics = this.paint_content.getFontMetricsInt();
+		return  (this.getLayoutParams().height - fontMetrics.bottom + fontMetrics.top) / 2 - fontMetrics.top;
 	}
 
 	@Override
@@ -225,7 +245,7 @@ public class TickerTextComponentView extends BasicComponentView {
 		                    String colorString = bundle.getString("color");  
 		                    c_font.color=Integer.parseInt(colorString);
 		                    paint_content.setColor(c_font.color);
-		                    m_fontcolor_edit_btn.setBackgroundColor(c_font.color);
+							PropertyValues.bindingColorButton(m_fontcolor_edit_btn,c_font.color);
 		                }  
 		            }, c_font.color);
 				}
@@ -280,7 +300,7 @@ public class TickerTextComponentView extends BasicComponentView {
 		}
 		
 		m_font_text.setText(c_font.toString());
-		m_fontcolor_edit_btn.setBackgroundColor(c_font.color);
+		PropertyValues.bindingColorButton(m_fontcolor_edit_btn,c_font.color);
 		m_content_editview.setText(c_content);
 		m_speed_ddv.setText(c_speed.toString());
 		

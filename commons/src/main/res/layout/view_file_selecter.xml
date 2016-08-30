@@ -3,14 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:id="@+id/file_dialog" >
+    android:id="@+id/file_select_layout" >
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
  		<com.mfusion.commons.view.ImageTextView
- 		    android:id="@+id/btn_selectfiles"
+ 		    android:id="@+id/file_select_btn"
  		    android:layout_width="wrap_content"
  		    android:layout_height="24dp"
  		    android:layout_alignParentRight="true"
@@ -22,7 +22,7 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/file_container"
+        android:id="@+id/file_item_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical" >

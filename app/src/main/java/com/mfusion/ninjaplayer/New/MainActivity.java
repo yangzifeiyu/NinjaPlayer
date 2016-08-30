@@ -13,18 +13,14 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.text.InputType;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.facebook.stetho.Stetho;
-import com.mfusion.commons.data.DALSettings;
 import com.mfusion.commons.tools.CallbackBundle;
-import com.mfusion.ninjaplayer.AlertDialogHelper;
+import com.mfusion.commons.tools.OperateCallbackBundle;
+import com.mfusion.commons.tools.AlertDialogHelper;
 import com.mfusion.commons.controllers.AbstractFragment;
 import com.mfusion.ninjaplayer.adapter.CustomViewPager;
 import com.mfusion.ninjaplayer.R;
@@ -244,8 +240,17 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         CallbackBundle saveSaveCallback= new CallbackBundle() {
             @Override
             public void callback(Bundle bundle) {
-                if(((AbstractFragment)current_fragment).saveModification())
-                    viewPager.setCurrentItem(tab.getPosition());
+                ((AbstractFragment)current_fragment).saveModification(new OperateCallbackBundle() {
+                    @Override
+                    public void onConfim(String content) {
+                        viewPager.setCurrentItem(tab.getPosition());
+                    }
+
+                    @Override
+                    public void onCancel(String errorMsg) {
+                        actionBar.selectTab(actionBar.getTabAt(viewPager.getCurrentItem()));
+                    }
+                });
             }
         };
         if (viewPager.getCurrentItem() == 0) {

@@ -21,17 +21,32 @@
         android:hint="test"
             style="@style/myTextStyle" />
 
-        <ImageButton
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:id="@+id/sche_temp_refresh_btn"
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"
-            android:src="@drawable/refresh"
-            android:scaleType="fitXY"
-            android:background="@android:color/transparent"
-            android:layout_margin="3dp"
-            android:visibility="gone"/>
+            android:layout_toEndOf="@+id/textView"
+            android:padding="0dp"
+            android:gravity="center">
+
+            <com.mfusion.commons.view.ImageTextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/sche_temp_sort_name"
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp" />
+
+            <com.mfusion.commons.view.ImageTextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/sche_temp_sort_time"
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp" />
+
+        </LinearLayout>
     </RelativeLayout>
 
     <LinearLayout

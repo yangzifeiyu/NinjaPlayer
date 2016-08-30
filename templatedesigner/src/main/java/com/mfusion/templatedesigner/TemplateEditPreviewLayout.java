@@ -5,8 +5,10 @@ import org.w3c.dom.Element;
 
 import com.mfusion.commons.controllers.AbstractFragment;
 import com.mfusion.commons.controllers.AbstractTemplateDesigner;
+import com.mfusion.commons.controllers.KeyBoardCenter;
 import com.mfusion.commons.entity.template.ComponentEntity;
 import com.mfusion.commons.entity.template.TemplateEntity;
+import com.mfusion.commons.tools.CallbackBundle;
 import com.mfusion.commons.tools.XmlOperator;
 import com.mfusion.templatedesigner.previewcomponent.BGComponentView;
 import com.mfusion.templatedesigner.previewcomponent.BasicComponentView;
@@ -24,12 +26,16 @@ import android.app.AlertDialog.Builder;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.telecom.Call;
 import android.util.AttributeSet;
 import android.view.DragEvent;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MotionEvent;
@@ -119,7 +125,7 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 		this.temp_complist=(LinearLayout)templateLayout.findViewById(R.id.temp_comp);
 		
 		this.comp_properties=(LinearLayout)templateLayout.findViewById(R.id.temp_comp_property);
-		this.comp_properties_view=new CompPropertyView(m_context);
+		this.comp_properties_view=new CompPropertyView(m_context, deleteCompCallBack);
 		this.comp_properties.addView(comp_properties_view, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 		
 		this.temp_container=(RelativeLayout)templateLayout.findViewById(R.id.temp_container);
@@ -170,8 +176,23 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 				return false;
 			}
 		});
+
+		KeyBoardCenter.deleteKeyCallbackList.add(deleteCompCallBack);
 	}
-	
+
+	CallbackBundle deleteCompCallBack=new CallbackBundle() {
+		@Override
+		public void callback(Bundle bundle) {
+			if(selectedComp.selectedView==null)
+				return;
+			temp_workspace.removeView(selectedComp.selectedView);
+			if(temp_workspace.getChildCount()>0)
+				comp_properties_view.bingingBasicProperties((BasicComponentView) temp_workspace.getChildAt(0));
+			else
+				comp_properties_view.unBinding();
+		}
+	};
+
 	private void initTemplate() {
 		temp_workspace.removeAllViews();
 
@@ -182,13 +203,47 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 			currentTemplate.backColor=Color.BLACK;
 		}
 
-		if(currentTemplate.id==null||currentTemplate.id.isEmpty())
-			this.m_temp_name_view.setText("New Template");
-		else this.m_temp_name_view.setText("Template Name : "+currentTemplate.id);
+		String displayText="New Template";
+		if(currentTemplate.id!=null&&!currentTemplate.id.isEmpty())
+			displayText=currentTemplate.id;
+		this.m_temp_name_view.setText(displayText+" ( "+currentTemplate.width+" X "+currentTemplate.height+" )");
+		this.m_temp_name_view.setTag(displayText);
 
-		this.temp_real_w=currentTemplate.width;
-		this.temp_real_h=currentTemplate.height;
+		getTemplateScaleData(currentTemplate.width,currentTemplate.height);
 		
+		BGComponentView bg_viewBg=new BGComponentView(this.m_context, this.temp_real_w,this.temp_real_h, currentTemplate.backColor,currentTemplate.backImageBitmap);
+		bg_viewBg.TemplateSizeChangedCallback=TemplateSizeChangedCallback;
+		bindCompEvent(temp_workspace,bg_viewBg,0,0,bg_viewBg.c_w,bg_viewBg.c_h);
+		comp_properties_view.bingingBasicProperties(bg_viewBg);
+		
+		for (ComponentEntity entity : currentTemplate.compList) {
+			BasicComponentView componentView=this.m_component_center.getComponent(m_context, entity);
+			if(componentView!=null)
+				bindCompEvent(temp_workspace,componentView,entity.left,entity.top,entity.width,entity.height);
+		}
+
+		invalidate();
+	}
+
+	private CallbackBundle TemplateSizeChangedCallback=new CallbackBundle() {
+
+		@Override
+		public void callback(Bundle bundle) {
+			// TODO Auto-generated method stub
+			if (bundle == null)
+				return;
+			getTemplateScaleData(bundle.getInt("w"),bundle.getInt("h"));
+			for(int i=1;i<temp_workspace.getChildCount();i++)
+				((BasicComponentView)temp_workspace.getChildAt(i)).refreshLayout();
+			m_temp_name_view.setText(m_temp_name_view.getTag()+" ( "+temp_real_w+" X "+temp_real_h+" )");
+		}
+	};
+
+	private void getTemplateScaleData(int realWidth,int realHeight){
+
+		this.temp_real_w=realWidth;
+		this.temp_real_h=realHeight;
+
 		float scale_w=(this.temp_container_w*1.0f)/this.temp_real_w;
 		float scale_h=(this.temp_container_h*1.0f)/this.temp_real_h;
 		if(scale_w<scale_h){
@@ -209,18 +264,7 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 		this.temp_workspace.setLayoutParams(layoutParams);
 
 		this.temp_ws_absolute_h=layoutParams.topMargin+((RelativeLayout)findViewById(R.id.temp_title_layout)).getLayoutParams().height;
-		
-		BGComponentView bg_viewBg=new BGComponentView(this.m_context, this.temp_real_w,this.temp_real_h, currentTemplate.backColor,currentTemplate.backImageBitmap);
-		bindCompEvent(temp_workspace,bg_viewBg,0,0,bg_viewBg.c_w,bg_viewBg.c_h);
-		comp_properties_view.bingingBasicProperties(bg_viewBg);
-		
-		for (ComponentEntity entity : currentTemplate.compList) {
-			BasicComponentView componentView=this.m_component_center.getComponent(m_context, entity);
-			if(componentView!=null)
-				bindCompEvent(temp_workspace,componentView,entity.left,entity.top,entity.width,entity.height);
-		}
 
-		invalidate();
 	}
 
 	int diatance=15;
@@ -230,8 +274,10 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 			parentFragment.isEditing=true;
 
 		BasicComponentView componentView=this.m_component_center.CreateComponent(m_context, type);
-		if(componentView!=null)
-			bindCompEvent(parentLayout,componentView,x,y,componentView.c_w,componentView.c_h);
+		if(componentView!=null) {
+			bindCompEvent(parentLayout, componentView, x, y, componentView.c_w, componentView.c_h);
+			comp_properties_view.bingingBasicProperties(componentView);
+		}
 	}
 	
 	private void bindCompEvent(RelativeLayout parentLayout,BasicComponentView componentView,int x,int y,int width,int height){
@@ -305,8 +351,6 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 			}
 		});
 		componentView.render();
-
-		//this.invalidate();this.invalidateChild(componentView,new Rect(0,0,containerWidth,containerHeight));
 	}
 
 	@Override
@@ -367,6 +411,8 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 		}else if (ev.getAction() == MotionEvent.ACTION_UP) {
 			if(selectedComp.selectedView!=null){
 				((BasicComponentView)selectedComp.selectedView).isLayoutChange=false;
+				if(selectedComp.operateType!=CompOperateType.none)
+					comp_properties_view.bingingBasicProperties(((BasicComponentView)selectedComp.selectedView));
 				selectedComp.operateType=CompOperateType.none;
         	}
 		}
@@ -386,8 +432,8 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 			Float workspace_weight = ((LinearLayout.LayoutParams)this.temp_container.getLayoutParams()).weight;
 			Float pre_weight_lenght=containerWidth/(comp_weight+property_weight+workspace_weight);
 			this.temp_cl_w=(int)(pre_weight_lenght*comp_weight);
-			this.temp_container_w=(int)(pre_weight_lenght*workspace_weight);
-			this.temp_container_h=containerHeight-((RelativeLayout)findViewById(R.id.temp_title_layout)).getLayoutParams().height;
+			this.temp_container_w=(int)(pre_weight_lenght*workspace_weight)-this.temp_container.getPaddingLeft()-this.temp_container.getPaddingRight();
+			this.temp_container_h=containerHeight-((RelativeLayout)findViewById(R.id.temp_title_layout)).getLayoutParams().height-this.temp_container.getPaddingTop()-this.temp_container.getPaddingBottom();
 
 			isInitUI=true;
 
@@ -407,6 +453,7 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 			switch (msg.what){
 				case 0:
 					temp_workspace.removeAllViews();
+					selectedComp.selectedView=null;
 					invalidate();
 					break;
 				case 1:
@@ -451,5 +498,4 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 		msg.what=0;
 		handler.sendMessage(msg);
 	}
-
 }

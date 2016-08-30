@@ -2,6 +2,7 @@ package com.mfusion.ninjaplayer.view;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -15,9 +16,11 @@ import android.widget.LinearLayout;
 import com.mfusion.commons.data.XMLTemplate;
 import com.mfusion.commons.entity.template.VisualTemplate;
 import com.mfusion.commons.entity.values.ResourceSourceType;
+import com.mfusion.commons.tools.CallbackBundle;
 import com.mfusion.commons.tools.ImageHelper;
 import com.mfusion.commons.tools.LogOperator;
 import com.mfusion.commons.view.ImageTextView;
+import com.mfusion.commons.view.adapter.TemplateInfoAdapter;
 import com.mfusion.ninjaplayer.R;
 import com.mfusion.ninjaplayer.adapter.TemplateGridViewAdapter;
 
@@ -87,8 +90,15 @@ public class TemplateSampleView extends LinearLayout {
     }
 
     public void reBindingData(){
-        TemplateGridViewAdapter adapter=new TemplateGridViewAdapter(context,visualTemplates);
-        gridView.setAdapter(adapter);
+        //TemplateGridViewAdapter adapter=new TemplateGridViewAdapter(context,visualTemplates);
+        gridView.setAdapter(new TemplateInfoAdapter(context, null, visualTemplates, new CallbackBundle() {
+            @Override
+            public void callback(Bundle bundle) {
+                int position=bundle.getInt("position");
+                VisualTemplate visualTemplate=(VisualTemplate) gridView.getItemAtPosition(position);
+                listener.goDesigner(visualTemplate);
+            }
+        },null,null,false));
     }
 
     public void setListener(TemplateFragmentListener listener) {

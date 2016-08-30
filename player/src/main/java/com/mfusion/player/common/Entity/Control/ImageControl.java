@@ -64,7 +64,7 @@ public class ImageControl extends AControl{
 		}
 		imageTask=new ImageAsyncTask(context, (RecycleImageView)(this.Element),url, width, height);
 		imageTask.execute("");
-		/*try 
+		/*try
 		{		
 			Bitmap bm=ImageHelper.readBitmapAutoSize(url, width, height);
 			if(bm!=null)

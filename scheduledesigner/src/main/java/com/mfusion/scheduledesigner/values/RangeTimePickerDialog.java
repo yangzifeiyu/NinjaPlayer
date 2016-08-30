@@ -9,7 +9,7 @@ import android.content.Context;
 import android.widget.TimePicker;
 
 /**
- * Created by ThinkPad on 2016/8/2.
+ * Created by Guoyu on 2016/8/2.
  */
 public class RangeTimePickerDialog extends TimePickerDialog {
 
@@ -72,7 +72,7 @@ public class RangeTimePickerDialog extends TimePickerDialog {
         }
 
         updateTime(currentHour, currentMinute);
-        updateDialogTitle(view, currentHour, currentMinute);
+        //updateDialogTitle(view, currentHour, currentMinute);
     }
 
     private void updateDialogTitle(TimePicker timePicker, int hourOfDay, int minute) {

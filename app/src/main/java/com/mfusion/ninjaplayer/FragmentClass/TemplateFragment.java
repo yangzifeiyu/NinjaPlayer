@@ -9,7 +9,9 @@ import android.widget.TextView;
 
 import com.mfusion.commons.controllers.AbstractFragment;
 import com.mfusion.commons.entity.template.VisualTemplate;
+import com.mfusion.commons.tools.CallbackBundle;
 import com.mfusion.commons.tools.DateConverter;
+import com.mfusion.commons.tools.OperateCallbackBundle;
 import com.mfusion.ninjaplayer.R;
 import com.mfusion.ninjaplayer.view.TemplateDesigningView;
 import com.mfusion.ninjaplayer.view.TemplateFragmentListener;
@@ -52,9 +54,9 @@ public class TemplateFragment extends AbstractFragment {
     }
 
     @Override
-    public Boolean saveModification() {
-        templateDesigningView.saveTemplate(true);
-        return true;
+    public void saveModification(OperateCallbackBundle callbackBundle) {
+        if(isEditing)
+            templateDesigningView.saveTemplate(true,callbackBundle);
     }
 
     @Override
@@ -113,7 +115,6 @@ public class TemplateFragment extends AbstractFragment {
             }
             placeHolder.addView(templateDesigningView);
             templateDesigningView.openTemplate(selectedVisualTemplate,instance);
-            isEditing=false;
         }
     }
 

@@ -9,7 +9,7 @@ import java.text.DecimalFormat;
 public class ComponentFont {
 	public Typeface family=Typeface.DEFAULT;
 	public int style=Typeface.NORMAL;
-	public float size=12;
+	public float size=24;
 	public int color=Color.GRAY;
 	
 	public void setFont(String fontStr,int color){

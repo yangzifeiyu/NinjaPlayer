@@ -6,15 +6,16 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="35dp">
+        android:layout_height="@dimen/manager_title">
 
         <com.mfusion.commons.view.ImageTextView
             android:layout_width="wrap_content"
-            android:layout_height="28dp"
+            android:layout_height="@dimen/manager_btn_height"
             android:text="Back"
             android:id="@+id/template_sample_view_btn_back"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="5dp" />
+            android:layout_marginRight="5dp"
+            android:layout_centerVertical="true" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -30,8 +31,12 @@
 
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:numColumns="4"
         android:id="@+id/template_sample_grid_view"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:columnWidth="@dimen/thumb_width"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="@dimen/thumb_space_v"
+        android:horizontalSpacing="@dimen/thumb_space_h"
+        android:numColumns="auto_fit"/>
 
 </LinearLayout>

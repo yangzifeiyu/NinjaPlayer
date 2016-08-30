@@ -30,7 +30,16 @@ public class ButtonHoverStyle {
         });
     }
 
-    public static void bindingHoverEffectWithBorder(View view, final Resources resources){
+    public static void bindingHoverEffectWithBorder(View view, Resources resources){
+        bindingHoverEffectWithBorder(view,false,resources);
+    }
+
+    public static void bindingHoverEffectWithBorder(View view, final Boolean isSelected, final Resources resources){
+        if(isSelected)
+            view.setBackground(resources.getDrawable(R.drawable.button_select_style));
+        else
+            view.setBackground(resources.getDrawable(R.drawable.button_style));
+
         view.setOnHoverListener(new View.OnHoverListener() {
             @Override
             public boolean onHover(View v, MotionEvent event) {
@@ -40,7 +49,10 @@ public class ButtonHoverStyle {
                         v.setBackground(resources.getDrawable(R.drawable.button_hover_style));
                         break;
                     case MotionEvent.ACTION_HOVER_EXIT:
-                        v.setBackground(resources.getDrawable(R.drawable.button_style));
+                        if(isSelected)
+                            v.setBackground(resources.getDrawable(R.drawable.button_select_style));
+                        else
+                            v.setBackground(resources.getDrawable(R.drawable.button_style));
                         break;
                 }
                 return false;

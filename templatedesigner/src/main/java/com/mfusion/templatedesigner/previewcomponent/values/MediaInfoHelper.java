@@ -2,6 +2,7 @@ package com.mfusion.templatedesigner.previewcomponent.values;
 
 import android.media.MediaMetadataRetriever;
 
+import com.mfusion.commons.tools.FileOperator;
 import com.mfusion.templatedesigner.previewcomponent.entity.ScheduleMediaEntity;
 
 public class MediaInfoHelper {
@@ -30,15 +31,15 @@ public class MediaInfoHelper {
 		}
 		
 		String extName=mediaPath.substring(splitIndex+1);
-		for (String extString : PropertyValues.getAudioExtList()) {
+		for (String extString : FileOperator.getAudioExtList()) {
 			if(extString.equals(extName))
 				return ScheduleMediaType.Sound;
 		}
-		for (String extString : PropertyValues.getVideoExtList()) {
+		for (String extString : FileOperator.getVideoExtList()) {
 			if(extString.equals(extName))
 				return ScheduleMediaType.Video;
 		}
-		for (String extString : PropertyValues.getImageExtList()) {
+		for (String extString : FileOperator.getImageExtList()) {
 			if(extString.equals(extName))
 				return ScheduleMediaType.Image;
 		}

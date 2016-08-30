@@ -82,8 +82,8 @@ public class PlayerApp extends Application {
 			mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 1000, restartIntent);
 
 			// �رյ�ǰӦ��
-			finishAllActivity();
-			finishProgram();
+			//finishAllActivity();
+			//finishProgram();
 		}
 	};
 

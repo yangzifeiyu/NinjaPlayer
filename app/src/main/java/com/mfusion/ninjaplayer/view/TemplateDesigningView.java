@@ -22,7 +22,9 @@ import com.mfusion.commons.entity.exception.TemplateNotFoundException;
 import com.mfusion.commons.entity.template.TemplateEntity;
 import com.mfusion.commons.entity.template.VisualTemplate;
 import com.mfusion.commons.entity.values.ResourceSourceType;
+import com.mfusion.commons.tools.CallbackBundle;
 import com.mfusion.commons.tools.LogOperator;
+import com.mfusion.commons.tools.OperateCallbackBundle;
 import com.mfusion.commons.view.ImageTextView;
 import com.mfusion.ninjaplayer.R;
 import com.mfusion.templatedesigner.TemplateEditPreviewLayout;
@@ -69,18 +71,19 @@ public class TemplateDesigningView extends LinearLayout {
                     return;
                 }
                 AlertDialog.Builder builder=new AlertDialog.Builder(getContext());
-                builder.setMessage("Are you sure to quit without saving any changes ?");
+                builder.setTitle("Information");
+                builder.setMessage("Do you want to save these modification ?");
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        listener.goUserCreatedView();
+                        dialog.dismiss();
+                        saveTemplate(true,null);
                     }
                 });
                 builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        saveTemplate(true);
+                        listener.goUserCreatedView();
                     }
                 });
                 builder.show();
@@ -90,7 +93,7 @@ public class TemplateDesigningView extends LinearLayout {
         btnSave.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveTemplate(false);
+                saveTemplate(false,null);
             }
         });
 
@@ -102,43 +105,68 @@ public class TemplateDesigningView extends LinearLayout {
             designer.closeTemplate();
     }
 
-    public void saveTemplate(final Boolean isExit){
+    public Boolean saveTemplate(final Boolean isExit, final OperateCallbackBundle callbackBundle){
 
         try{
             final TemplateEntity savedEntity=designer.saveTemplate();
 
             if(savedEntity.id!=null&&!savedEntity.id.isEmpty()){
-                if(updateTemplate(savedEntity)&&isExit)
-                    listener.goUserCreatedView();
-                return;
-            }
-            final AlertDialog.Builder builder=new AlertDialog.Builder(getContext());
-            builder.setTitle("Name your template");
-            final EditText etName=new EditText(getContext());
-            builder.setView(etName);
-            builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    String name=etName.getText().toString();
-                    savedEntity.id=name;
-                    if(addTemplate(savedEntity)&&isExit)
+                if(updateTemplate(savedEntity)){
+                    if(isExit)
                         listener.goUserCreatedView();
+                    return true;
                 }
-            });
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                if(callbackBundle!=null)
+                    callbackBundle.onCancel("");
+                return false;
+            }
+
+            final EditText etName=new EditText(getContext());
+            etName.setHint("Please input name fot this template");
+            AlertDialog.Builder builder =new AlertDialog.Builder(getContext()).setTitle("Create New Template")//���öԻ������
+                    .setView(etName)
+                    .setPositiveButton("Apply",null).setNegativeButton("Cancel",new DialogInterface.OnClickListener() {//��ӷ��ذ�ť
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {//��Ӧ�¼�
+                            if(callbackBundle!=null)
+                                callbackBundle.onCancel("");
+                            dialog.dismiss();
+                        }
+                    });
+            builder.setCancelable(false);
+            final AlertDialog dialog =builder.show();//�ڰ�����Ӧ�¼�����ʾ�˶Ի���
+            Button negativeButton=((AlertDialog)dialog).getButton(AlertDialog.BUTTON_NEGATIVE);
+            builder.setView(etName);
+            negativeButton.requestFocus();
+            negativeButton.setFocusable(true);
+
+            ((AlertDialog)dialog).getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
+                public void onClick(View v) {
+                    String name=etName.getText().toString();
+                    if(name.isEmpty()) {
+                        return;
+                    }
+                    savedEntity.id=name;
+                    if(addTemplate(savedEntity)) {
+                        if(isExit)
+                            listener.goUserCreatedView();
+
+                        if(callbackBundle!=null)
+                            callbackBundle.onConfim("");
+                        dialog.dismiss();
+                    }
                 }
             });
-            builder.show();
         }catch (IllegalTemplateException ex){
             ex.printStackTrace();
             m_warning_text.setText(ex.getMessage());
         }catch (Exception ex){
             ex.printStackTrace();
         }
-
+        if(callbackBundle!=null)
+            callbackBundle.onCancel("");
+        return false;
     }
 
     public void openTemplate(VisualTemplate visualTemplate, AbstractFragment parentFragment) {
@@ -148,10 +176,14 @@ public class TemplateDesigningView extends LinearLayout {
         ((TemplateEditPreviewLayout)designer).parentFragment=parentFragment;
         TemplateEntity selectedEntity =null;
         try {
-            if(visualTemplate.templateOriginal== ResourceSourceType.internal)
+            if(visualTemplate.templateOriginal== ResourceSourceType.internal) {
+                ((TemplateEditPreviewLayout)designer).parentFragment.isEditing=true;
                 selectedEntity = XMLTemplate.getInstance().getSampleLayout(visualTemplate, getContext().getAssets());
-            else
-                selectedEntity=XMLTemplate.getInstance().getTemplateById(visualTemplate.id);
+            }
+            else {
+                ((TemplateEditPreviewLayout)designer).parentFragment.isEditing=false;
+                selectedEntity = XMLTemplate.getInstance().getTemplateById(visualTemplate.id);
+            }
 
             designer.openTemplate(selectedEntity);
         }catch (TemplateNotFoundException ex){
@@ -203,4 +235,5 @@ public class TemplateDesigningView extends LinearLayout {
     public void setListener(TemplateFragmentListener listener) {
         this.listener = listener;
     }
+
 }

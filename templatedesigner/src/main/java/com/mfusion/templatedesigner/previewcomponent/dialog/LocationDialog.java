@@ -26,7 +26,7 @@ public class LocationDialog {
 					}  
 				});
 		builder.setCancelable(true);
-		AlertDialog dialog =builder.show();
+		final AlertDialog dialog =builder.show();
 		Button negativeButton=((AlertDialog)dialog).getButton(AlertDialog.BUTTON_NEGATIVE);
 		final EditText et_left=(EditText)dialog.findViewById(R.id.dialog_location_x);
 		et_left.setText(String.valueOf(left));
@@ -43,6 +43,7 @@ public class LocationDialog {
 		    	bundle.putInt("L", Integer.parseInt(et_left.getText().toString()));
 		    	bundle.putInt("T", Integer.parseInt(et_top.getText().toString()));
 				callback.callback(bundle);
+				dialog.dismiss();
 		    }
 		});
 		

@@ -244,11 +244,13 @@ public class XMLTemplate {
         for (File folder : templateFolders) {
             template=new VisualTemplate();
             template.id=folder.getName();
+            template.lastModifyTime=folder.lastModified();
             template.path=folder.getPath()+File.separator;
             template.templateOriginal=ResourceSourceType.local;
             template.thumbImageBitmap=ImageHelper.getBitmap(template.path+InternalKeyWords.TemplateResourceFolder+"thumb.jpg", ResourceSourceType.local,null);
 
-            this.addToListWithSort(tempList,template);
+            tempList.add(template);
+            //this.addToListWithSort(tempList,template);
         }
 
         return tempList;
@@ -338,7 +340,7 @@ public class XMLTemplate {
      * @throws PathAccessException
      * @throws TemplateNotFoundException
      */
-    public Boolean exportTemplate(String tempId, String exportFolder){
+    public Boolean exportTemplate(String tempId, String exportFolder) throws Exception{
         return this.exportTemplate(tempId,InternalKeyWords.DefaultTemplateXmlPath,exportFolder);
     }
     /**
@@ -349,7 +351,7 @@ public class XMLTemplate {
      * @throws PathAccessException
      * @throws TemplateNotFoundException
      */
-    public Boolean exportTemplate(String tempId,String XMLFolder, String exportFolder) {
+    public Boolean exportTemplate(String tempId,String XMLFolder, String exportFolder) throws Exception{
         // TODO Auto-generated method stub
 
         String outputPath= InternalKeyWords.DefaultXmlTempPath+tempId+File.separator;
@@ -369,6 +371,7 @@ public class XMLTemplate {
         } catch (Exception e) {
             // TODO: handle exception
             e.printStackTrace();
+            throw e;
         }
         finally{
             FileOperator.deleteFile(outputPath);

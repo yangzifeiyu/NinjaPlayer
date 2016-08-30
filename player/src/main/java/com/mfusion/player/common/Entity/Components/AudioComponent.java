@@ -190,7 +190,7 @@ public class AudioComponent extends BasicComponent implements MyCallInterface{
 				else
 				{
 					Random random = new Random();
-					this.AudioIndex = random.nextInt(this.setting.AudioList.size() - 1);
+					this.AudioIndex = random.nextInt(this.setting.AudioList.size());
 				}
 			}
 			media = this.setting.AudioList.get(this.AudioIndex);

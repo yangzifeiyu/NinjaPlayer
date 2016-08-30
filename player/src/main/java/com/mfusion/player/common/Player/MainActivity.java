@@ -11,6 +11,8 @@ package com.mfusion.player.common.Player;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.w3c.dom.Element;
 
@@ -57,6 +59,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -232,7 +235,10 @@ public class MainActivity extends Activity implements MyCallInterface{
 		
 		this.Initalize();	
 
-		setRequestedOrientation(this.PlayerSetting.ScreenOrientation);
+		if(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE==this.PlayerSetting.ScreenOrientation)
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		else
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		LoggerHelper.WriteLogfortxt("Player Start==>");
 		
 		
@@ -534,7 +540,7 @@ public class MainActivity extends Activity implements MyCallInterface{
 		Intent it =new Intent(MainActivity.this,PlayerMenu.class);
 		it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		startActivity(it);*/
-		APPExitHelper.showAppDialogWithPassword("Please input password ",new DialogCallBack() {
+		APPExitHelper.showAppDialogWithPassword("Please input password ","Enter",new DialogCallBack() {
 			@Override
 			public void onConfim(String content) {
 				startActivity(new Intent(MainActivity.this, ActivityViewpage.class));
@@ -712,6 +718,7 @@ public class MainActivity extends Activity implements MyCallInterface{
 		super.onResume();
 		if(this.changeMainActivity) {
 			this.PlayerSetting.refreshConfigInfo();
+			this.mHandler.sendEmptyMessage(0);
 			changeMainActivity = false;
 		}
 		/*APPExitHelper.RegisterHomeKeyReceiver(this);

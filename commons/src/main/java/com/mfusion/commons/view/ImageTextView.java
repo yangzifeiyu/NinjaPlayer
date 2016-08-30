@@ -1,7 +1,9 @@
 package com.mfusion.commons.view;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
@@ -49,12 +51,15 @@ public class ImageTextView extends LinearLayout{
 
         m_text_view=(TextView)m_view_layout.findViewById(R.id.customer_text);
         m_text_view.setText("");
+        m_text_view.setVisibility(GONE);
+        m_text_view.setTag(m_text_view.getCurrentTextColor());
 
         ButtonHoverStyle.bindingHoverEffectWithBorder(m_view_layout,m_context.getResources());
     }
 
     public void setText(String text){
         m_text_view.setText(text);
+        m_text_view.setVisibility(VISIBLE);
     }
 
     public void setImage(Bitmap image){
@@ -63,5 +68,19 @@ public class ImageTextView extends LinearLayout{
 
     public void setImage(int drawableId){
         m_image_view.setImageDrawable(m_context.getResources().getDrawable(drawableId));
+    }
+
+    @Override
+    public void setSelected(boolean selected){
+        super.setSelected(selected);
+        ButtonHoverStyle.bindingHoverEffectWithBorder(m_view_layout,selected,m_context.getResources());
+    }
+    @Override
+    public void setEnabled(boolean enabled){
+        super.setEnabled(enabled);
+        if(enabled)
+            m_text_view.setTextColor((int)m_text_view.getTag());
+        else
+            m_text_view.setTextColor(Color.GRAY);
     }
 }

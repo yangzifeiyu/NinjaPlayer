@@ -1,6 +1,7 @@
 package com.mfusion.templatedesigner.previewcomponent.values;
 
 import android.graphics.Color;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.mfusion.templatedesigner.R;
@@ -14,25 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 
 public class PropertyValues {
-
-	static HashMap<String, Integer> image_list=null;
-	public static int convertTypeToImage(String type) {
-		if(image_list==null){
-			image_list = new HashMap<String, Integer>();
-
-			image_list.put("Unkown", R.drawable.filedialog_root);
-			image_list.put("/", R.drawable.filedialog_root);
-			image_list.put("...", R.drawable.filedialog_folder_up);
-			image_list.put(".", R.drawable.filedialog_folder);
-			image_list.put("Video", R.drawable.filedialog_wavfile);
-			image_list.put("Sound", R.drawable.filedialog_audio);
-			image_list.put("Image", R.drawable.filedialog_image);
-		}
-		if(image_list.containsKey(type))
-			return image_list.get(type);
-
-		return image_list.get("Unkown");
-	}
 
 	private static List<String> family_list;
 	public static List<String> getFontFamilyList(){
@@ -61,6 +43,7 @@ public class PropertyValues {
 	public static List<String> getTimeFormatList(){
 		if(time_format_list==null){
 			time_format_list=new ArrayList<String>();
+			time_format_list.add("yyyy-MM-dd HH:mm:ss");
 			time_format_list.add("yyyy-MM-dd");
 			time_format_list.add("HH:mm:ss");
 		}
@@ -153,90 +136,6 @@ public class PropertyValues {
 		return color_list;
 	}
 
-	static List<String> audio_ext_list=null;
-	public static List<String> getAudioExtList() {
-
-		if(audio_ext_list==null){
-			audio_ext_list = new ArrayList<String>();
-
-			audio_ext_list.add("mp3");
-			audio_ext_list.add("m4a");
-			audio_ext_list.add("wav");
-			audio_ext_list.add("amr");
-			audio_ext_list.add("awb");
-			audio_ext_list.add("wma");
-			audio_ext_list.add("mid");
-			audio_ext_list.add("xmf");
-			audio_ext_list.add("rtttl");
-			audio_ext_list.add("smf");
-			audio_ext_list.add("imy");
-			audio_ext_list.add("m3u");
-			audio_ext_list.add("pls");
-			audio_ext_list.add("ogg");
-			audio_ext_list.add("wpl");
-		}
-
-		return audio_ext_list;
-	}
-
-	static List<String> image_ext_list=null;
-	public static List<String> getImageExtList() {
-
-		if(image_ext_list==null){
-			image_ext_list = new ArrayList<String>();
-
-			image_ext_list.add("jpg");
-			image_ext_list.add("jpeg");
-			image_ext_list.add("gif");
-			image_ext_list.add("png");
-			image_ext_list.add("bmp");
-			image_ext_list.add("wbmp");
-		}
-
-		return image_ext_list;
-	}
-
-	static List<String> video_ext_list=null;
-	public static List<String> getVideoExtList() {
-
-		if(video_ext_list==null){
-			video_ext_list = new ArrayList<String>();
-
-			video_ext_list.add("mp4");
-			video_ext_list.add("m4v");
-			video_ext_list.add("3gp");
-			video_ext_list.add("3gpp");
-			video_ext_list.add("3g2");
-			video_ext_list.add("3gpp2");
-			video_ext_list.add("wmv");
-		}
-
-		return video_ext_list;
-	}
-
-	public static String getMeidaType(String mediaPath){
-		int splitIndex=mediaPath.lastIndexOf(".");
-		if(splitIndex<0){
-			return "Unkown";
-		}
-
-		String extName=mediaPath.substring(splitIndex+1);
-		for (String extString : getAudioExtList()) {
-			if(extString.equals(extName))
-				return "Sound";
-		}
-		for (String extString : getVideoExtList()) {
-			if(extString.equals(extName))
-				return "Video";
-		}
-		for (String extString : getImageExtList()) {
-			if(extString.equals(extName))
-				return "Image";
-		}
-
-		return "Unkown";
-	}
-
 	public static RelativeLayout.LayoutParams convertToVirtualLayout(RelativeLayout.LayoutParams layoutParams){
 		layoutParams.width=(int)(layoutParams.width*TemplateDesignerKeys.temp_scale);
 		layoutParams.height=(int)(layoutParams.height*TemplateDesignerKeys.temp_scale);
@@ -278,7 +177,7 @@ public class PropertyValues {
 			comp_list.add("RSSComponent");
 			comp_list.add("InteractiveComponent");
 			comp_list.add("AudioComponent");
-			comp_list.add("WeatherComponent");
+			//comp_list.add("WeatherComponent");
 		}
 
 		return comp_list;
@@ -301,4 +200,11 @@ public class PropertyValues {
 		return comp_image_list.get(type);
 	}
 
+	public static void bindingColorButton(Button colorBtn,int color){
+		if(color==Color.WHITE)
+			colorBtn.setBackgroundResource(R.drawable.button_style);
+		else
+			colorBtn.setBackgroundColor(color);
+		colorBtn.setTag(String.valueOf(color));
+	}
 }

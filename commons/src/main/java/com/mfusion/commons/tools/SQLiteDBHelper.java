@@ -60,6 +60,7 @@ public class SQLiteDBHelper {
 		if(result<=0){
 			db.insert(tableName, null, values);
 		}
+		db.close();
 		return true;
 	}
 }

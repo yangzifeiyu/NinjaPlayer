@@ -3,18 +3,21 @@ package com.mfusion.commons.controllers;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
+import com.mfusion.commons.tools.CallbackBundle;
+import com.mfusion.commons.tools.OperateCallbackBundle;
+
 /**
- * Created by ThinkPad on 2016/8/15.
+ * Created by guoyu on 2016/8/15.
  */
 public abstract class AbstractFragment extends Fragment {
 
     protected View rootView;
 
-    public Boolean isInitView=false;
+    //public Boolean isSavedSuccess=true;
 
     public Boolean isEditing=false;
 
-    public abstract Boolean saveModification();
+    public abstract void saveModification(OperateCallbackBundle callbackBundle);
 
     public abstract void cancelSaveModification();
 

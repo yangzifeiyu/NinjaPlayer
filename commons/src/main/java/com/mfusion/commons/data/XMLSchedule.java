@@ -307,6 +307,37 @@ public class XMLSchedule {
         }
     }
 
+    public Boolean assignDeviceSchedule() throws Exception{
+        return this.assignDeviceSchedule(InternalKeyWords.AssignedXmlFolder);
+    }
+
+    public Boolean assignDeviceSchedule(String assignDestFolder) throws Exception{
+        // TODO Auto-generated method stub
+        try {
+            HashSet<String> blockItemSet=null;
+            Document assignDocument=this.m_XMLHelper.getXmlDocument(assignDestFolder+InternalKeyWords.AssignedXmlName);
+            if(assignDocument==null)
+                this.m_XMLHelper.createXmlDocument();
+
+            //Add schedule and device cmmand
+            assignDocument=this.insertDeviceToAssignXml(assignDocument);
+
+            //save assign xml
+            String outputFolder=InternalKeyWords.DefaultXmlTempPath+InternalKeyWords.AssignedXmlName;
+            FileOperator.deleteFile(outputFolder);
+
+            this.m_XMLHelper.saveXmlDocument(assignDocument,outputFolder);
+
+            FileOperator.copyFile(outputFolder,assignDestFolder+InternalKeyWords.AssignedXmlName);
+
+            return  true;
+
+        } catch (Exception e) {
+            // TODO: handle exception
+            throw e;
+        }
+    }
+
     private Element createDeviceCmdNode(Document document) {
         // TODO Auto-generated method stub
         try {
@@ -372,9 +403,9 @@ public class XMLSchedule {
     private Document buildAssignXml(Document scheduleDocument,Element deviceElement){
         try {
 
-            Element displayelElement=scheduleDocument.getDocumentElement();
-            if(displayelElement!=null)
-                scheduleDocument.removeChild(displayelElement);
+            Element displayElement=scheduleDocument.getDocumentElement();
+            if(displayElement!=null)
+                scheduleDocument.removeChild(displayElement);
 
             Element rootElement=scheduleDocument.createElement("MfusionPlayer");
             rootElement.setAttribute("Company", "Mfusion");
@@ -393,10 +424,53 @@ public class XMLSchedule {
             if(deviceElement!=null)
                 contentElement.appendChild(deviceElement);
 
-            if(displayelElement!=null)
-                contentElement.appendChild(displayelElement);
+            if(displayElement!=null)
+                contentElement.appendChild(displayElement);
 
             return scheduleDocument;
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private Document insertDeviceToAssignXml(Document assignDocument){
+        try {
+            Element rootElement=null;
+            if(assignDocument==null){
+                assignDocument=m_XMLHelper.createXmlDocument();
+                rootElement=assignDocument.createElement("MfusionPlayer");
+                rootElement.setAttribute("Company", "Mfusion");
+                rootElement.setAttribute("XMLVersion", "1.0");
+                rootElement.setAttribute("ServerType", "Lite");
+                rootElement.setAttribute("PlayerName", "Local");
+                rootElement.setAttribute("UpdateTime", DateConverter.convertCurrentFullTimeToStr());
+                assignDocument.appendChild(rootElement);
+            }else
+                rootElement=assignDocument.getDocumentElement();
+
+            Element dataElement= m_XMLHelper.getSubNode(assignDocument.getDocumentElement(),"Data");
+            if(dataElement==null){
+                dataElement=assignDocument.createElement("Data");
+                rootElement.appendChild(dataElement);
+            }
+
+            Element contentElement= m_XMLHelper.getSubNode(assignDocument.getDocumentElement(),"Contents");
+            if(contentElement==null){
+                contentElement=assignDocument.createElement("Contents");
+                dataElement.appendChild(contentElement);
+            }
+
+            Element oldDeviceElement= m_XMLHelper.getSubNode(assignDocument.getDocumentElement(),"Device");
+            if(oldDeviceElement!=null)
+                contentElement.removeChild(oldDeviceElement);
+
+            Element deviceElement=this.createDeviceCmdNode(assignDocument);
+            if(deviceElement!=null)
+                contentElement.appendChild(deviceElement);
+
+            return assignDocument;
         } catch (Exception e) {
             // TODO: handle exception
         }

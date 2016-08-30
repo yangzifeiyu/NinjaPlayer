@@ -1,42 +1,30 @@
-package com.mfusion.templatedesigner.previewcomponent.dialog;
+package com.mfusion.commons.view;
 
 import java.io.File;  
 import java.util.ArrayList;  
 import java.util.HashMap;  
 import java.util.List;  
-import java.util.Map;  
-import java.util.concurrent.ThreadPoolExecutor.DiscardOldestPolicy;
+import java.util.Map;
 
-import android.R.bool;
-import android.app.Activity;  
-import android.app.AlertDialog;  
+import android.app.AlertDialog;
 import android.app.Dialog;  
-import android.content.Context;  
-import android.content.DialogInterface;
-import android.os.Bundle;  
-import android.os.Environment;
-import android.view.View;  
+import android.content.Context;
+import android.os.Bundle;
+import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.KeyEvent;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListView;  
-import android.widget.SimpleAdapter;  
-import android.widget.TextView;
-import android.widget.Toast;  
-import android.widget.AdapterView.OnItemClickListener;  
-import android.widget.RelativeLayout.LayoutParams;
+import android.widget.ListView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
+import com.mfusion.commons.tools.FileOperator;
 import com.mfusion.commons.view.ImageTextView;
-import com.mfusion.templatedesigner.R;
-import com.mfusion.templatedesigner.previewcomponent.adapter.FileSelectAdapter;
+import com.mfusion.commons.view.adapter.FileSelectAdapter;
 import com.mfusion.commons.tools.CallbackBundle;
-import com.mfusion.templatedesigner.previewcomponent.values.PropertyValues;
+import com.mfusion.commontools.R;
 
 public class OpenFileDialog {
 	public static String tag = "OpenFileDialog";  
@@ -44,64 +32,49 @@ public class OpenFileDialog {
     static final public String sParent = "...";  
     static final public String sFolder = ".";  
     static final public String sEmpty = "";  
-    static final private String sOnErrorMsg = "No rights to access!";  
-    
-    public static Dialog createDialog(Context context, String title, final CallbackBundle callback, String suffix, final boolean mutilSelect){
+    static final private String sOnErrorMsg = "No rights to access!";
+
+    public static Dialog createDialog(Context context, String title, final CallbackBundle callback, String suffix, final boolean selectButton,Boolean selectWithClose){
+        return createDialog(context,title,callback,suffix,false,selectButton,selectWithClose);
+    }
+    public static Dialog createDialog(Context context, String title, final CallbackBundle callback, String suffix, final boolean selectFolder, final boolean selectButton, final Boolean selectWithClose){
         AlertDialog.Builder builder = new AlertDialog.Builder(context); 
         
-        Dialog dialog = new Dialog(context);//builder.create();  
+        final Dialog dialog = new Dialog(context);//builder.create();
         dialog.setCancelable(true);
         dialog.setTitle(title);
         //dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);  
         
-        dialog.setContentView(R.layout.dialog_file_selecter);
+        dialog.setContentView(R.layout.view_file_selecter);
 
-        LinearLayout dialogLayout=(LinearLayout)dialog.findViewById(R.id.file_dialog);
+        LinearLayout dialogLayout=(LinearLayout)dialog.findViewById(R.id.file_select_layout);
 
-        LinearLayout dialogContent=(LinearLayout)dialog.findViewById(R.id.file_container);
+        LinearLayout dialogContent=(LinearLayout)dialog.findViewById(R.id.file_item_list);
         
-        final FileSelectView fileSelectView=new FileSelectView(context, dialog, callback, suffix,mutilSelect);
+        final FileSelectView fileSelectView=new FileSelectView(context, dialog, callback, suffix,selectFolder,selectButton);
         
         dialogContent.addView(fileSelectView);
 
-        ImageTextView addView=(ImageTextView)dialog.findViewById(R.id.btn_selectfiles);
-        addView.setText("Add");
+        ImageTextView addView=(ImageTextView)dialog.findViewById(R.id.file_select_btn);
+        addView.setText("Select");
         addView.setImage(R.drawable.mf_add);
 
-        if(mutilSelect){
+        if(selectButton){
             addView.setOnClickListener(new OnClickListener() {
 
                 @Override
                 public void onClick(View arg0) {
                     // TODO Auto-generated method stub
-                    System.out.println("btn_selectfiles");
                     ArrayList<String> selectedFiles = fileSelectView.getSelectedFiles();
                     Bundle bundle=new Bundle();
                     bundle.putStringArrayList("selectedFiles", (ArrayList<String>) selectedFiles);
                     callback.callback(bundle);
+                    if(selectWithClose)
+                        dialog.dismiss();
                 }
             });
         }else
             addView.setVisibility(View.GONE);
-
-        
-        /*dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-			
-			@Override
-			public void onDismiss(DialogInterface arg0) {
-				// TODO Auto-generated method stub
-				if(mutilSelect){
-					ArrayList<String> selectedFiles = fileSelectView.getSelectedFiles();
-					if(selectedFiles==null||selectedFiles.size()==0)
-						return;
-					
-					Bundle bundle=new Bundle();
-					bundle.putStringArrayList("selectedFiles", (ArrayList<String>) selectedFiles);
-					callback.callback(bundle);
-				}
-				
-			}
-		});*/
 
         WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
         params.width = context.getResources().getDisplayMetrics().widthPixels*2/5;
@@ -121,35 +94,46 @@ public class OpenFileDialog {
         private List<Map<String, Object>> list = null;  
         private Dialog dialog;  
           
-        private String suffix = null;  
+        private String suffix = null;
 
-    	boolean mutilSelect=false;
-    	
-        public FileSelectView(Context context, Dialog dialog, CallbackBundle callback, String suffix,boolean mutilSelect) {  
-            super(context);  
-            
-            this.suffix = suffix==null?"":suffix;  
-            this.callback = callback;  
-            this.dialog = dialog;  
-            
-            this.mutilSelect=mutilSelect;
-            
+        boolean selectFolder=false;
+
+    	boolean selectButton=false;
+
+        public FileSelectView(Context context, Dialog dialog, CallbackBundle callback, String suffix,Boolean isSelectFolder,boolean selectButton) {
+            super(context);
+            this.selectFolder=isSelectFolder;
+            init(context,dialog,callback,suffix,selectButton);
+        }
+
+        private void init(Context context, Dialog dialog, CallbackBundle callback, String suffix,boolean selectButton) {
+
+            this.suffix = suffix==null?"":suffix;
+            this.callback = callback;
+            this.dialog = dialog;
+
+            this.selectButton=selectButton;
+
             this.setLayoutParams(new ViewGroup.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,LinearLayout.LayoutParams.FILL_PARENT));
-            
-            this.setOnItemClickListener(this);  
-            refreshFileList();  
-        }  
-        
+
+            this.setOnItemClickListener(this);
+            refreshFileList();
+        }
+
         public ArrayList<String> getSelectedFiles() {
         	ArrayList<String> fileLists=new ArrayList<String>();
 			
 			if(this.adapter!=null){
-				List<? extends Map<String, ?>> fullList=this.adapter.getSourceData();
-				for (Map<String, ?> map : fullList) {
-					Boolean checked=Boolean.parseBoolean(map.get("checked").toString());
-					if(checked)
-						fileLists.add(map.get("path").toString());
-				}
+                if(selectFolder){
+                    fileLists.add(path);
+                }else {
+                    List<? extends Map<String, ?>> fullList=this.adapter.getSourceData();
+                    for (Map<String, ?> map : fullList) {
+                        Boolean checked=Boolean.parseBoolean(map.get("checked").toString());
+                        if(checked)
+                            fileLists.add(map.get("path").toString());
+                    }
+                }
 			}
 			
 			return fileLists;
@@ -206,7 +190,7 @@ public class OpenFileDialog {
             list.addAll(lfolders); // ������ļ��У�ȷ���ļ�����ʾ������  
             list.addAll(lfiles);    //������ļ�  
 
-            adapter = new FileSelectAdapter(getContext(), list, R.layout.dialog_file_item, new String[]{"checked","img", "name", "path"}, new int[]{R.id.filedialogitem_check,R.id.filedialogitem_img, R.id.filedialogitem_name, R.id.filedialogitem_path},mutilSelect);  
+            adapter = new FileSelectAdapter(getContext(), list, R.layout.view_file_item, new String[]{"checked","img", "name", "path"}, new int[]{R.id.file_item_selecter,R.id.file_item_type, R.id.file_item_name, R.id.file_item_path},selectButton);
             this.setAdapter(adapter);  
             /*
             ViewGroup.LayoutParams params =this.getLayoutParams();
@@ -225,7 +209,7 @@ public class OpenFileDialog {
         		if(isRoot)
         			type="...";
         	}else {
-				type= PropertyValues.getMeidaType(name);
+				type= FileOperator.getMeidaType(name);
 				if(suffix != null&&suffix.length()>0&&suffix.contains(type)==false)
 					return null;
 			}
@@ -235,33 +219,33 @@ public class OpenFileDialog {
             map.put("checked", "false");  
             map.put("name", name);  
             map.put("path", path);  
-            map.put("img", PropertyValues.convertTypeToImage(type));
+            map.put("img", FileOperator.convertTypeToImage(type));
             
             return map;
 		}
         
         @Override  
         public void onItemClick(AdapterView<?> parent, View v, int position, long id) {  
-            // ��Ŀѡ��  
+            //
             String pt = (String) list.get(position).get("path");  
             String fn = (String) list.get(position).get("name");  
             if(fn.equals(sRoot) || fn.equals(sParent)){  
-                // ����Ǹ�Ŀ¼������һ��  
+                //
                 File fl = new File(pt);  
                 String ppt = fl.getParent();  
                 if(ppt != null){  
-                    // ������һ��  
+                    //
                     path = ppt;  
                 }  
                 else{  
-                    // ���ظ�Ŀ¼  
+                    //
                     path = sRoot;  
                 }  
             }  
             else{  
                 File fl = new File(pt);  
                 if(fl.isFile()){  
-                	if(mutilSelect==false){
+                	if(selectButton==false){
                 		ArrayList<String> selectedFiles = new ArrayList<String>();
                 		selectedFiles.add(fl.getPath());
         				Bundle bundle=new Bundle();
@@ -272,9 +256,7 @@ public class OpenFileDialog {
                 	}
                     return;  
                 }  
-                else if(fl.isDirectory()){  
-                    // ������ļ���  
-                    // ��ô����ѡ�е��ļ���  
+                else if(fl.isDirectory()){
                     path = pt;  
                 }  
             } 

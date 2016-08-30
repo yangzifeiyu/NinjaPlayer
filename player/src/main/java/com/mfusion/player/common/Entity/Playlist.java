@@ -11,7 +11,7 @@ import com.mfusion.player.common.Enum.PlayMode;
 public class Playlist implements Cloneable  {
 	public int ID;
 	public int Index;
-    public PlayMode Mode;
+    public PlayMode Mode=PlayMode.sequence;
     public List<MediaFile> Medias = new ArrayList<MediaFile>();
     public Date StartTime;
     public Date EndTime;

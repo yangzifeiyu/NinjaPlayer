@@ -28,7 +28,7 @@ public class PlayerSetting{
 	public  String MFServerPort="6060";
 	public Integer ScreenOrientation=0;
 	
-	public Boolean ShowNetwork=true;
+	public Boolean ShowNetwork=false;
 	public Boolean isModifyFromServer=false;
 	
 	public AndroidType BoxType=AndroidType.Panasonic; 

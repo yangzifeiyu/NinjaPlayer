@@ -413,7 +413,7 @@ public class ScheduleMediaComponent extends BasicComponent {
 
 			if (this.setting.Idleplaylist.Mode.equals(PlayMode.random)) {
 				Random random = new Random();
-				this.CurrentFileIndex = random.nextInt(this.setting.Idleplaylist.Medias.size() - 1);
+				this.CurrentFileIndex = random.nextInt(this.setting.Idleplaylist.Medias.size());
 			} else {
 				this.CurrentFileIndex += 1;
 				if (this.CurrentFileIndex >= this.setting.Idleplaylist.Medias.size())

@@ -3,25 +3,18 @@ package com.mfusion.templatedesigner.previewcomponent.dialog;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.mfusion.commons.view.ImageTextView;
+import com.mfusion.commons.view.OpenFileDialog;
 import com.mfusion.templatedesigner.R;
 import com.mfusion.templatedesigner.previewcomponent.adapter.MediaListAdapter;
 import com.mfusion.templatedesigner.previewcomponent.entity.ScheduleMediaEntity;
@@ -36,7 +29,7 @@ public class MediaSelectDialog {
 	
 	private List<ScheduleMediaEntity> mediaList;
 	
-	public  Dialog createDialog(Context context, final CallbackBundle callback, final List<ScheduleMediaEntity> mediaList){
+	public  Dialog createDialog(Context context, final CallbackBundle callback, final List<ScheduleMediaEntity> mediaList, final String filters){
 		this.m_context=context;
 		this.mediaList=mediaList;
 		
@@ -75,7 +68,7 @@ public class MediaSelectDialog {
 	                    }
 	                }  
 	            },   
-	            "Video|Image;",true);  
+	            filters,true,false);
 
 			}
 		});

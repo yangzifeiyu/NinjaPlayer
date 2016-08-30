@@ -26,7 +26,7 @@
     <LinearLayout
         android:id="@+id/sche_title"
         android:layout_width="match_parent"
-        android:layout_height="32dp"
+        android:layout_height="@dimen/manager_title"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="0dp"
         android:layout_alignParentTop="true"
@@ -39,21 +39,22 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:id="@+id/sche_warning_view"
             android:layout_marginRight="10dp"
-            android:textColor="@color/warningColor" />
+            android:textColor="@color/warningColor"
+            android:textSize="@dimen/textSize" />
 
         <com.mfusion.commons.view.ImageTextView
             android:id="@+id/sche_save"
             android:layout_width="wrap_content"
-            android:layout_height="28dp" />
+            android:layout_height="@dimen/manager_btn_height" />
 
         <com.mfusion.commons.view.ImageTextView
             android:id="@+id/sche_assign"
             android:layout_width="wrap_content"
-            android:layout_height="28dp" />
+            android:layout_height="@dimen/manager_btn_height" />
 
         <ImageButton
             android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_height="@dimen/manager_btn_height"
             android:id="@+id/sche_open"
             android:src="@android:drawable/ic_menu_upload_you_tube"  />
 

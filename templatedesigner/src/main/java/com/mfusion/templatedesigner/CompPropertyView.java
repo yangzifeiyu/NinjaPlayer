@@ -1,27 +1,22 @@
 package com.mfusion.templatedesigner;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-
-import android.R.integer;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mfusion.commons.tools.CallbackBundle;
+import com.mfusion.commons.view.OpenFileDialog;
 import com.mfusion.templatedesigner.previewcomponent.BGComponentView;
 import com.mfusion.templatedesigner.previewcomponent.BasicComponentView;
 import com.mfusion.templatedesigner.previewcomponent.dialog.*;
+import com.mfusion.templatedesigner.previewcomponent.values.PropertyValues;
 
 public class CompPropertyView extends LinearLayout {
 
@@ -52,12 +47,14 @@ public class CompPropertyView extends LinearLayout {
 	private ImageButton m_zindex_up_btn=null;
 	private ImageButton m_zindex_down_btn=null;
 	private CallbackBundle m_zindex_edit_callback=null;
-	
+
+	private ImageButton m_delete_btn;
+
 	private LinearLayout otherPropertiesLayout=null;
 	
 	private View otherPropertiesView=null;
 	
-	public CompPropertyView(Context context) {
+	public CompPropertyView(Context context, final CallbackBundle deleteCallback) {
 		super(context);
 		// TODO Auto-generated constructor stub
 		this.m_context=context;
@@ -79,7 +76,7 @@ public class CompPropertyView extends LinearLayout {
 		this.m_color_edit_btn.setTag(Color.BLACK);
 		this.m_zindex_up_btn=(ImageButton)propertiesLayout.findViewById(R.id.temp_comp_moveup_btn);
 		this.m_zindex_down_btn=(ImageButton)propertiesLayout.findViewById(R.id.temp_comp_movedown_btn);
-		
+
 		this.m_size_edit_btn.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -128,9 +125,9 @@ public class CompPropertyView extends LinearLayout {
 				Dialog dialog =(new ColorDialog()).createDialog(0, m_context, new CallbackBundle() {  
 	                @Override  
 	                public void callback(Bundle bundle) {  
-	                    String colorString = bundle.getString("color");  
-	                    m_color_edit_btn.setBackgroundColor(Integer.parseInt(colorString));
-	                    m_color_edit_btn.setTag(colorString);
+	                    String colorString = bundle.getString("color");
+						int color=Integer.parseInt(colorString);
+						PropertyValues.bindingColorButton(m_color_edit_btn,color);
 	                    if(m_color_edit_callback!=null)
 	                    	m_color_edit_callback.callback(bundle);
 	                }  
@@ -175,11 +172,19 @@ public class CompPropertyView extends LinearLayout {
 		                    m_bgimage_edit_callback.callback(bundle);
 		                }  
 		            },   
-		            "Image;",false);
+		            "Image;",false,true);
 				}
 			}
 		});
-		
+
+		this.m_delete_btn=(ImageButton)propertiesLayout.findViewById(R.id.temp_delete_btn);
+		this.m_delete_btn.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(deleteCallback!=null)
+					deleteCallback.callback(null);
+			}
+		});
 		otherPropertiesLayout=(LinearLayout)propertiesLayout.findViewById(R.id.temp_comp_other_properties);
 	}
 	
@@ -189,11 +194,13 @@ public class CompPropertyView extends LinearLayout {
 			this.m_location_layout.setVisibility(GONE);
 			this.m_zindex_layout.setVisibility(GONE);
 			this.m_bgimage_layout.setVisibility(VISIBLE);
+			this.m_delete_btn.setVisibility(GONE);
 			this.m_bgimage_edit_callback=((BGComponentView)compView).ImageChangedCallback;
 		}else {
 			this.m_location_layout.setVisibility(VISIBLE);
 			this.m_zindex_layout.setVisibility(VISIBLE);
 			this.m_bgimage_layout.setVisibility(GONE);
+			this.m_delete_btn.setVisibility(VISIBLE);
 		}
 		
 		this.m_comp_name.setText(compView.c_name);
@@ -224,6 +231,7 @@ public class CompPropertyView extends LinearLayout {
 
 	public void unBinding(){
 		this.m_comp_name.setText("");
+		this.m_delete_btn.setVisibility(GONE);
 		
 		this.m_size_text.setText("0, 0");
 		this.m_location_text.setText("0, 0");

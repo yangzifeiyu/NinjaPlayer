@@ -83,7 +83,7 @@
 			    android:id="@+id/comp_dt_format"
 			    style="?android:attr/buttonStyleSmall"
 			    android:layout_width="wrap_content"
-			    android:layout_height="24dp"
+			    android:layout_height="28dp"
 			    android:background="@drawable/button_style"
 			    android:text="yyyy-MM-dd"
 			    android:textSize="@dimen/textSize" />

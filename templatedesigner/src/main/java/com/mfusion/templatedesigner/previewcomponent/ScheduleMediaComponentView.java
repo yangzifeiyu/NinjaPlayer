@@ -23,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -236,9 +237,9 @@ public class ScheduleMediaComponentView extends BasicComponentView {
 			//if(this.c_media_list.size()==0){
 				ViewGroup.LayoutParams layoutParams=this.getLayoutParams();
 				if(this.no_value_paint.measureText(this.c_type.toString())>layoutParams.width)
-					text_paint_layout = new StaticLayout(this.c_type.toString(),this.no_value_paint,layoutParams.width,Alignment.ALIGN_NORMAL,1.0F,0.0F,true);
+					text_paint_layout = new StaticLayout(this.c_name,this.no_value_paint,layoutParams.width,Alignment.ALIGN_NORMAL,1.0F,0.0F,true);
 				else
-					text_paint_layout = new StaticLayout(this.c_type.toString(),this.no_value_paint,layoutParams.width,Alignment.ALIGN_CENTER,1.0F,0.0F,true);
+					text_paint_layout = new StaticLayout(this.c_name,this.no_value_paint,layoutParams.width,Alignment.ALIGN_CENTER,1.0F,0.0F,true);
 				
 				float base_line_y=(layoutParams.height-text_paint_layout.getHeight())/2;
 				canvas.translate(0,base_line_y); 
@@ -298,6 +299,12 @@ public class ScheduleMediaComponentView extends BasicComponentView {
 			propertyView=LayoutInflater.from(this.m_context).inflate(R.layout.comp_sm_property,  null,true); 
 			
 			m_mute_cb=(CheckBox)propertyView.findViewById(R.id.comp_sm_mute);
+			m_mute_cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					c_mute=isChecked;
+				}
+			});
 			
 			m_playamode_ddv=(DropDownView)propertyView.findViewById(R.id.comp_sm_playmode);
 			m_playamode_ddv.setSelectList(PropertyValues.getPlayModeList());
@@ -335,13 +342,14 @@ public class ScheduleMediaComponentView extends BasicComponentView {
 							getMediaListInfo();
 							return;
 		                }  
-		            },c_media_list);
+		            },c_media_list,"Video|Image;");
 				}
 			});
 			
 		}
 
 		getMediaListInfo();
+		m_mute_cb.setChecked(c_mute);
 		m_playamode_ddv.setText(c_play_mode.toString());
 		
 		return propertyView;

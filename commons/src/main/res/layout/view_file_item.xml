@@ -8,13 +8,13 @@
     android:padding="4dp" >
 
     <CheckBox
-        android:id="@+id/filedialogitem_check"
+        android:id="@+id/file_item_selecter"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:focusable="false" />
 
     <ImageView
-        android:id="@+id/filedialogitem_img"
+        android:id="@+id/file_item_type"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginRight="4dp"
@@ -26,7 +26,7 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/filedialogitem_name"
+            android:id="@+id/file_item_name"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="name"
@@ -35,7 +35,7 @@
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/filedialogitem_path"
+            android:id="@+id/file_item_path"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="10dp"

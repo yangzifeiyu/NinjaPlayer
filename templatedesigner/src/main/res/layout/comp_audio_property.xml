@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/propertyHSpace"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="@dimen/propertyName"
+            android:layout_height="match_parent"
+            android:layout_gravity="left|center"
+            android:gravity="center|left"
+            android:text="PlayMode "
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="@dimen/textSize" />
+
+        <com.mfusion.templatedesigner.previewcomponent.subview.DropDownView
+            android:id="@+id/comp_audio_playmode"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:background="@drawable/button_style"
+            android:text="Suquence"
+            android:textSize="@dimen/textSize" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/propertyHSpace">
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="@dimen/propertyName"
+            android:layout_height="match_parent"
+            android:gravity="left|center"
+            android:text="MediaList "
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="@dimen/textSize" />
+
+        <TextView
+            android:id="@+id/comp_audio_mediainfo"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:text="0 (00:00:00)"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="@dimen/textSize" />
+
+        <ImageButton
+            android:id="@+id/comp_audio_mediaedit"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="left|top"
+            android:background="#00ffffff"
+            android:src="@drawable/edit" />
+
+    </LinearLayout>
+</LinearLayout>
+

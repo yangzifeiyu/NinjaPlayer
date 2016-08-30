@@ -8,6 +8,6 @@ public class IllegalTemplateException extends Exception {
 	private static final long serialVersionUID = 1L;
 
 	public IllegalTemplateException(String cause){
-		super(cause+" :Template's format is not match");
+		super(cause+" ");
 	}
 }

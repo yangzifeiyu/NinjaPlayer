@@ -109,9 +109,9 @@ public class InteractiveComponentView  extends BasicComponentView {
 			if(this.c_address==null||this.c_address.isEmpty()){
 				ViewGroup.LayoutParams layoutParams=this.getLayoutParams();
 				if(this.no_value_paint.measureText(this.c_type.toString())>layoutParams.width)
-					text_paint_layout = new StaticLayout(this.c_type.toString(),this.no_value_paint,layoutParams.width,Alignment.ALIGN_NORMAL,1.0F,0.0F,true);
+					text_paint_layout = new StaticLayout(this.c_name,this.no_value_paint,layoutParams.width,Alignment.ALIGN_NORMAL,1.0F,0.0F,true);
 				else
-					text_paint_layout = new StaticLayout(this.c_type.toString(),this.no_value_paint,layoutParams.width,Alignment.ALIGN_CENTER,1.0F,0.0F,true);
+					text_paint_layout = new StaticLayout(this.c_name,this.no_value_paint,layoutParams.width,Alignment.ALIGN_CENTER,1.0F,0.0F,true);
 				
 				float base_line_y=(layoutParams.height-text_paint_layout.getHeight())/2;
 				canvas.translate(0,base_line_y); 

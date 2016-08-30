@@ -1,4 +1,4 @@
-package com.mfusion.ninjaplayer;
+package com.mfusion.commons.tools;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.widget.Toast;
 
 import com.mfusion.commons.tools.CallbackBundle;
-import com.mfusion.ninjaplayer.FragmentClass.ScheduleFragment;
 
 /**
  * Created by ThinkPad on 2016/8/15.

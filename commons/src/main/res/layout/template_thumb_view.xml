@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/temp_thumb_border_style"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:id="@+id/template_thumb_item">
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:id="@+id/template_thumb_manager"
+            android:layout_height="@dimen/thumb_item_operator_size">
+
+            <CheckBox
+                android:layout_width="@dimen/thumb_item_operator_size"
+                android:layout_height="match_parent"
+                android:id="@+id/template_thumb_selecter"
+                android:background="@drawable/check_style"
+                android:button="@null"  />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="5dp"
+                android:gravity="right">
+
+                <ImageButton
+                    android:layout_width="25dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/template_thumb_export"
+                    android:scaleType="fitCenter"
+                    android:background="#00ffffff"
+                    android:src="@drawable/mf_export" />
+
+                <ImageButton
+                    android:layout_width="25dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/template_thumb_delete"
+                    android:src="@drawable/mf_trash"
+                    android:scaleType="fitCenter"
+                    android:background="#00ffffff" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/thumb_image_height">
+
+            <ImageView
+                android:id="@+id/template_thumb_image"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:padding="4dp"
+                android:src="@android:drawable/ic_menu_gallery" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/template_thumb_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Temp_1"
+            android:textSize="@dimen/textSize"
+            android:layout_gravity="center_horizontal"
+            android:singleLine="false"
+            style="@style/myTextStyle" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

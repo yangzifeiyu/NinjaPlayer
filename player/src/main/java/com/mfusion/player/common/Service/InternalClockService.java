@@ -142,6 +142,8 @@ public class InternalClockService implements BasicServiceInterface{
 			{
 				if(date==null||date.isEmpty()){
 					Now=Calendar.getInstance().getTime();
+					clockservice=new ClockServiceThread();
+					clockservice.start();
 					return 1;
 				}
 					

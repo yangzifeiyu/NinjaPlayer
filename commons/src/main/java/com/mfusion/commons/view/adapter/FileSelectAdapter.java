@@ -1,4 +1,4 @@
-package com.mfusion.templatedesigner.previewcomponent.adapter;
+package com.mfusion.commons.view.adapter;
 
 import java.util.List;
 import java.util.Map;

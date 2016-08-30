@@ -1,12 +1,23 @@
 package com.mfusion.commons.tools;
 
 import com.mfusion.commons.entity.exception.PathAccessException;
+import com.mfusion.commons.entity.template.VisualTemplate;
+import com.mfusion.commons.entity.values.FileSortType;
+import com.mfusion.commontools.R;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+
 /**
  * Created by guoyu on 7/14/2016.
  */
@@ -174,7 +185,37 @@ public class FileOperator {
 		}
 
 	}
-	
+
+	public static void orderByName(List<VisualTemplate> fileList, final FileSortType sortType){
+
+		Collections.sort(fileList, new Comparator<VisualTemplate>() {
+			@Override
+			public int compare(VisualTemplate o1, VisualTemplate o2) {
+				int result= o1.id.compareTo(o2.id);
+
+				return sortType==FileSortType.NameAsce?result:-(result);
+			}
+		});
+	}
+
+	//按日期排序
+	public static void orderByDate(List<VisualTemplate> fileList, final FileSortType sortType) {
+		Collections.sort(fileList,new Comparator< VisualTemplate>(){
+			public int compare(VisualTemplate temp1, VisualTemplate temp2) {
+				int result=0;
+				long diff = temp1.lastModifyTime - temp2.lastModifyTime;
+				if (diff > 0)
+					result= 1;
+				else if (diff == 0)
+					result= 0;
+				else
+					result= -1;
+
+				return sortType==FileSortType.TimeAsce?result:-(result);
+			}
+		});
+	}
+
 	public static File[] getAllSubFolder(String rootPath,String prefix) throws Exception{
 		try {
 			
@@ -219,5 +260,110 @@ public class FileOperator {
 		}
 
 		return name+"("+newIndex+")";
+	}
+
+
+	static HashMap<String, Integer> image_list=null;
+	public static int convertTypeToImage(String type) {
+		if(image_list==null){
+			image_list = new HashMap<String, Integer>();
+
+			image_list.put("Unkown", R.drawable.filedialog_root);
+			image_list.put("/", R.drawable.filedialog_root);
+			image_list.put("...", R.drawable.filedialog_folder_up);
+			image_list.put(".", R.drawable.filedialog_folder);
+			image_list.put("Video", R.drawable.filedialog_wavfile);
+			image_list.put("Sound", R.drawable.filedialog_audio);
+			image_list.put("Image", R.drawable.filedialog_image);
+		}
+		if(image_list.containsKey(type))
+			return image_list.get(type);
+
+		return image_list.get("Unkown");
+	}
+
+
+	static List<String> audio_ext_list=null;
+	public static List<String> getAudioExtList() {
+
+		if(audio_ext_list==null){
+			audio_ext_list = new ArrayList<String>();
+
+			audio_ext_list.add("mp3");
+			audio_ext_list.add("m4a");
+			audio_ext_list.add("wav");
+			audio_ext_list.add("amr");
+			audio_ext_list.add("awb");
+			audio_ext_list.add("wma");
+			audio_ext_list.add("mid");
+			audio_ext_list.add("xmf");
+			audio_ext_list.add("rtttl");
+			audio_ext_list.add("smf");
+			audio_ext_list.add("imy");
+			audio_ext_list.add("m3u");
+			audio_ext_list.add("pls");
+			audio_ext_list.add("ogg");
+			audio_ext_list.add("wpl");
+		}
+
+		return audio_ext_list;
+	}
+
+	static List<String> image_ext_list=null;
+	public static List<String> getImageExtList() {
+
+		if(image_ext_list==null){
+			image_ext_list = new ArrayList<String>();
+
+			image_ext_list.add("jpg");
+			image_ext_list.add("jpeg");
+			image_ext_list.add("gif");
+			image_ext_list.add("png");
+			image_ext_list.add("bmp");
+			image_ext_list.add("wbmp");
+		}
+
+		return image_ext_list;
+	}
+
+	static List<String> video_ext_list=null;
+	public static List<String> getVideoExtList() {
+
+		if(video_ext_list==null){
+			video_ext_list = new ArrayList<String>();
+
+			video_ext_list.add("mp4");
+			video_ext_list.add("m4v");
+			video_ext_list.add("3gp");
+			video_ext_list.add("3gpp");
+			video_ext_list.add("3g2");
+			video_ext_list.add("3gpp2");
+			video_ext_list.add("wmv");
+		}
+
+		return video_ext_list;
+	}
+
+	public static String getMeidaType(String mediaPath){
+		int splitIndex=mediaPath.lastIndexOf(".");
+		if(splitIndex<0){
+			return "Unkown";
+		}
+
+		String extName=mediaPath.substring(splitIndex+1);
+		for (String extString : getAudioExtList()) {
+			if(extString.equals(extName))
+				return "Sound";
+		}
+		for (String extString : getVideoExtList()) {
+			if(extString.equals(extName))
+				return "Video";
+		}
+		for (String extString : getImageExtList()) {
+			if(extString.equals(extName))
+				return "Image";
+		}
+
+		return extName;
 	}
 }

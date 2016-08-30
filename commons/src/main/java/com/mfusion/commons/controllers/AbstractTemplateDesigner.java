@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
 import com.mfusion.commons.entity.template.TemplateEntity;
+import com.mfusion.commons.tools.CallbackBundle;
 
 /**
  * Created by guoyu on 2016/7/13.

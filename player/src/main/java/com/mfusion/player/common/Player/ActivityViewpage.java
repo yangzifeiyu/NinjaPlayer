@@ -1,7 +1,6 @@
 package com.mfusion.player.common.Player;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,10 +10,11 @@ import android.view.KeyEvent;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import com.facebook.stetho.Stetho;
 import com.mfusion.commons.controllers.AbstractFragment;
+import com.mfusion.commons.controllers.KeyBoardCenter;
 import com.mfusion.commons.tools.CallbackBundle;
-import com.mfusion.ninjaplayer.AlertDialogHelper;
+import com.mfusion.commons.tools.OperateCallbackBundle;
+import com.mfusion.commons.tools.AlertDialogHelper;
 import com.mfusion.ninjaplayer.adapter.CustomViewPager;
 import com.mfusion.ninjaplayer.adapter.TabsPagerAdapter;
 import com.mfusion.player.R;
@@ -96,7 +96,10 @@ public class ActivityViewpage extends FragmentActivity implements ActionBar.TabL
         // show respected fragment view
         current_fragment=null;
 
-        CallbackBundle cancelSaveCallback=new CallbackBundle() {
+        if(viewPager.getCurrentItem()==tab.getPosition())
+            return;
+
+       CallbackBundle cancelSaveCallback=new CallbackBundle() {
             @Override
             public void callback(Bundle bundle) {
                 ((AbstractFragment)current_fragment).cancelSaveModification();
@@ -107,8 +110,17 @@ public class ActivityViewpage extends FragmentActivity implements ActionBar.TabL
         CallbackBundle saveSaveCallback= new CallbackBundle() {
             @Override
             public void callback(Bundle bundle) {
-                if(((AbstractFragment)current_fragment).saveModification())
-                    viewPager.setCurrentItem(tab.getPosition());
+                ((AbstractFragment)current_fragment).saveModification(new OperateCallbackBundle() {
+                    @Override
+                    public void onConfim(String content) {
+                        viewPager.setCurrentItem(tab.getPosition());
+                    }
+
+                    @Override
+                    public void onCancel(String errorMsg) {
+                        actionBar.selectTab(actionBar.getTabAt(viewPager.getCurrentItem()));
+                    }
+                });
             }
         };
         if (viewPager.getCurrentItem() == 0) {
@@ -121,28 +133,100 @@ public class ActivityViewpage extends FragmentActivity implements ActionBar.TabL
             current_fragment = mAdapter.scheduleFragment;
         }//pop up window for schedule fragment
         if(current_fragment!=null&&((AbstractFragment)current_fragment).isEditing){
-            AlertDialogHelper.showAlertDialog(this, "Information", "Do you want to save these modification?", saveSaveCallback,cancelSaveCallback);
+            AlertDialogHelper.showAlertDialog(this, "Information", "Do you want to save these modification ?", saveSaveCallback,cancelSaveCallback);
         }
         else
             viewPager.setCurrentItem(tab.getPosition());//pop up window for about fragment
+
+        /*checkFragmentEditStatus(new OperateCallbackBundle() {
+            @Override
+            public void onConfim(String content) {
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onCancel(String errorMsg) {
+                actionBar.selectTab(actionBar.getTabAt(viewPager.getCurrentItem()));
+            }
+        });*/
     }
 
     @Override
-    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
+    public void onTabUnselected(final ActionBar.Tab tab, FragmentTransaction ft) {
 
     }
 
     @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
+        System.out.println("");
+    }
+
+    private void checkFragmentEditStatus(final OperateCallbackBundle callbackBundle){
+        current_fragment=null;
+
+        CallbackBundle cancelSaveCallback=new CallbackBundle() {
+            @Override
+            public void callback(Bundle bundle) {
+                ((AbstractFragment)current_fragment).cancelSaveModification();
+                callbackBundle.onConfim("");
+            }
+        };
+
+        CallbackBundle saveSaveCallback= new CallbackBundle() {
+            @Override
+            public void callback(Bundle bundle) {
+                ((AbstractFragment)current_fragment).saveModification(new OperateCallbackBundle() {
+                    @Override
+                    public void onConfim(String content) {
+                        callbackBundle.onConfim("");
+                    }
+
+                    @Override
+                    public void onCancel(String errorMsg) {
+                        callbackBundle.onCancel("");
+                    }
+                });
+            }
+        };
+        if (viewPager.getCurrentItem() == 0) {
+            current_fragment =mAdapter.configurationFragment;
+        }//set start page as configuration page----------------------------------------------------
+        if (viewPager.getCurrentItem() == 1) {
+            current_fragment = mAdapter.templateFragment;
+        }//pop up window for Template fragment
+        if (viewPager.getCurrentItem() == 2) {
+            current_fragment = mAdapter.scheduleFragment;
+        }//pop up window for schedule fragment
+        if(current_fragment!=null&&((AbstractFragment)current_fragment).isEditing){
+            AlertDialogHelper.showAlertDialog(this, "Information", "Do you want to save these modification ?", saveSaveCallback,cancelSaveCallback);
+        }
+        else
+            callbackBundle.onConfim("");
 
     }
+
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getAction() == 0) {
             //ACTION_DOWN
             if (event.getKeyCode() == KeyEvent.KEYCODE_F5 || event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-                finish();
+                checkFragmentEditStatus(new OperateCallbackBundle() {
+                    @Override
+                    public void onConfim(String content) {
+                        finish();
+                    }
+
+                    @Override
+                    public void onCancel(String errorMsg) {
+
+                    }
+                });
+            }
+            if(event.getKeyCode()==KeyEvent.KEYCODE_FORWARD_DEL||event.getKeyCode()==KeyEvent.KEYCODE_DEL){
+                for(CallbackBundle callbackBundle : KeyBoardCenter.deleteKeyCallbackList){
+                    callbackBundle.callback(null);
+                }
             }
         }
         return super.dispatchKeyEvent(event);

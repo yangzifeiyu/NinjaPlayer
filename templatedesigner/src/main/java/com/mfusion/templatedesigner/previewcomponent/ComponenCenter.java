@@ -36,6 +36,9 @@ public class ComponenCenter {
 		else if(type.equals("RSSComponent")){
 			componentView=new RSSComponentView(context);
 		}
+		else if(type.equals("AudioComponent")){
+			componentView=new AudioComponentView(context);
+		}
 
 		if(componentView==null)
 			return null;
@@ -67,6 +70,9 @@ public class ComponenCenter {
 			}
 			else if(entity.type==ComponentType.RSSComponent){
 				componentView=new RSSComponentView(context, entity);
+			}
+			else if(entity.type==ComponentType.AudioComponent){
+				componentView=new AudioComponentView(context, entity);
 			}
 
 			if(componentView==null)

@@ -28,7 +28,7 @@ public class SizeDialog {
 					}  
 				});
 		builder.setCancelable(true);
-		AlertDialog dialog =builder.show();//�ڰ�����Ӧ�¼�����ʾ�˶Ի���  
+		final AlertDialog dialog =builder.show();//�ڰ�����Ӧ�¼�����ʾ�˶Ի���
 		Button negativeButton=((AlertDialog)dialog).getButton(AlertDialog.BUTTON_NEGATIVE);
 		final EditText et_width=(EditText)dialog.findViewById(R.id.dialog_size_width);
 		et_width.setText(String.valueOf(width));
@@ -45,6 +45,7 @@ public class SizeDialog {
 		    	bundle.putInt("W", Integer.parseInt(et_width.getText().toString()));
 		    	bundle.putInt("H", Integer.parseInt(et_height.getText().toString()));
 				callback.callback(bundle);
+				dialog.dismiss();
 		    }
 		});
 		

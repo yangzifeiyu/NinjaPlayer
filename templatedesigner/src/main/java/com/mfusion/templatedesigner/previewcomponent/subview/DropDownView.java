@@ -54,6 +54,7 @@ public class DropDownView extends Button{
 	
 	private void init(Context context){
 		this.m_ccontext=context;
+		this.setPadding(5,0,5,0);
 		this.setOnClickListener(dropListener);
 	}
 	

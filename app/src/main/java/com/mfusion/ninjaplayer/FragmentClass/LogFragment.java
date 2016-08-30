@@ -11,7 +11,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.mfusion.commons.controllers.AbstractFragment;
+import com.mfusion.commons.tools.CallbackBundle;
 import com.mfusion.commons.tools.InternalKeyWords;
+import com.mfusion.commons.tools.OperateCallbackBundle;
 import com.mfusion.ninjaplayer.R;
 
 import java.io.BufferedReader;
@@ -86,13 +88,17 @@ public class LogFragment extends AbstractFragment {
         public void run() {//run()���µ��߳�������
             try {
                 logList.clear();
-                BufferedReader br = new BufferedReader(new FileReader(new File(InternalKeyWords.Log_Path)));
-                String line = "";
-                int index=0;
-                while((line = br.readLine())!=null){
-                    logList.push(line);
+                File logFile=new File(InternalKeyWords.Log_Path);
+                if(logFile.exists()){
+                    BufferedReader br = new BufferedReader(new FileReader(logFile));
+                    String line = "";
+                    int index=0;
+                    while((line = br.readLine())!=null){
+                        logList.push(line);
+                    }
+                    br.close();
                 }
-                br.close();
+
                 mHandler.obtainMessage(0,"").sendToTarget();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -113,8 +119,8 @@ public class LogFragment extends AbstractFragment {
     };
 
     @Override
-    public Boolean saveModification() {
-        return true;
+    public void saveModification(OperateCallbackBundle callbackBundle) {
+
     }
 
     @Override

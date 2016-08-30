@@ -195,11 +195,28 @@ public class RSSComponentView extends BasicComponentView {
 				left=this.getLayoutParams().width;
 		}
     }
-	
+
+	@Override
+	public void refreshLayout(){
+		super.refreshLayout();
+		this.paint_title.setTextSize(c_title_font.size* TemplateDesignerKeys.temp_scale);
+		this.paint_body.setTextSize(c_body_font.size* TemplateDesignerKeys.temp_scale);
+		refreshDisplayView();
+	}
+
 	@Override
 	public void render(){
 		loadingRssContent();
 		this.timer.start(10);
+	}
+
+	@Override
+	public void onLayoutChange(View view, int l, int t, int r,
+							   int b, int oldl, int oldt, int oldr,int oldb) {
+		super.onLayoutChange(view,l,t,r,b,oldl,oldt,oldr,oldb);
+
+		if(oldt!=t||oldb!=b)
+			refreshDisplayView();
 	}
 
 	@Override
@@ -307,7 +324,7 @@ public class RSSComponentView extends BasicComponentView {
 		                    String colorString = bundle.getString("color");  
 		                    c_title_font.color=Integer.parseInt(colorString);
 		                    paint_title.setColor(c_title_font.color);
-		                    m_title_color_edit_btn.setBackgroundColor(c_title_font.color);
+							PropertyValues.bindingColorButton(m_title_color_edit_btn,c_title_font.color);
 		                }  
 		            }, c_title_font.color);
 				}
@@ -351,7 +368,7 @@ public class RSSComponentView extends BasicComponentView {
 		                    String colorString = bundle.getString("color");  
 		                    c_body_font.color=Integer.parseInt(colorString);
 		                    paint_body.setColor(c_body_font.color);
-		                    m_body_color_edit_btn.setBackgroundColor(c_body_font.color);
+							PropertyValues.bindingColorButton(m_body_color_edit_btn,c_body_font.color);
 		                }  
 		            }, c_body_font.color);
 				}
@@ -408,9 +425,9 @@ public class RSSComponentView extends BasicComponentView {
 		}
 		
 		m_title_font_text.setText(c_title_font.toString());
-		m_title_color_edit_btn.setBackgroundColor(c_title_font.color);
+		PropertyValues.bindingColorButton(m_title_color_edit_btn,c_title_font.color);
 		m_body_font_text.setText(c_body_font.toString());
-		m_body_color_edit_btn.setBackgroundColor(c_body_font.color);
+		PropertyValues.bindingColorButton(m_body_color_edit_btn,c_body_font.color);
 		m_content_editview.setText(c_rss_url);
 		m_speed_ddv.setText(c_speed.toString());
 		

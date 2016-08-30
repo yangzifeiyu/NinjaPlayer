@@ -40,27 +40,28 @@
 
             <RadioGroup
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="70dp"
                 android:orientation="horizontal"
                 android:id="@+id/myRadioGroup">
 
 
                 <RadioButton
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/portrait"
-                    android:textSize="12dp"
-                    android:textColor="#3b5998"
-                    android:drawableLeft="@drawable/portrait"/>
-
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:id="@+id/landscape"
                     android:textSize="12dp"
                     android:textColor="#3b5998"
                     android:drawableLeft="@drawable/phoneport"
-                    android:layout_marginLeft="30dp" />
+                    android:layout_marginLeft="10dp" />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:id="@+id/portrait"
+                    android:textSize="12dp"
+                    android:textColor="#3b5998"
+                    android:drawableLeft="@drawable/portrait"
+                    android:layout_marginLeft="10dp" />
 
             </RadioGroup>
 
@@ -69,7 +70,7 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="120dp"
             android:layout_marginTop="10dp">
 
             <CheckBox
@@ -89,7 +90,7 @@
                 android:layout_gravity="center">
 
                 <EditText
-                    android:layout_width="@dimen/config_name_width"
+                    android:layout_width="@dimen/config_property_text_width"
                     android:layout_height="wrap_content"
                     android:id="@+id/etPassword"
                     android:inputType="textPassword"
@@ -97,8 +98,16 @@
                     android:gravity="center"
                     android:hint="@string/edittext_hint"
                     android:textSize="12dp"
-                    android:layout_marginBottom="30dp"
+                    android:layout_marginBottom="10dp"
                     android:background="@drawable/edittext_bg" />
+
+                <TextView
+                    android:layout_width="@dimen/config_property_text_width"
+                    android:layout_height="35dp"
+                    android:id="@+id/txtStatusPa"
+                    android:textSize="11dp"
+                    android:gravity="right"
+                    android:layout_gravity="center" />
 
                 <EditText
                     android:layout_width="@dimen/config_property_text_width"
@@ -113,14 +122,6 @@
                     android:background="@drawable/edittext_bg" />
             </LinearLayout>
 
-            <TextView
-                android:layout_width="150dp"
-                android:layout_height="35dp"
-                android:id="@+id/txtStatusPa"
-                android:textSize="11dp"
-                android:gravity="center|bottom"
-                android:layout_gravity="center" />
-
         </LinearLayout>
 
         <LinearLayout
@@ -132,7 +133,7 @@
             <CheckBox
                 android:layout_width="@dimen/config_name_width"
                 android:layout_height="wrap_content"
-                android:text="Set Shutdowntime"
+                android:text="Set Shutdown Time"
                 android:id="@+id/chshut3"
                 android:textSize="12dp"
                 android:layout_gravity="center"
@@ -150,10 +151,10 @@
                 android:layout_gravity="center" />
 
             <ImageButton
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:id="@+id/btnImgShut"
-                android:background="@drawable/eb"
+                android:background="@drawable/config_shutdown"
                 android:src="@drawable/selector"
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/config_property_btn_left" />
@@ -163,12 +164,12 @@
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="20dp">
 
             <CheckBox
                 android:layout_width="@dimen/config_name_width"
                 android:layout_height="20dp"
-                android:text="Set Wakeuptime"
+                android:text="Set Wakeup Time"
                 android:id="@+id/chwake3"
                 android:textSize="12dp"
                 android:layout_gravity="center"
@@ -186,10 +187,10 @@
                 android:layout_gravity="center" />
 
             <ImageButton
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:id="@+id/btnImgWake"
-                android:background="@drawable/wakeup_try"
+                android:background="@drawable/config_wakeup"
                 android:layout_alignTop="@+id/chwake3"
                 android:layout_alignStart="@+id/btnImgShut"
                 android:src="@drawable/selector"
@@ -201,27 +202,22 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:gravity="center_vertical|right"
-            android:layout_marginRight="10dp">
+            android:layout_height="wrap_content"
+            android:gravity="center|right"
+            android:layout_marginTop="10dp">
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Small TexttextView11"
                 android:id="@+id/config_warning_view"
-                android:layout_marginRight="10dp"
-                android:textColor="@color/warningColor" />
-            <Button
-                android:background="@drawable/mybutton"
-                android:textColor="#ffffff"
-                android:layout_width="40dp"
-                android:layout_height="20dp"
-                android:text="Save"
-                android:id="@+id/btnContinue"
-                android:textSize="12dp"/>
+                android:textColor="@color/warningColor"
+                android:textSize="@dimen/textSize"
+                android:layout_marginRight="10dp" />
+            <com.mfusion.commons.view.ImageTextView
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:id="@+id/btnContinue" />
 
         </LinearLayout>
     </LinearLayout>

@@ -26,6 +26,7 @@
         <activity
             android:name=".common.Player.MainActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
+            android:windowSoftInputMode="stateHidden"
             android:label="@string/app_name">
 
             <!-- android:screenOrientation="landscape" -->

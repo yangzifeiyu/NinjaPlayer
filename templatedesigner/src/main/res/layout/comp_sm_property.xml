@@ -37,7 +37,7 @@
 		<com.mfusion.templatedesigner.previewcomponent.subview.DropDownView
 		    android:id="@+id/comp_sm_playmode"
 		    style="?android:attr/buttonStyleSmall"
-		    android:layout_width="wrap_content"
+		    android:layout_width="70dp"
 		    android:layout_height="24dp"
 		    android:background="@drawable/button_style"
 		    android:text="Suquence"

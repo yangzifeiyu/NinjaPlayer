@@ -33,11 +33,19 @@ public enum PlayMode {
 	public static PlayMode fromString(String symbol) {
 		try
 		{
-			return stringToEnum.get(symbol);
+			if(stringToEnum.containsKey(symbol))
+				return stringToEnum.get(symbol);
+			else {
+				symbol=symbol.toLowerCase();
+				for (PlayMode type : values()) {
+					if (type.toString().toLowerCase().contains(symbol))
+						return type;
+				}
+			}
 		}catch(Exception e)
 		{
-			return PlayMode.sequence;
 		}
+		return PlayMode.sequence;
 	}
 
 	@Override

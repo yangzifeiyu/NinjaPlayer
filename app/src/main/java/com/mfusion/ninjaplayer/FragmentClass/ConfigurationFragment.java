@@ -3,6 +3,7 @@ package com.mfusion.ninjaplayer.FragmentClass;
 import android.app.TimePickerDialog;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.text.Editable;
@@ -27,9 +28,12 @@ import android.widget.Toast;
 
 import com.mfusion.commons.controllers.AbstractFragment;
 import com.mfusion.commons.data.DALSettings;
+import com.mfusion.commons.tools.CallbackBundle;
 import com.mfusion.commons.tools.DateConverter;
 import com.mfusion.commons.tools.InternalKeyWords;
 import com.mfusion.commons.tools.LogOperator;
+import com.mfusion.commons.tools.OperateCallbackBundle;
+import com.mfusion.commons.view.ImageTextView;
 import com.mfusion.ninjaplayer.R;
 
 import java.text.SimpleDateFormat;
@@ -40,7 +44,7 @@ import java.util.regex.Pattern;
 
 public class ConfigurationFragment extends AbstractFragment {
 
-    Button Save, Check;
+    ImageTextView Save, Check;
     ImageButton shut, wake;
     EditText pass, passagain;
     TextView status;
@@ -67,14 +71,20 @@ public class ConfigurationFragment extends AbstractFragment {
 
         radioGroup = (RadioGroup) rootView.findViewById(R.id.myRadioGroup);
         Portrait = (RadioButton) rootView.findViewById(R.id.portrait);// portrait orientation
+        Drawable drawable_portrait = getResources().getDrawable(R.drawable.logo_portrait);
+        drawable_portrait.setBounds(0, 0, radioGroup.getLayoutParams().height, radioGroup.getLayoutParams().height);
+        Portrait.setCompoundDrawables(drawable_portrait,null,null,null);
         Landscape = (RadioButton) rootView.findViewById(R.id.landscape);//landscape orientation
+        Drawable drawable_landscape = getResources().getDrawable(R.drawable.logo_landscape);
+        drawable_landscape.setBounds(0, 0, radioGroup.getLayoutParams().height, radioGroup.getLayoutParams().height);
+        Landscape.setCompoundDrawables(drawable_landscape,null,null,null);
 
         ckshut = (CheckBox) rootView.findViewById(R.id.chshut3);//shutdown time checkbox
         shut = (ImageButton) rootView.findViewById(R.id.btnImgShut);//wake up image button
         shut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setshut();
+                settimeDialog(tvtime,"Set Shutdown Time");
             }
         });
         tvtime = (EditText) rootView.findViewById(R.id.edTvtime);//text view for shutdown time
@@ -84,7 +94,7 @@ public class ConfigurationFragment extends AbstractFragment {
         wake.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setwake();
+                settimeDialog(tvwtime,"Set Wakeup Time");
             }
         });
         tvwtime = (EditText) rootView.findViewById(R.id.edTvwtime);//text view for shutdown time
@@ -112,12 +122,13 @@ public class ConfigurationFragment extends AbstractFragment {
         });
         status = (TextView) rootView.findViewById(R.id.txtStatusPa);//password validation text view
 
-        Save = (Button) rootView.findViewById(R.id.btnContinue);//save setting button
-
+        Save = (ImageTextView) rootView.findViewById(R.id.btnContinue);//save setting button
+        Save.setText("Apply");
+        Save.setImage(R.drawable.mf_save);
         Save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveModification();
+                saveModification(null);
             }
         });//save setting
 
@@ -147,11 +158,11 @@ public class ConfigurationFragment extends AbstractFragment {
             if(!ckpass.isChecked())
                 return;
 
-            String strPass1 = pass.getText().toString();
+            String strPass1 = pass.getText().toString().trim();
             if (isValidPassword(strPass1)) {
-                status.setText("Password Accepted");//display when password is valid
-            } else if (!isValidPassword(strPass1)) {
-                status.setText("Password must be min6,max12,0-9,a-z or A-Z");//display when password is not valid
+                status.setText(R.string.password_match);//display when password is valid
+            } else {
+                status.setText(R.string.password_limit);//display when password is not valid
             }
         }
     };
@@ -172,9 +183,9 @@ public class ConfigurationFragment extends AbstractFragment {
             String strPass1 = pass.getText().toString();
             String strPass2 = passagain.getText().toString();
             if (isValidPassword(strPass1) && strPass1.equals(strPass2)) {
-                status.setText("Password match");//display when passwords match
+                status.setText(R.string.password_match);//display when passwords match
             } else {
-                status.setText("Password do not match");//display when passwords do not match
+                status.setText(R.string.password_notmatch);//display when passwords do not match
             }
         }
     };
@@ -218,9 +229,9 @@ public class ConfigurationFragment extends AbstractFragment {
                 tvtime.setText("00:00:00");
                 tvtime.setTextColor(Color.LTGRAY);
             }
-
+/*
             shut.setFocusable(isChecked);
-            shut.setClickable(isChecked);
+            shut.setClickable(isChecked);*/
         }
     };
 
@@ -236,8 +247,8 @@ public class ConfigurationFragment extends AbstractFragment {
                 tvwtime.setText("00:00:00");
                 tvwtime.setTextColor(Color.LTGRAY);
             }
-            wake.setFocusable(isChecked);
-            wake.setClickable(isChecked);
+            /*wake.setFocusable(isChecked);
+            wake.setClickable(isChecked);*/
         }
     };
 
@@ -277,6 +288,7 @@ public class ConfigurationFragment extends AbstractFragment {
 
         pass.setClickable(enabled);
         passagain.setClickable(enabled);
+        status.setText(R.string.password_limit);
 
         enabled=false;
         textColor=Color.LTGRAY;
@@ -294,8 +306,8 @@ public class ConfigurationFragment extends AbstractFragment {
         shut.setFocusable(enabled);
         shut.setClickable(enabled);
 
-        tvtime.setFocusable(enabled);
-        tvtime.setClickable(enabled);
+        tvtime.setFocusable(false);
+        tvtime.setClickable(false);
 
         enabled=false;
         textColor=Color.LTGRAY;
@@ -313,8 +325,8 @@ public class ConfigurationFragment extends AbstractFragment {
         wake.setFocusable(enabled);
         wake.setClickable(enabled);
 
-        tvwtime.setFocusable(enabled);
-        tvwtime.setClickable(enabled);
+        tvwtime.setFocusable(false);
+        tvwtime.setClickable(false);
 
         pass.addTextChangedListener(passwordWatcher);//check password
 
@@ -330,54 +342,47 @@ public class ConfigurationFragment extends AbstractFragment {
         isEditing=false;
     }
 
-    private void setshut() {
+    private void settimeDialog(final TextView timeText,String title) {
 
         Calendar calendar = Calendar.getInstance();
-
-        timePickerDialog = new TimePickerDialog(getActivity(), timePickerListener, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false);
-        timePickerDialog.setTitle("Set Shutdown Time");
+        final Boolean[] isApplySetting = {false};
+        timePickerDialog = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                if(isApplySetting.length>0&&isApplySetting[0]){
+                    Calendar date = Calendar.getInstance();
+                    date.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                    date.set(Calendar.MINUTE, minute);
+                    date.set(Calendar.AM_PM, date.get(Calendar.AM_PM));
+                    String time = DateConverter.convertTimeToStrNoSecond(date.getTime());
+                    timeText.setText(time);
+                }
+            }
+        }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false);
+        timePickerDialog.setTitle(title);
+        timePickerDialog.setButton(TimePickerDialog.BUTTON_POSITIVE,"Apply",timePickerDialog);
         timePickerDialog.show();
-    }//set shudown time method
-        
-     TimePickerDialog.OnTimeSetListener timePickerListener = new TimePickerDialog.OnTimeSetListener() {
-         public void onTimeSet(TimePicker view, int selectedHour,
-                              int selectedMinute) {
-             // set time into textview
-             Calendar date = Calendar.getInstance();
-             date.set(Calendar.HOUR_OF_DAY, selectedHour);
-             date.set(Calendar.MINUTE, selectedMinute);
-             date.set(Calendar.AM_PM, date.get(Calendar.AM_PM));
-             String time = DateConverter.convertShortTimeToStr(date.getTime());
-             tvtime.setText(time);
-         }
-    };
-
-    private void setwake() {
-        Calendar calendar = Calendar.getInstance();
-        timePickerDialog = new TimePickerDialog(getActivity(), timePickerListener2, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), false);
-        timePickerDialog.setTitle("Set Wakeup Time");
-        timePickerDialog.show();
-    }//set wake up time method
-
-    TimePickerDialog.OnTimeSetListener timePickerListener2 =
-            new TimePickerDialog.OnTimeSetListener() {
-                public void onTimeSet(TimePicker view, int selectedHour,
-                                      int selectedMinute) {
-        Calendar date = Calendar.getInstance();
-        date.set(Calendar.HOUR_OF_DAY, selectedHour);
-        date.set(Calendar.MINUTE, selectedMinute);
-        date.set(Calendar.AM_PM, date.get(Calendar.AM_PM));
-        String time = DateConverter.convertShortTimeToStr(date.getTime());
-        tvwtime.setText(time);
-        }
-    };
+        Button applyBtn= timePickerDialog.getButton(TimePickerDialog.BUTTON_POSITIVE);
+        applyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isApplySetting[0] =true;
+                timePickerDialog.dismiss();
+            }
+        });
+    }
 
     public boolean isValidPassword(final String password) {
 
         if(password==null||password.isEmpty())
             return false;
 
-        Pattern pattern;
+        if(password.length()>=6&&password.length()<=12)
+            return true;
+
+        return false;
+
+        /*Pattern pattern;
         Matcher matcher;
 
         final String PASSWORD_PATTERN = "((?=.*\\d)(?=.*[a-zA-Z]).{6,12})";
@@ -385,12 +390,12 @@ public class ConfigurationFragment extends AbstractFragment {
         pattern = Pattern.compile(PASSWORD_PATTERN);
         matcher = pattern.matcher(password);
 
-        return matcher.matches();
+        return matcher.matches();*/
 
     }//valid password
 
     @Override
-    public Boolean saveModification() {
+    public void saveModification(OperateCallbackBundle callbackBundle) {
 
         try {
             int orientation=ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
@@ -402,12 +407,16 @@ public class ConfigurationFragment extends AbstractFragment {
                 String inputPassword=pass.getText().toString().trim();
                 Boolean checkResult=isValidPassword(inputPassword);
                 if(!checkResult){
-                    m_warning_view.setText("Password field is checked pls enter a password which must be min6,max12,0-9,a-z or A-Z =)");
-                    return false;
+                    m_warning_view.setText(R.string.password_limit);
+                    if(callbackBundle!=null)
+                        callbackBundle.onCancel("");
+                    return;
                 }
                 if (!inputPassword.equals( passagain.getText().toString().trim())) {
-                    m_warning_view.setText("Password not match");
-                    return false;
+                    m_warning_view.setText(R.string.password_notmatch);
+                    if(callbackBundle!=null)
+                        callbackBundle.onCancel("");
+                    return;
                 }
                 password=inputPassword;
             }
@@ -429,13 +438,17 @@ public class ConfigurationFragment extends AbstractFragment {
 
             m_warning_view.setText("Save Successfully");
             isEditing=false;
-            return true;
+            if(callbackBundle!=null)
+                callbackBundle.onConfim("");
+            return;
         }catch (Exception ex){
             ex.printStackTrace();
             LogOperator.WriteLogfortxt("ConfigurationFragment==>"+ex.getMessage());
             m_warning_view.setText("Save Failed");
         }
-        return false;
+        if(callbackBundle!=null)
+            callbackBundle.onCancel("");
+        return;
     }//save setting method
 
     @Override

@@ -63,7 +63,21 @@ public class BGComponentView extends BasicComponentView {
 		templateEntity.backImageBitmap=this.c_bg_image;
 		return null;
 	}
-	
+
+	@Override
+	protected void updateViewLayout(Integer width,Integer height,Integer left,Integer top){
+		super.updateViewLayout(width,height,left,top);
+
+		if(TemplateSizeChangedCallback!=null){
+			Bundle bundle=new Bundle();
+			bundle.putInt("w",width);
+			bundle.putInt("h",height);
+			TemplateSizeChangedCallback.callback(bundle);
+		}
+	}
+
+	public CallbackBundle TemplateSizeChangedCallback=null;
+
 	public CallbackBundle ImageChangedCallback=new CallbackBundle() {
 		
 		@Override

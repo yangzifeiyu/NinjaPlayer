@@ -20,7 +20,7 @@ import com.mfusion.templatedesigner.previewcomponent.values.PropertyValues;
 
 public class FontDialog {
 	public  Dialog createDialog(Context context, ComponentFont fontEntity, final CallbackBundle callback){
-		Builder builder =new Builder(context).setTitle("Please input component size")
+		Builder builder =new Builder(context).setTitle("Please set font info.")
 				.setView(((Activity)context).getLayoutInflater().inflate(R.layout.dialog_font, null))
 				.setPositiveButton("Apply",null).setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
 					@Override  
@@ -50,6 +50,10 @@ public class FontDialog {
 		    @Override
 		    public void onClick(View v) {
 		    	Bundle bundle=new Bundle();
+				if(et_size.getText().toString().isEmpty()||Float.valueOf(et_size.getText().toString())<=0){
+					et_size.setText("");
+					return;
+				}
 		    	bundle.putString("Family", ddv_family.getText().toString());
 		    	bundle.putString("Style", ddv_style.getText().toString());
 		    	bundle.putFloat("Size", Float.valueOf(et_size.getText().toString()));

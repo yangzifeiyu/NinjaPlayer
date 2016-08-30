@@ -22,6 +22,7 @@ public class ShutdownCommand extends Command {
 		try 
 		{
 			if(this.target!=null&&this.target.equalsIgnoreCase("af1")){
+				LoggerHelper.WriteLogfortxt("Command shutdown==>af1");
 				DisplayControl control=new DisplayControl();
 				control.setPowerOff(0);
 				return;

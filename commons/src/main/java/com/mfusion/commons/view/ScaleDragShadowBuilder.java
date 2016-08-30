@@ -1,4 +1,4 @@
-package com.mfusion.scheduledesigner.values;
+package com.mfusion.commons.view;
 
 import android.graphics.Canvas;
 import android.graphics.Color;

@@ -20,4 +20,6 @@ public class VisualTemplate {
     public Bitmap thumbImageBitmap;
 
     public String path;
+
+    public long lastModifyTime;
 }

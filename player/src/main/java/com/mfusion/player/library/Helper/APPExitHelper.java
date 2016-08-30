@@ -15,7 +15,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.RemoteException;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.method.KeyListener;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -54,14 +60,15 @@ public class APPExitHelper {
 		} 
 	}
 
-	public static void showAppDialogWithPassword(String title,final DialogCallBack call,Activity activity){
+	public static void showAppDialogWithPassword(String title, String positiveText, final DialogCallBack call, final Activity activity){
 		if(MainActivity.Instance.PlayerSetting.getExitPassword().isEmpty()){
 			call.onConfim("");
 			return;
 		}
+
 		Builder builder =new Builder(activity).setTitle(title)//���öԻ������
 				.setView(activity.getLayoutInflater().inflate(R.layout.dialog_exit_verify_view, null))
-				.setPositiveButton("Apply",null).setNegativeButton("Cancel",new DialogInterface.OnClickListener() {//��ӷ��ذ�ť
+				.setPositiveButton(positiveText,null).setNegativeButton("Cancel",new DialogInterface.OnClickListener() {//��ӷ��ذ�ť
 					@Override
 					public void onClick(DialogInterface dialog, int which) {//��Ӧ�¼�
 						call.onCancel("");
@@ -70,13 +77,22 @@ public class APPExitHelper {
 		builder.setCancelable(false);
 		final AlertDialog dialog =builder.show();//�ڰ�����Ӧ�¼�����ʾ�˶Ի���
 		Button negativeButton=((AlertDialog)dialog).getButton(AlertDialog.BUTTON_NEGATIVE);
-		final EditText et_password=(EditText)dialog.findViewById(R.id.dialog_edit_name_value);
 		final TextView et_warning=(TextView)dialog.findViewById(R.id.dialog_edit_name_warning);
 		et_warning.setVisibility(View.GONE);
-		negativeButton.requestFocus();
-		negativeButton.setFocusable(true);
+		final EditText et_password=(EditText)dialog.findViewById(R.id.dialog_edit_name_value);
+		/*View.OnClickListener pass_edit_view=new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+				if (imm != null) {
+					imm.hideSoftInputFromWindow(et_password.getWindowToken(), 0);
+				}
+			}
+		};
+		et_password.setOnClickListener(pass_edit_view);
+		pass_edit_view.onClick(null);*/
 
-		((AlertDialog)dialog).getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+		final View.OnClickListener clickListener = new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				String input=et_password.getText().toString();
@@ -88,7 +104,21 @@ public class APPExitHelper {
 					et_warning.setText("Password is not match");
 				}
 			}
-		});
+		};
+
+		/*et_password.setOnKeyListener(new View.OnKeyListener() {
+			@Override
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				if(keyCode==KeyEvent.KEYCODE_DPAD_CENTER)
+					clickListener.onClick(null);
+				return false;
+			}
+		});*/
+
+		Button posiiveButton=((AlertDialog)dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+		posiiveButton.setOnClickListener(clickListener);
+		/*posiiveButton.requestFocus();
+		posiiveButton.setFocusable(true);*/
 	}
 
 	public static void showAppClosingDialogNoPassword(final DialogCallBack call,Activity activity){
@@ -119,7 +149,7 @@ public class APPExitHelper {
 		if(MainActivity.Instance.PlayerSetting.getExitPassword().isEmpty())
 			showAppClosingDialogNoPassword(call,activity);
 		else
-			showAppDialogWithPassword("Please input password to exit",call,activity);
+			showAppDialogWithPassword("Please input password to exit","Apply",call,activity);
 	}
 
 	public static HomeKeyReceiver mHomeKeyReceiver = null;

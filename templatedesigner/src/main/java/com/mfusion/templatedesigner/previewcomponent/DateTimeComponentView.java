@@ -11,6 +11,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.Paint.Style;
 import android.os.Bundle;
@@ -120,20 +121,35 @@ public class DateTimeComponentView extends BasicComponentView {
 		{
 			try {
 
-				ViewGroup.LayoutParams layoutParams=this.getLayoutParams();
+				/*ViewGroup.LayoutParams layoutParams=this.getLayoutParams();
 				StaticLayout text_paint_layout = new StaticLayout(DateConverter.convertCurrentDateToStr(this.c_format),this.paint_content,layoutParams.width,Alignment.ALIGN_CENTER,1.0F,0.0F,true);
 				
 				float base_line_y=(layoutParams.height-text_paint_layout.getHeight())/2;
 				canvas.translate(0,base_line_y); 
 				text_paint_layout.draw(canvas);
-				canvas.translate(0,-base_line_y);
+				canvas.translate(0,-base_line_y);*/
+
+				String content=DateConverter.convertCurrentDateToStr(this.c_format);
+				float textLenght=this.paint_content.measureText(content);
+				canvas.drawText(content,(this.getLayoutParams().width-textLenght)/2,getTextBaseline(),this.paint_content);
 			} catch (Exception e) {
 				// TODO: handle exception
 				e.printStackTrace();
 			} 
 		}
     }
-	
+
+	private float getTextBaseline(){
+		Paint.FontMetricsInt fontMetrics = this.paint_content.getFontMetricsInt();
+		return  (this.getLayoutParams().height - fontMetrics.bottom + fontMetrics.top) / 2 - fontMetrics.top;
+	}
+
+	@Override
+	public void refreshLayout(){
+		super.refreshLayout();
+		this.paint_content.setTextSize(c_font.size* TemplateDesignerKeys.temp_scale);
+	}
+
 	@Override
 	public void render(){
 		this.timer.start(1000);
@@ -209,7 +225,7 @@ public class DateTimeComponentView extends BasicComponentView {
 		                    String colorString = bundle.getString("color");  
 		                    c_font.color=Integer.parseInt(colorString);
 		                    paint_content.setColor(c_font.color);
-		                    m_fontcolor_edit_btn.setBackgroundColor(c_font.color);
+							PropertyValues.bindingColorButton(m_fontcolor_edit_btn,c_font.color);
 		                }  
 		            }, c_font.color);
 				}
@@ -240,7 +256,7 @@ public class DateTimeComponentView extends BasicComponentView {
 		}
 		
 		m_font_text.setText(c_font.toString());
-		m_fontcolor_edit_btn.setBackgroundColor(c_font.color);
+		PropertyValues.bindingColorButton(m_fontcolor_edit_btn,c_font.color);
 		m_format_ddv.setText(c_format);
 		
 		return propertyView;

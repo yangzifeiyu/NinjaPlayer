@@ -13,8 +13,12 @@ import android.widget.LinearLayout;
 import com.mfusion.commons.data.XMLTemplate;
 import com.mfusion.commons.entity.exception.PathAccessException;
 import com.mfusion.commons.entity.template.VisualTemplate;
+import com.mfusion.commons.entity.values.FileSortType;
+import com.mfusion.commons.tools.FileOperator;
 import com.mfusion.commons.tools.ImageHelper;
 import com.mfusion.commons.tools.LogOperator;
+import com.mfusion.commons.view.ImageTextView;
+import com.mfusion.commons.view.adapter.TemplateInfoAdapter;
 import com.mfusion.scheduledesigner.R;
 import com.mfusion.commons.tools.ButtonHoverStyle;
 import com.mfusion.scheduledesigner.values.TemplateThumbAdapter;
@@ -36,11 +40,11 @@ public class GraphicTemplateListLayout extends LinearLayout{
 
     private GridView template_grid;
 
-    private TemplateThumbAdapter template_adapter;
-
-    private ImageButton btn_refresh;
+    private TemplateInfoAdapter template_adapter;
 
     private ImageView loading_imageview;
+
+    private ImageTextView btn_sort_name,btn_sort_time;
 
     public GraphicTemplateListLayout(Context context) {
         super(context);
@@ -66,16 +70,52 @@ public class GraphicTemplateListLayout extends LinearLayout{
         template_grid=(GridView)templates_container.findViewById(R.id.sche_temp_gv);
         template_grid.setVisibility(GONE);
 
-        btn_refresh=(ImageButton)templates_container.findViewById(R.id.sche_temp_refresh_btn);
-        btn_refresh.setEnabled(false);
-        btn_refresh.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                bindingTemplates();
-            }
-        });
-        ButtonHoverStyle.bindingHoverEffect(btn_refresh,getResources());
+        btn_sort_name=(ImageTextView)templates_container.findViewById(R.id.sche_temp_sort_name);
+        //btn_sort_name.setText("Name");
+        btn_sort_name.setImage(R.drawable.sort_name_asce);
+        btn_sort_name.setTag(FileSortType.NameAsce);
+        btn_sort_name.setOnClickListener(sortTypeListener);
+        btn_sort_time=(ImageTextView)templates_container.findViewById(R.id.sche_temp_sort_time);
+        //btn_sort_time.setText("Modify Time");
+        btn_sort_time.setImage(R.drawable.sort_time_desc);
+        btn_sort_time.setTag(FileSortType.TimeDesc);
+        btn_sort_time.setOnClickListener(sortTypeListener);
     }
+    OnClickListener sortTypeListener = new OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            FileSortType sortType = (FileSortType) view.getTag();
+            if (sortType == FileSortType.NameAsce) {
+                ((ImageTextView) view).setImage(R.drawable.sort_name_desc);
+                sortType = FileSortType.NameDesc;
+            } else if (sortType == FileSortType.NameDesc) {
+                ((ImageTextView) view).setImage(R.drawable.sort_name_asce);
+                sortType = FileSortType.NameAsce;
+            } else if (sortType == FileSortType.TimeAsce) {
+                ((ImageTextView) view).setImage(R.drawable.sort_time_desc);
+                sortType = FileSortType.TimeDesc;
+            } else if (sortType == FileSortType.TimeDesc) {
+                ((ImageTextView) view).setImage(R.drawable.sort_time_asce);
+                sortType = FileSortType.TimeAsce;
+            }
+
+            if (template_list == null)
+                return;
+
+            view.setTag(sortType);
+            if (sortType == FileSortType.NameAsce || sortType == FileSortType.NameDesc) {
+                btn_sort_name.setSelected(true);
+                btn_sort_time.setSelected(false);
+                FileOperator.orderByName(template_list, (FileSortType) btn_sort_name.getTag());
+            }
+            if (sortType == FileSortType.TimeAsce || sortType == FileSortType.TimeDesc) {
+                btn_sort_time.setSelected(true);
+                btn_sort_name.setSelected(false);
+                FileOperator.orderByDate(template_list, (FileSortType) btn_sort_time.getTag());
+            }
+            template_adapter.notifyDataSetChanged();
+        }
+    };
 
     public void bindingTemplates(){
         template_grid.setVisibility(GONE);
@@ -87,7 +127,7 @@ public class GraphicTemplateListLayout extends LinearLayout{
             template_list.clear();
             template_list=null;
         }
-        LoadingAsyncTask async=new LoadingAsyncTask(this.context,template_grid);
+        LoadingAsyncTask async=new LoadingAsyncTask(context,template_grid);
         async.execute("");
     }
 
@@ -107,6 +147,8 @@ public class GraphicTemplateListLayout extends LinearLayout{
             // TODO Auto-generated method stub
             try {
                 this.getAllTemplates();
+
+                FileOperator.orderByName(template_list,FileSortType.NameAsce);
             } catch (Exception e) {
                 // TODO: handle exception
                 e.printStackTrace();
@@ -118,10 +160,18 @@ public class GraphicTemplateListLayout extends LinearLayout{
         protected void onPostExecute(String result) {
             try {
 
-                template_adapter=new TemplateThumbAdapter(this.context,owner,template_list);
+                if(template_adapter!=null)
+                    template_adapter.clearImageResource();
+
+                template_adapter=new TemplateInfoAdapter(this.context,owner,template_list,true);
                 gridView.setAdapter(template_adapter);
                 gridView.setVisibility(VISIBLE);
-                btn_refresh.setEnabled(true);
+
+                btn_sort_name.setImage(R.drawable.sort_name_asce);
+                btn_sort_name.setTag(FileSortType.NameAsce);
+                btn_sort_name.setSelected(true);
+                btn_sort_time.setSelected(false);
+
                 super.cancel(true);
             } catch (Exception e) {
                 // TODO: handle exception

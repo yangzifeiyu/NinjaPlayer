@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
+import com.mfusion.commons.tools.FileOperator;
 import com.mfusion.templatedesigner.R;
 import com.mfusion.templatedesigner.previewcomponent.entity.ScheduleMediaEntity;
 import com.mfusion.templatedesigner.previewcomponent.values.PropertyValues;
@@ -50,7 +51,7 @@ public class MediaListAdapter  extends BaseAdapter {
 		convertView.setFocusableInTouchMode(true);
 
         ImageView typeImage=(ImageView)convertView.findViewById(R.id.pm_type);
-        typeImage.setImageResource(PropertyValues.convertTypeToImage(item.mediaType.toString()));
+        typeImage.setImageResource(FileOperator.convertTypeToImage(item.mediaType.toString()));
         
         ((TextView)convertView.findViewById(R.id.pm_name)).setText(item.mediaName+" ("+item.durationString+")");
         ((TextView)convertView.findViewById(R.id.pm_path)).setText(item.mediaPath);
