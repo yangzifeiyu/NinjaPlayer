@@ -127,7 +127,7 @@
                 android:layout_marginLeft="15dp"
                 android:layout_toRightOf="@+id/block_property_recurrence_mon"
                 android:enabled="false"
-                android:text="Tuseday"
+                android:text="Tuesday"
                 android:textSize="@dimen/textSize"
                 style="@style/myTextStyle" />
 
@@ -164,7 +164,7 @@
                 android:layout_marginLeft="15dp"
                 android:layout_toRightOf="@+id/block_property_recurrence_thur"
                 android:enabled="false"
-                android:text="Firday"
+                android:text="Friday"
                 android:textSize="@dimen/textSize"
                 style="@style/myTextStyle" />
 

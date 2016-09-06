@@ -119,6 +119,11 @@ public class TemplateDesigner extends AbstractTemplateDesigner {
         return getTemplateInfoFromDesigner();
     }
 
+    @Override
+    public void saveTemplateResult(TemplateEntity templateEntity) {
+
+    }
+
 
     @Override
     public void onWindowFocusChanged(boolean hasWindowFocus) {

@@ -1,8 +1,10 @@
 package com.mfusion.ninjaplayer.view;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -12,8 +14,10 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -275,9 +279,10 @@ public class TemplateUserCreatedView extends LinearLayout{
                             try {
                                 if(bundle==null)
                                     return;
-
+                                int position=bundle.getInt("position");
+                                VisualTemplate visualTemplate = (VisualTemplate) gridView.getItemAtPosition(position);
                                 ArrayList<String> select_list=new ArrayList<String>();
-                                select_list.add(bundle.getString("id"));
+                                select_list.add(visualTemplate.id);
                                 exportTemplates(select_list);
 
                             }catch (Exception ex){
@@ -285,6 +290,62 @@ public class TemplateUserCreatedView extends LinearLayout{
                             }
                         }
                     },null,true,true,true);
+
+        }
+    };
+
+    CallbackBundle renameCallback =new CallbackBundle() {
+        @Override
+        public void callback(Bundle bundle) {
+
+            final Dialog dialog = OpenFileDialog.createDialog(context, "Please input new name for this template", new CallbackBundle() {
+                @Override
+                public void callback(Bundle bundle) {
+                    try {
+                        if(bundle==null)
+                            return;
+                        int position=bundle.getInt("position");
+                        final VisualTemplate visualTemplate = (VisualTemplate) gridView.getItemAtPosition(position);
+
+                        final EditText etName=new EditText(getContext());
+                        etName.setHint(visualTemplate.id);
+                        AlertDialog.Builder builder =new AlertDialog.Builder(getContext()).setTitle("Create New Template")//���öԻ������
+                                .setView(etName)
+                                .setPositiveButton("Apply",null).setNegativeButton("Cancel",new DialogInterface.OnClickListener() {//��ӷ��ذ�ť
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                        builder.setCancelable(true);
+                        final AlertDialog dialog =builder.show();//�ڰ�����Ӧ�¼�����ʾ�˶Ի���
+                        Button negativeButton=((AlertDialog)dialog).getButton(AlertDialog.BUTTON_NEGATIVE);
+                        builder.setView(etName);
+                        negativeButton.requestFocus();
+                        negativeButton.setFocusable(true);
+
+                        ((AlertDialog)dialog).getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                String name=etName.getText().toString();
+                                if(name.isEmpty()) {
+                                    return;
+                                }
+                                try {
+                                    XMLTemplate.getInstance().renameTemplate(visualTemplate.id,name);
+                                } catch (TemplateNotFoundException e) {
+                                    e.printStackTrace();
+                                }catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                dialog.dismiss();
+                            }
+                        });
+                    }catch (Exception ex){
+                        ex.printStackTrace();
+                    }
+                }
+            },null,true,true,true);
 
         }
     };
@@ -384,7 +445,7 @@ public class TemplateUserCreatedView extends LinearLayout{
             if(templateInfoAdapter!=null)
                 templateInfoAdapter.clearImageResource();
 
-            templateInfoAdapter=new TemplateInfoAdapter(context, null, visualTemplates, openCallback,deleteCallback,exportCallback,true,cb_select_all);
+            templateInfoAdapter=new TemplateInfoAdapter(context, null, visualTemplates, openCallback,deleteCallback,exportCallback,null,true,cb_select_all);
             gridView.setAdapter(templateInfoAdapter);
 
             btn_sort_name.setImage(R.drawable.sort_name_asce);

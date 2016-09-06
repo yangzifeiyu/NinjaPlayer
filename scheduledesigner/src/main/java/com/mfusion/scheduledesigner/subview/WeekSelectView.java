@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 
+import com.mfusion.commons.tools.DateConverter;
 import com.mfusion.scheduledesigner.R;
 import com.mfusion.commons.tools.CallbackBundle;
 import com.mfusion.commons.tools.ButtonHoverStyle;
@@ -26,8 +27,6 @@ public class WeekSelectView extends RelativeLayout {
     ImageButton pre_view,next_view;
 
     private Context context;
-
-    SimpleDateFormat week_format;
 
     Calendar calendar;
 
@@ -50,7 +49,6 @@ public class WeekSelectView extends RelativeLayout {
     public WeekSelectView(Context context,CallbackBundle changeWeekHandler) {
         super(context);
         // TODO Auto-generated constructor stub
-        this.week_format=new SimpleDateFormat("yyyy/MM/dd");
 
         this.change_week_call=changeWeekHandler;
 
@@ -64,7 +62,7 @@ public class WeekSelectView extends RelativeLayout {
 
         this.calendar.add(Calendar.DAY_OF_WEEK, 1);
 
-        this.select_view.setText(week_format.format(this.calendar.getTime()));
+        this.select_view.setText(DateConverter.convertToDisplayStr(this.calendar.getTime()));
     }
 
     protected void createPropertyView() {
@@ -114,6 +112,6 @@ public class WeekSelectView extends RelativeLayout {
 
         this.calendar.add(Calendar.DAY_OF_WEEK, dates);
 
-        this.select_view.setText(week_format.format(this.calendar.getTime()));
+        this.select_view.setText(DateConverter.convertToDisplayStr(this.calendar.getTime()));
     }
 }

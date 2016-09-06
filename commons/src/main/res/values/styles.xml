@@ -31,4 +31,10 @@
     <style name="layout_vertical" parent="layout_full">
         <item name="android:layout_height">0px</item>
     </style>
+
+    <style name="popwin_anim_style">
+        <item name="android:windowEnterAnimation">@anim/dropdownlist_show</item>
+        <item name="android:windowExitAnimation">@anim/dropdownlist_hide</item>
+    </style>
+
 </resources>

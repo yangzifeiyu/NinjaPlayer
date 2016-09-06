@@ -14,6 +14,7 @@ import com.mfusion.commons.controllers.AbstractFragment;
 import com.mfusion.commons.tools.CallbackBundle;
 import com.mfusion.commons.tools.InternalKeyWords;
 import com.mfusion.commons.tools.OperateCallbackBundle;
+import com.mfusion.commons.view.ImageTextView;
 import com.mfusion.ninjaplayer.R;
 
 import java.io.BufferedReader;
@@ -33,15 +34,19 @@ import java.util.Stack;
 public class LogFragment extends AbstractFragment {
 
     EditText logcat;
-    Button load, clear;
+    ImageTextView load, clear;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         final View rootView = inflater.inflate(R.layout.fragment_log, container, false);
-        load = (Button) rootView.findViewById(R.id.btnReload);//load log
-        clear = (Button) rootView.findViewById(R.id.btnClear);//clear log information
+        load = (ImageTextView) rootView.findViewById(R.id.btnReload);//load log
+        load.setText("Load Log");
+        load.setImage(R.drawable.mf_log);
+        clear = (ImageTextView) rootView.findViewById(R.id.btnClear);//clear log information
+        clear.setText("Clear Log");
+        clear.setImage(R.drawable.mf_clear);
         logcat = (EditText) rootView.findViewById(R.id.etLog);//log info
 
         load.setOnClickListener(new View.OnClickListener() {

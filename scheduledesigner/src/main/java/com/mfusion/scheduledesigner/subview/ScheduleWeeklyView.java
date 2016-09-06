@@ -14,6 +14,7 @@ import android.text.format.DateFormat;
 import android.view.View;
 import android.view.View.OnLayoutChangeListener;
 
+import com.mfusion.commons.tools.InternalKeyWords;
 import com.mfusion.scheduledesigner.R;
 
 /**
@@ -25,7 +26,7 @@ public class ScheduleWeeklyView  extends View implements OnLayoutChangeListener{
 
     TextPaint paint_line=null,paint_expiry=null;
 
-    SimpleDateFormat date_format=new SimpleDateFormat("yyyy-MM-dd E");
+    SimpleDateFormat date_format=new SimpleDateFormat(InternalKeyWords.DefaultDisplayDateFormat+" E");
 
     Calendar sche_calendar=Calendar.getInstance();
 

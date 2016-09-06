@@ -41,4 +41,8 @@ public class InternalKeyWords {
 	public static String AssignedXmlFolder=Environment.getExternalStorageDirectory().getPath()+"/Data/XML/";
 
 	public static int MaxTemplateCount=10;
+
+	public static String PlayerOriginal="AF1";//AF1 Normal
+
+	public static String DefaultDisplayDateFormat="dd-MM-yyyy";
 }

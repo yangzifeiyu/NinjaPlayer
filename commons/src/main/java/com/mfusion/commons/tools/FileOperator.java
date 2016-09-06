@@ -218,12 +218,15 @@ public class FileOperator {
 
 	public static File[] getAllSubFolder(String rootPath,String prefix) throws Exception{
 		try {
-			
+			prefix=prefix.replaceAll("\\(","\\\\(");
+			prefix=prefix.replaceAll("\\)","\\\\)");
+			prefix=prefix.replaceAll("\\[","\\\\[");
+			prefix=prefix.replaceAll("\\]","\\\\]");
 			final String prefixFilter=prefix.toLowerCase();
 			File folderFile=new File(rootPath);
 			if(!folderFile.exists()||!folderFile.isDirectory())
 				throw new PathAccessException(rootPath);
-			
+
 			return folderFile.listFiles(new FileFilter() {
 				
 				@Override

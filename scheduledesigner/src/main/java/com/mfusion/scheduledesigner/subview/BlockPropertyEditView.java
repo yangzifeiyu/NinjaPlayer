@@ -176,7 +176,7 @@ public class BlockPropertyEditView extends LinearLayout implements View.OnLayout
     }
 
     public void initPropertyView(){
-        String current_date= DateConverter.convertCurrentDateToStr();
+        String current_date= DateConverter.convertToDisplayStr(null);
         date_start_bt.setText(current_date);
         date_end_bt.setText(current_date);
 
@@ -234,13 +234,13 @@ public class BlockPropertyEditView extends LinearLayout implements View.OnLayout
             time_start_view.setText(DateConverter.convertShortTimeToStr(block_entity.startTime));
             time_end_view.setText(DateConverter.convertShortTimeToStr(block_entity.endTime));
 
-            date_start_bt.setText(DateConverter.convertDateToStr(block_entity.startDate));
+            date_start_bt.setText(DateConverter.convertToDisplayStr(block_entity.startDate));
             if(block_entity.endDate==null){
                 date_end_bt.setText(date_start_bt.getText());
                 date_no_end_cb.setChecked(true);
                 date_end_bt.setEnabled(false);
             }else {
-                date_end_bt.setText(DateConverter.convertDateToStr(block_entity.endDate));
+                date_end_bt.setText(DateConverter.convertToDisplayStr(block_entity.endDate));
                 date_end_cb.setChecked(true);
                 date_end_bt.setEnabled(true);
             }
@@ -270,12 +270,12 @@ public class BlockPropertyEditView extends LinearLayout implements View.OnLayout
         block_entity.endTime=DateConverter.convertShortStrToTime(time_end_view.getText().toString());
         block_entity.duration=ScheduleDrawHelper.getDurtion(block_entity.startTime, block_entity.endTime);
 
-        block_entity.startDate=DateConverter.convertStrToDate(date_start_bt.getText().toString());
+        block_entity.startDate=DateConverter.convertDisplayStrToDate(date_start_bt.getText().toString());
 
         block_entity.isRecurrence=recurrence_view.isChecked();
         if(block_entity.isRecurrence){
             if(date_end_cb.isChecked())
-                block_entity.endDate=DateConverter.convertStrToDate(date_end_bt.getText().toString());
+                block_entity.endDate=DateConverter.convertDisplayStrToDate(date_end_bt.getText().toString());
             else
                 block_entity.endDate=null;
 
@@ -296,7 +296,7 @@ public class BlockPropertyEditView extends LinearLayout implements View.OnLayout
         Date endDate=null;
         if(isRecurrence){
             if(date_end_cb.isChecked())
-                endDate=DateConverter.convertStrToDate(date_end_bt.getText().toString());
+                endDate=DateConverter.convertDisplayStrToDate(date_end_bt.getText().toString());
             else
                 endDate=null;
             StringBuilder recurrence=new StringBuilder();
@@ -338,7 +338,7 @@ public class BlockPropertyEditView extends LinearLayout implements View.OnLayout
     }
 
     private void updateStartDate(){
-        Date startDate=DateConverter.convertStrToDate(date_start_bt.getText().toString());
+        Date startDate=DateConverter.convertDisplayStrToDate(date_start_bt.getText().toString());
         if(startDate.compareTo(block_entity.startDate)!=0) {
             block_entity.startDate=startDate;
             if (editResponseCall != null)
@@ -353,7 +353,7 @@ public class BlockPropertyEditView extends LinearLayout implements View.OnLayout
         Date endDate=null;
         if(recurrence_view.isChecked()){
             if(date_end_cb.isChecked())
-                endDate=DateConverter.convertStrToDate(date_end_bt.getText().toString());
+                endDate=DateConverter.convertDisplayStrToDate(date_end_bt.getText().toString());
             else
                 endDate=null;
 
@@ -400,12 +400,12 @@ public class BlockPropertyEditView extends LinearLayout implements View.OnLayout
                         newCalendar.set(year,monthOfYear,dayOfMonth,0,0,0);
                         if(view==date_start_bt) {
                             //block_entity.startDate = newCalendar.getTime();
-                            date_start_bt.setText(DateConverter.convertDateToStr(newCalendar.getTime()));
+                            date_start_bt.setText(DateConverter.convertToDisplayStr(newCalendar.getTime()));
                             updateStartDate();
                         }
                         else {
                             //block_entity.endDate = newCalendar.getTime();
-                            date_end_bt.setText(DateConverter.convertDateToStr(newCalendar.getTime()));
+                            date_end_bt.setText(DateConverter.convertToDisplayStr(newCalendar.getTime()));
                             updateEndDate();
                         }
                     }

@@ -79,7 +79,7 @@
 	            android:textAppearance="?android:attr/textAppearanceSmall"
 	            android:textSize="@dimen/textSize" />
 		
-			<com.mfusion.templatedesigner.previewcomponent.subview.DropDownView
+			<com.mfusion.commons.view.DropDownView
 			    android:id="@+id/comp_ticker_speed"
 			    style="?android:attr/buttonStyleSmall"
 			    android:layout_width="65dp"

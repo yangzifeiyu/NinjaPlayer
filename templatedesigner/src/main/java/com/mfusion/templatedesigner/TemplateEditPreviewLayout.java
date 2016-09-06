@@ -267,8 +267,6 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 
 	}
 
-	int diatance=15;
-	int comp_count=1;
 	private void CreateComponent(String type,int x,int y,RelativeLayout parentLayout){
 		if(parentFragment!=null)
 			parentFragment.isEditing=true;
@@ -284,7 +282,8 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 
 		if(componentView==null)
 			return;
-		
+
+		componentView.changedListener=componentEditListener;
 		parentLayout.addView(componentView);
 		
 		RelativeLayout.LayoutParams componentLayout = new RelativeLayout.LayoutParams(
@@ -304,9 +303,6 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 				// TODO Auto-generated method stub
 				switch (event.getActionMasked()) {
 					case MotionEvent.ACTION_DOWN:{
-
-						if(parentFragment!=null)
-							parentFragment.isEditing=true;
 
 						if(selectedComp.selectedView!=null)
 							((BasicComponentView)selectedComp.selectedView).onSelected(false);
@@ -352,12 +348,22 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 		});
 		componentView.render();
 	}
-
+	CallbackBundle componentEditListener = new CallbackBundle() {
+		@Override
+		public void callback(Bundle bundle) {
+			if(parentFragment!=null)
+				parentFragment.isEditing=true;
+		}
+	};
 	@Override
 	public boolean dispatchTouchEvent(MotionEvent ev) {
 		
 		if (ev.getAction() == MotionEvent.ACTION_MOVE) {
 			if(selectedComp.selectedView!=null&&selectedComp.operateType!=CompOperateType.none){
+
+				if(parentFragment!=null)
+					parentFragment.isEditing=true;
+
 				RelativeLayout.LayoutParams layout=(RelativeLayout.LayoutParams)selectedComp.selectedView.getLayoutParams();
 				((BasicComponentView)selectedComp.selectedView).isLayoutChange=true;
 				if(selectedComp.operateType==CompOperateType.move){
@@ -411,8 +417,10 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 		}else if (ev.getAction() == MotionEvent.ACTION_UP) {
 			if(selectedComp.selectedView!=null){
 				((BasicComponentView)selectedComp.selectedView).isLayoutChange=false;
-				if(selectedComp.operateType!=CompOperateType.none)
-					comp_properties_view.bingingBasicProperties(((BasicComponentView)selectedComp.selectedView));
+				if(selectedComp.operateType!=CompOperateType.none) {
+
+					comp_properties_view.bingingBasicProperties(((BasicComponentView) selectedComp.selectedView));
+				}
 				selectedComp.operateType=CompOperateType.none;
         	}
 		}
@@ -461,6 +469,11 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 					isOpening=false;
 					hiheLoadingPage();
 					break;
+				case 2:
+					m_temp_name_view.setTag(currentTemplate.id);
+					m_temp_name_view.setText(m_temp_name_view.getTag() + " ( " + temp_real_w + " X " + temp_real_h + " )");
+					invalidate();
+					break;
 			}
 		}
 	};
@@ -490,6 +503,16 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 			((BasicComponentView)temp_workspace.getChildAt(index)).getComponentProperty(doc,savaTemplate);
 		}
 		return savaTemplate;
+	}
+
+	@Override
+	public void saveTemplateResult(TemplateEntity templateEntity){
+		if(templateEntity!=null) {
+			currentTemplate.id=templateEntity.id;
+			Message msg=new Message();
+			msg.what=2;
+			handler.sendMessage(msg);
+		}
 	}
 
 	@Override

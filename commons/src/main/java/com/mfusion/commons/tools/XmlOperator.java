@@ -16,6 +16,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -141,12 +142,12 @@ public class XmlOperator {
 
 			DOMSource doms = new DOMSource(xmlDoc);  
 	        File f = new File(xmlPath);  
-	        StreamResult sr = new StreamResult(f);  
+	        StreamResult sr = new StreamResult(f.getAbsolutePath());
 	        TransformerFactory tf = TransformerFactory.newInstance();  
-            Transformer t = tf.newTransformer();  
+            Transformer t = tf.newTransformer();
             Properties properties = t.getOutputProperties();  
-            properties.setProperty(OutputKeys.ENCODING, "UTF-8");  
-            properties.setProperty(OutputKeys.VERSION, "1.1"); 
+            properties.setProperty(OutputKeys.ENCODING, "UTF-8");
+            properties.setProperty(OutputKeys.VERSION, "1.1");
             t.setOutputProperties(properties);  
             t.transform(doms, sr);  
             
@@ -159,6 +160,8 @@ public class XmlOperator {
 			File oldFlie=new File(xmlPath+".old");
 			if(oldFlie.exists())
 				oldFlie.renameTo(new File(xmlPath));
+			else
+				FileOperator.deleteFile(oldFlie.getParent());
 			return false;
 		}
 	}

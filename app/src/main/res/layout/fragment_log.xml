@@ -10,18 +10,17 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".New.MainActivity">
 
-    <Button
+    <com.mfusion.commons.view.ImageTextView
 
         style="?android:attr/buttonStyleSmall"
         android:background="@drawable/mybutton"
         android:textColor="#ffffff"
-        android:layout_width="120dp"
-        android:layout_height="20dp"
-        android:text="Load Log"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
         android:id="@+id/btnReload"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginBottom="17dp"/>
+        android:layout_marginBottom="5dp"/>
 
     <EditText
         android:inputType="none"
@@ -40,13 +39,12 @@
         android:scrollbars = "vertical"
         android:gravity="top"/>
 
-    <Button
+    <com.mfusion.commons.view.ImageTextView
         android:background="@drawable/mybutton"
         android:textColor="#ffffff"
         style="?android:attr/buttonStyleSmall"
-        android:layout_width="150dp"
-        android:layout_height="20dp"
-        android:text="Clear Log"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
         android:id="@+id/btnClear"
         android:layout_alignTop="@+id/btnReload"
         android:layout_alignParentLeft="true"

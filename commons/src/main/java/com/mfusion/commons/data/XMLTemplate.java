@@ -118,13 +118,7 @@ public class XMLTemplate {
         if(tempInfo==null)
             throw new IllegalTemplateException("Null");
 
-        try{
-
-            if(this.existTemplate(XMLFolder,tempInfo.id)){
-                tempInfo.id = FileOperator.CheckFileName(XMLFolder,tempInfo.id);
-            }
-
-        }catch (Exception ex){}
+        tempInfo.id = FileOperator.CheckFileName(XMLFolder,tempInfo.id);
 
         return this.updateTemplate(tempInfo,XMLFolder);
     }

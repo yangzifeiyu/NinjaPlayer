@@ -88,6 +88,8 @@ public class BGComponentView extends BasicComponentView {
 				
             ArrayList<String> medias=bundle.getStringArrayList("selectedFiles");
             if(medias!=null&&medias.size()>0){
+				componentPropertyChanged();
+
             	c_bg_image_path=medias.get(0);
 				ImageHelper.recycleBitmap(c_bg_image);
             	c_bg_image= ImageHelper.getBitmap(c_bg_image_path);

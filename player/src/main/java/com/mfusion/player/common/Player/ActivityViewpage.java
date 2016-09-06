@@ -7,7 +7,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mfusion.commons.controllers.AbstractFragment;
@@ -46,8 +50,14 @@ public class ActivityViewpage extends FragmentActivity implements ActionBar.TabL
 
             // Adding Tabs
             for (String tab_name : tabs) {
-                actionBar.addTab(actionBar.newTab().setText(tab_name)
+                View tab_view= LayoutInflater.from(this).inflate(com.mfusion.ninjaplayer.R.layout.active_tab_item_view, null,true);
+                ImageView tab_image_view=(ImageView)tab_view.findViewById(com.mfusion.ninjaplayer.R.id.menu_tab_image);
+                TextView tab_name_view=(TextView) tab_view.findViewById(com.mfusion.ninjaplayer.R.id.menu_tab_name);
+                tab_name_view.setText(tab_name);
+                actionBar.addTab(actionBar.newTab().setCustomView(tab_view)
                         .setTabListener(this));
+                /*actionBar.addTab(actionBar.newTab().setText(tab_name)
+                        .setTabListener(this));*/
             }
 
             /**
@@ -210,7 +220,11 @@ public class ActivityViewpage extends FragmentActivity implements ActionBar.TabL
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getAction() == 0) {
             //ACTION_DOWN
-            if (event.getKeyCode() == KeyEvent.KEYCODE_F5 || event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+            if( event.getKeyCode() == KeyEvent.KEYCODE_BACK){
+
+                return true;
+            }
+            if (event.getKeyCode() == KeyEvent.KEYCODE_F5) {
                 checkFragmentEditStatus(new OperateCallbackBundle() {
                     @Override
                     public void onConfim(String content) {

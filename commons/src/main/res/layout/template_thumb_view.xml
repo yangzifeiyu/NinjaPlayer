@@ -9,9 +9,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:background="@drawable/temp_thumb_border_style"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
         android:id="@+id/template_thumb_item">
 
 
@@ -35,7 +32,7 @@
                 android:gravity="right">
 
                 <ImageButton
-                    android:layout_width="25dp"
+                    android:layout_width="@dimen/thumb_item_btn_width"
                     android:layout_height="match_parent"
                     android:id="@+id/template_thumb_export"
                     android:scaleType="fitCenter"
@@ -43,7 +40,7 @@
                     android:src="@drawable/mf_export" />
 
                 <ImageButton
-                    android:layout_width="25dp"
+                    android:layout_width="@dimen/thumb_item_btn_width"
                     android:layout_height="match_parent"
                     android:id="@+id/template_thumb_delete"
                     android:src="@drawable/mf_trash"
@@ -67,16 +64,58 @@
 
         </RelativeLayout>
 
-        <TextView
-            android:id="@+id/template_thumb_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Temp_1"
-            android:textSize="@dimen/textSize"
-            android:layout_gravity="center_horizontal"
-            android:singleLine="false"
-            style="@style/myTextStyle" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/template_thumb_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Temp_1"
+                android:textSize="@dimen/textSize"
+                android:singleLine="false"
+                style="@style/myTextStyle"
+                android:layout_gravity="center"
+                android:paddingLeft="@dimen/thumb_item_btn_width" />
+
+            <ImageButton
+                android:layout_width="@dimen/thumb_item_btn_width"
+                android:layout_height="20dp"
+                android:id="@+id/template_thumb_open"
+                android:scaleType="fitCenter"
+                android:background="#00ffffff"
+                android:src="@drawable/mf_open"
+                android:layout_marginRight="@dimen/thumb_item_btn_width" />
+
+        </LinearLayout>
+        <!--<RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/template_thumb_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Temp_1"
+                android:textSize="@dimen/textSize"
+                android:layout_gravity="center_horizontal"
+                android:singleLine="false"
+                style="@style/myTextStyle"
+                android:gravity="center"
+                android:layout_centerInParent="true" />
+
+            <ImageButton
+                android:layout_width="@dimen/thumb_item_btn_width"
+                android:layout_height="20dp"
+                android:id="@+id/template_thumb_open"
+                android:scaleType="fitCenter"
+                android:background="#00ffffff"
+                android:src="@drawable/mf_open"
+                android:layout_alignParentRight="true" />
+
+        </RelativeLayout>-->
 
     </LinearLayout>
 

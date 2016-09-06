@@ -1,12 +1,10 @@
 package com.mfusion.templatedesigner.previewcomponent;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -26,7 +24,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -43,7 +40,7 @@ import com.mfusion.commons.tools.rss.RssItem;
 import com.mfusion.templatedesigner.HandleTimer;
 import com.mfusion.templatedesigner.R;
 import com.mfusion.templatedesigner.previewcomponent.dialog.ColorDialog;
-import com.mfusion.templatedesigner.previewcomponent.subview.DropDownView;
+import com.mfusion.commons.view.DropDownView;
 import com.mfusion.templatedesigner.previewcomponent.dialog.FontDialog;
 import com.mfusion.commons.tools.CallbackBundle;
 import com.mfusion.templatedesigner.previewcomponent.values.ComponentFont;
@@ -298,7 +295,8 @@ public class RSSComponentView extends BasicComponentView {
 		                public void callback(Bundle bundle) {
 		                	if(bundle==null)
 		                		return;
-		                	
+							componentPropertyChanged();
+
 		                	c_title_font.setFamilyString(bundle.getString("Family"));
 		                	c_title_font.setStyleString(bundle.getString("Style"));
 		                	c_title_font.size=bundle.getFloat("Size");
@@ -320,8 +318,10 @@ public class RSSComponentView extends BasicComponentView {
 					// TODO Auto-generated method stub
 					Dialog dialog =(new ColorDialog()).createDialog(0, m_context, new CallbackBundle() {
 		                @Override  
-		                public void callback(Bundle bundle) {  
-		                    String colorString = bundle.getString("color");  
+		                public void callback(Bundle bundle) {
+							componentPropertyChanged();
+
+							String colorString = bundle.getString("color");
 		                    c_title_font.color=Integer.parseInt(colorString);
 		                    paint_title.setColor(c_title_font.color);
 							PropertyValues.bindingColorButton(m_title_color_edit_btn,c_title_font.color);
@@ -342,8 +342,10 @@ public class RSSComponentView extends BasicComponentView {
 		                public void callback(Bundle bundle) {
 		                	if(bundle==null)
 		                		return;
-		                	
-		                	c_body_font.setFamilyString(bundle.getString("Family"));
+
+							componentPropertyChanged();
+
+							c_body_font.setFamilyString(bundle.getString("Family"));
 		                	c_body_font.setStyleString(bundle.getString("Style"));
 		                	c_body_font.size=bundle.getFloat("Size");
 
@@ -364,8 +366,10 @@ public class RSSComponentView extends BasicComponentView {
 					// TODO Auto-generated method stub
 					Dialog dialog =(new ColorDialog()).createDialog(0, m_context, new CallbackBundle() {  
 		                @Override  
-		                public void callback(Bundle bundle) {  
-		                    String colorString = bundle.getString("color");  
+		                public void callback(Bundle bundle) {
+							componentPropertyChanged();
+
+							String colorString = bundle.getString("color");
 		                    c_body_font.color=Integer.parseInt(colorString);
 		                    paint_body.setColor(c_body_font.color);
 							PropertyValues.bindingColorButton(m_body_color_edit_btn,c_body_font.color);
@@ -381,6 +385,8 @@ public class RSSComponentView extends BasicComponentView {
 				public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
 					// TODO Auto-generated method stub
 					if(!c_rss_url.equalsIgnoreCase(arg0.toString())){
+						componentPropertyChanged();
+
 						c_rss_url=arg0.toString();
 						m_content_lenght=0;
 					}
@@ -407,6 +413,10 @@ public class RSSComponentView extends BasicComponentView {
 				@Override
 				public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
 					// TODO Auto-generated method stub
+
+					if(c_speed.toString().equalsIgnoreCase(arg0.toString()))
+						return;
+					componentPropertyChanged();
 					c_speed=TextSpeedType.valueOf(arg0.toString());
 				}
 				

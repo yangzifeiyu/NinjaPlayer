@@ -1,10 +1,8 @@
 package com.mfusion.templatedesigner.previewcomponent;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -35,7 +33,7 @@ import com.mfusion.commons.entity.template.TemplateEntity;
 import com.mfusion.commons.entity.values.ComponentType;
 import com.mfusion.templatedesigner.HandleTimer;
 import com.mfusion.templatedesigner.R;
-import com.mfusion.templatedesigner.previewcomponent.subview.DropDownView;
+import com.mfusion.commons.view.DropDownView;
 import com.mfusion.templatedesigner.previewcomponent.dialog.MediaSelectDialog;
 import com.mfusion.templatedesigner.previewcomponent.entity.ScheduleMediaEntity;
 import com.mfusion.templatedesigner.previewcomponent.subview.CustomerVideoSurfaceView;
@@ -313,6 +311,10 @@ public class ScheduleMediaComponentView extends BasicComponentView {
 				@Override
 				public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
 					// TODO Auto-generated method stub
+
+					if(c_play_mode.toString().equalsIgnoreCase(arg0.toString()))
+						return;
+					componentPropertyChanged();
 					c_play_mode=ScheduleMediaPlayMode.valueOf(arg0.toString());
 				}
 				
@@ -339,6 +341,8 @@ public class ScheduleMediaComponentView extends BasicComponentView {
 					(new MediaSelectDialog()).createDialog( m_context,new CallbackBundle() {
 		                @Override  
 		                public void callback(Bundle bundle) {
+							componentPropertyChanged();
+
 							getMediaListInfo();
 							return;
 		                }  

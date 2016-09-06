@@ -7,8 +7,11 @@
     <string name="password_match"><font size="10">matched password</font></string>
     <string name="password_notmatch"><font size="10">unmatched password</font></string>
     <string-array name="info_arrays">
+        <!--<item> MediaFusion Lite (Ninja Version, Normal), release 1.0, generated on 23/08/2016 </item>-->
         <item> MediaFusion Lite (Ninja Version), release 1.0, generated on 23/08/2016 </item>
     </string-array>
+
+    <string name="file_name_rule"></string>
 
     <string name="select_mode">Select Mode</string>
     <string-array name="mode_names">

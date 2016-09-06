@@ -52,7 +52,7 @@ public class TemplateInfoAdapter  extends BaseAdapter {
 
     Boolean canChecked=false;
 
-    CallbackBundle longTouchEventCall,deleteEventCall,exportEventCall;
+    CallbackBundle openEventCall,deleteEventCall,exportEventCall,renameEventCall;
 
     ArrayList<VisualTemplate> selected_list;
 
@@ -69,22 +69,24 @@ public class TemplateInfoAdapter  extends BaseAdapter {
         this.initAdapter(context,parent,temp_list);
     }
 
-    public TemplateInfoAdapter(Context context, View parent, List<VisualTemplate> temp_list, CallbackBundle longTouchCallback, CallbackBundle deleteCallback, CallbackBundle exportCallback,Boolean canSelected) {
+    public TemplateInfoAdapter(Context context, View parent, List<VisualTemplate> temp_list, CallbackBundle openCallback, CallbackBundle deleteCallback, CallbackBundle exportCallback, CallbackBundle renameCallback,Boolean canSelected) {
 
         this.canChecked=canSelected;
-        this.longTouchEventCall=longTouchCallback;
+        this.openEventCall=openCallback;
         this.deleteEventCall=deleteCallback;
         this.exportEventCall=exportCallback;
+        this.renameEventCall=renameCallback;
         this.initAdapter(context,parent,temp_list);
     }
 
-    public TemplateInfoAdapter(Context context, View parent, List<VisualTemplate> temp_list, CallbackBundle longTouchCallback, CallbackBundle deleteCallback, CallbackBundle exportCallback,Boolean canSelected,CheckBox select_all) {
+    public TemplateInfoAdapter(Context context, View parent, List<VisualTemplate> temp_list, CallbackBundle openCallback, CallbackBundle deleteCallback, CallbackBundle exportCallback, CallbackBundle renameCallback,Boolean canSelected,CheckBox select_all) {
 
         this.canChecked=canSelected;
         this.checkBox_select_all=select_all;
-        this.longTouchEventCall=longTouchCallback;
+        this.openEventCall=openCallback;
         this.deleteEventCall=deleteCallback;
         this.exportEventCall=exportCallback;
+        this.renameEventCall=renameCallback;
         this.initAdapter(context,parent,temp_list);
     }
 
@@ -154,7 +156,8 @@ public class TemplateInfoAdapter  extends BaseAdapter {
         delete_btn.setVisibility(View.GONE);
         ImageButton export_btn=(ImageButton)convertView.findViewById(R.id.template_thumb_export);
         export_btn.setVisibility(View.GONE);
-
+        ImageButton open_btn=(ImageButton)convertView.findViewById(R.id.template_thumb_open);
+        open_btn.setVisibility(View.GONE);
         final ClipData.Item item = new ClipData.Item(temp_info.id);
         final ClipData data = new ClipData("move", new String[] { ClipDescription.MIMETYPE_TEXT_PLAIN }, item);
         convertView.setOnTouchListener(new View.OnTouchListener() {
@@ -213,13 +216,19 @@ public class TemplateInfoAdapter  extends BaseAdapter {
             });
         }
 
-        if(longTouchEventCall!=null){
+        if(openEventCall!=null){
+            open_btn.setVisibility(View.VISIBLE);
+            ButtonHoverStyle.bindingHoverEffect(open_btn,context.getResources());
+            open_btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    callbackEvent(openEventCall,position);
+                }
+            });
             convertView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
-                    Bundle response=new Bundle();
-                    response.putInt("position",position);
-                    longTouchEventCall.callback(response);
+                    callbackEvent(openEventCall,position);
                     return false;
                 }
             });
@@ -231,9 +240,7 @@ public class TemplateInfoAdapter  extends BaseAdapter {
             delete_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Bundle response=new Bundle();
-                    response.putInt("position",position);
-                    deleteEventCall.callback(response);
+                    callbackEvent(deleteEventCall,position);
                 }
             });
         }
@@ -244,17 +251,21 @@ public class TemplateInfoAdapter  extends BaseAdapter {
             export_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Bundle response=new Bundle();
-                    response.putString("id",temp_info.id);
-                    exportEventCall.callback(response);
+                    callbackEvent(exportEventCall,position);
                 }
             });
         }
 
-        if(!canChecked||this.deleteEventCall==null||this.exportEventCall==null)
+        if(!canChecked&&this.deleteEventCall==null&&this.exportEventCall==null)
             ((LinearLayout) convertView.findViewById(R.id.template_thumb_manager)).setVisibility(View.GONE);
 
         return convertView;
+    }
+
+    private void callbackEvent(CallbackBundle callEvent,int position){
+        Bundle response=new Bundle();
+        response.putInt("position",position);
+        callEvent.callback(response);
     }
 
     @Override

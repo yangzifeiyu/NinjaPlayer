@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.mfusion.templatedesigner.R;
-import com.mfusion.templatedesigner.previewcomponent.subview.DropDownView;
+import com.mfusion.commons.view.DropDownView;
 import com.mfusion.commons.tools.CallbackBundle;
 import com.mfusion.templatedesigner.previewcomponent.values.ComponentFont;
 import com.mfusion.templatedesigner.previewcomponent.values.PropertyValues;

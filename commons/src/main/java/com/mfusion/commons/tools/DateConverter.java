@@ -12,6 +12,22 @@ public class DateConverter {
 	static SimpleDateFormat time_format=new SimpleDateFormat("HH:mm:ss");
 	static SimpleDateFormat short_time_format=new SimpleDateFormat("HH:mm");
 	static SimpleDateFormat long_time_format=new SimpleDateFormat("yyyy,MM,dd,HH,mm,ss");
+	static SimpleDateFormat default_display_format=new SimpleDateFormat(InternalKeyWords.DefaultDisplayDateFormat);
+
+	public static String convertToDisplayStr(Date time){
+		if(time==null)
+			time=Calendar.getInstance().getTime();
+		return default_display_format.format(time);
+	}
+
+	public static Date convertDisplayStrToDate(String time){
+		try {
+			return default_display_format.parse(time);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
+	}
 
 	public static String convertDateToStr(String format,Date date){
 		if(date==null)

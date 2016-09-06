@@ -24,6 +24,7 @@ import com.mfusion.commons.controllers.AbstractScheduleDesigner;
 import com.mfusion.commons.entity.schedule.Schedule;
 import com.mfusion.commons.entity.values.BlockType;
 import com.mfusion.commons.entity.values.SchedulePlayType;
+import com.mfusion.commons.view.DropDownView;
 import com.mfusion.scheduledesigner.entity.BlockUIEntity;
 import com.mfusion.scheduledesigner.entity.BlockUIItemEntity;
 import com.mfusion.commons.tools.CallbackBundle;
@@ -34,6 +35,7 @@ import com.mfusion.scheduledesigner.subview.BlockPropertyEditView;
 import com.mfusion.scheduledesigner.subview.BlockView;
 import com.mfusion.scheduledesigner.subview.GraphicTemplateListLayout;
 import com.mfusion.scheduledesigner.subview.ScheduleWeeklyView;
+import com.mfusion.scheduledesigner.subview.SelectAreaRect;
 import com.mfusion.scheduledesigner.subview.TimeRuleView;
 import com.mfusion.scheduledesigner.subview.WeekSelectView;
 import com.mfusion.scheduledesigner.values.CompOperateType;
@@ -90,9 +92,11 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
 
     ScheduleWeeklyView sche_weekly_view=null;
 
+    DropDownView sche_idle_view;
+
     Switch sche_playmode_view;
 
-    Button sche_idle_view;
+    //Button sche_idle_view;
 
     int screen_w,screen_h;
     int sche_container_w,sche_container_h;
@@ -103,6 +107,8 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
 
     SelectedCompProperty selectedComp=new SelectedCompProperty();
 
+    SelectAreaRect blank_select_area;
+    
     Calendar calendar = Calendar.getInstance();
 
     WeekSelectView sche_week_selecter;
@@ -177,7 +183,7 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
         sche_pbu_layut.setLayoutParams(pbuLayoutParams);
 
         sche_pbu_view=(GraphicTemplateListLayout)scheduleLayout.findViewById(R.id.sche_pbu_list);
-        sche_pbu_view.bindingTemplates();
+        sche_pbu_view.bindingTemplates(templateLoadListener);
         sche_pbu_view.setEnabled(false);
 
         sche_ws_left=sche_pbu_layut.getLayoutParams().width;
@@ -187,9 +193,11 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
         ws_layoutParams.height=sche_container_h-sche_ws_top-property_layout.getLayoutParams().height;
         sche_ws_layout.setLayoutParams(ws_layoutParams);
 
-        sche_idle_view=(Button)scheduleLayout.findViewById(R.id.sche_default);
-        sche_idle_view.setOnDragListener(idle_dragListener);
-        sche_idle_view.setPadding(5,0,5,0);
+        sche_ws_layout.setClickable(true);
+        sche_ws_layout.setOnTouchListener(workspaceTouchListener);
+
+        sche_idle_view=(DropDownView)scheduleLayout.findViewById(R.id.sche_default_list);
+
         if(this.m_schedule_data!=null)
             sche_idle_view.setText(m_schedule_data.idleItem);
 
@@ -306,6 +314,15 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
         }
     };
 
+    CallbackBundle templateLoadListener=  new CallbackBundle() {
+        @Override
+        public void callback(Bundle bundle) {
+            if(bundle==null)
+                return;
+
+            sche_idle_view.setSelectList(bundle.getStringArrayList("temp_list"));
+        }
+    };
     /**
      * receive dragged template, and insert into schedule
      */
@@ -343,46 +360,7 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
             return false;
         }
     };
-    /**
-     * receive dragged template, and create as default template for schedule
-     */
-    OnDragListener idle_dragListener = new OnDragListener() {
 
-        @Override
-        public boolean onDrag(View arg0, DragEvent event) {
-            // TODO Auto-generated method stub
-            final int action = event.getAction();
-            switch (action) {
-                case DragEvent.ACTION_DRAG_STARTED:
-                    //拖拽开始事件
-                    if (event.getClipDescription().hasMimeType( ClipDescription.MIMETYPE_TEXT_PLAIN)) {
-                        return true;
-                    }
-                    return false;
-                case DragEvent.ACTION_DRAG_ENTERED:
-                    //被拖放View进入目标View ;
-                    return true;
-                case DragEvent.ACTION_DRAG_LOCATION:return true;
-                case DragEvent.ACTION_DRAG_EXITED:
-                    //被拖放View离开目标View
-                    return true;
-                case DragEvent.ACTION_DROP:
-                    //释放拖放阴影，并获取移动数据
-                    ClipData.Item item = event.getClipData().getItemAt(0);
-                    String dragData = item.getText().toString();
-
-                    sche_idle_view.setText(dragData);
-                    if(parentFragment!=null)
-                        parentFragment.isEditing=true;
-
-                    return true;
-                case DragEvent.ACTION_DRAG_ENDED:
-                    //拖放事件完成
-                    return true;
-                default: break; }
-            return false;
-        }
-    };
     /**
      * listen block operate about move, drag
      */
@@ -425,9 +403,44 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
                     break;
                 }
                 case MotionEvent.ACTION_MOVE:{
+                    System.out.println("Comp  :ACTION_MOVE");
                     break;
                 }
             }
+            return false;
+        }
+    };
+
+    OnTouchListener workspaceTouchListener= new OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent ev) {
+
+            System.out.println("Workspace :"+ev.getAction());
+            /*if(selectedComp.operateType == CompOperateType.none){
+                //mouse in blank area
+                if (ev.getAction() == MotionEvent.ACTION_DOWN){
+                    if(blank_select_area==null){
+                        blank_select_area=new SelectAreaRect(m_context);
+                        sche_ws_layout.addView(blank_select_area);
+                    }
+                    RelativeLayout.LayoutParams layoutParams=(RelativeLayout.LayoutParams)blank_select_area.getLayoutParams();
+                    layoutParams.leftMargin=(int)(ev.getX()-sche_ws_left);
+                    layoutParams.topMargin=(int)(ev.getY()-sche_ws_top);
+                    blank_select_area.setLayoutParams(layoutParams);
+                    blank_select_area.setStartPoint(ev.getX(),ev.getY());
+                    blank_select_area.setVisibility(GONE);
+                }else if (ev.getAction() == MotionEvent.ACTION_MOVE){
+                    if(blank_select_area!=null){
+                        blank_select_area.setEndPoint(ev.getX(),ev.getY());
+                        blank_select_area.setVisibility(VISIBLE);
+                    }
+                }else if (ev.getAction() == MotionEvent.ACTION_UP){
+                    if(blank_select_area!=null){
+
+                        blank_select_area.setVisibility(GONE);
+                    }
+                }
+            }*/
             return false;
         }
     };
@@ -437,6 +450,7 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
 
+        System.out.println("Total :"+ev.getAction());
         if(selectedComp.operateType!= CompOperateType.none){
             if (ev.getAction() == MotionEvent.ACTION_MOVE) {
                 if(selectedComp.selectedView!=null){
@@ -487,7 +501,7 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
                         selectedComp.height=layout.height;
                         selectedComp.width=layout.width;
                     }
-                    System.out.println(layout.leftMargin);
+
                     selectedComp.mouseX=ev.getX();
                     selectedComp.mouseY=ev.getY();
                     selectedComp.selectedView.setLayoutParams(layout);
@@ -503,7 +517,6 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
                     selectedComp.operateType=CompOperateType.none;
                 }
             }
-
         }
 
         return super.dispatchTouchEvent(ev);
@@ -594,7 +607,7 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
 
             switch (msg.what){
                 case 0:
-                    sche_pbu_view.bindingTemplates();
+                    sche_pbu_view.bindingTemplates(templateLoadListener);
 
                     break;
                 case 1:

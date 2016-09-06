@@ -15,4 +15,5 @@
     <dimen name="thumb_space_h">40dp</dimen>
     <dimen name="thumb_space_v">40dp</dimen>
     <dimen name="thumb_item_operator_size">20dp</dimen>
+    <dimen name="thumb_item_btn_width">25dp</dimen>
 </resources>

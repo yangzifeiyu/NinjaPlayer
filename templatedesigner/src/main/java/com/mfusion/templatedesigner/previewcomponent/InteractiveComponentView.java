@@ -187,6 +187,7 @@ public class InteractiveComponentView  extends BasicComponentView {
 				public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
 					// TODO Auto-generated method stub
 					if(!c_address.equalsIgnoreCase(arg0.toString())){
+						componentPropertyChanged();
 						c_address=arg0.toString();
 						invalidate();
 						render();

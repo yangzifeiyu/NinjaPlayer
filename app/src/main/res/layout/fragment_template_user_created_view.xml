@@ -95,7 +95,8 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="5dp">
 
         <GridView
             android:id="@+id/template_list_user_created_grid_view"

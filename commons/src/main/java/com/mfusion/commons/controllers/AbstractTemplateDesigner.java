@@ -47,5 +47,7 @@ public abstract class AbstractTemplateDesigner extends LinearLayout {
      */
     public  abstract TemplateEntity saveTemplate() throws Exception;
 
+    public abstract void saveTemplateResult(TemplateEntity templateEntity);
+
     public abstract void closeTemplate();
 }

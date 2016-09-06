@@ -17,7 +17,7 @@
             android:text="Family : "
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
-        <com.mfusion.templatedesigner.previewcomponent.subview.DropDownView
+        <com.mfusion.commons.view.DropDownView
             android:id="@+id/dialog_font_family"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="80dp"
@@ -41,7 +41,7 @@
             android:text="Style : "
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
-        <com.mfusion.templatedesigner.previewcomponent.subview.DropDownView
+        <com.mfusion.commons.view.DropDownView
             android:id="@+id/dialog_font_style"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="80dp"

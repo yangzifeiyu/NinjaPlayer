@@ -1,4 +1,4 @@
-package com.mfusion.templatedesigner.previewcomponent.subview;
+package com.mfusion.commons.view;
 
 import java.util.List;
 
@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -22,7 +23,8 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.mfusion.templatedesigner.R;
+import com.mfusion.commons.entity.template.VisualTemplate;
+import com.mfusion.commontools.R;
 
 public class DropDownView extends Button{
 
@@ -32,7 +34,7 @@ public class DropDownView extends Button{
 	
 	private PopupWindow popup_view;
 	
-	private Context m_ccontext;
+	private Context m_context;
 	
 	public DropDownView(Context context) {
 		super(context);
@@ -53,7 +55,7 @@ public class DropDownView extends Button{
 	}
 	
 	private void init(Context context){
-		this.m_ccontext=context;
+		this.m_context=context;
 		this.setPadding(5,0,5,0);
 		this.setOnClickListener(dropListener);
 	}
@@ -80,7 +82,7 @@ public class DropDownView extends Button{
 			popup_view.dismiss();
 		}else {
 
-			LinearLayout conatinerLayout=(LinearLayout)((Activity)this.m_ccontext).getLayoutInflater().inflate(R.layout.dropdown_list_view,null);
+			LinearLayout conatinerLayout=(LinearLayout)((Activity)this.m_context).getLayoutInflater().inflate(R.layout.dropdown_list_view,null);
 
 			dropdown_view= (ListView)conatinerLayout.findViewById(R.id.dropdown_listview);
 			dropdown_view.setOnItemClickListener(new OnItemClickListener() {
@@ -95,9 +97,9 @@ public class DropDownView extends Button{
 				}
 			});
 			
-			this.dropdown_view.setAdapter(new DropItemAdapter(this.m_ccontext, this.item_list));
+			this.dropdown_view.setAdapter(new DropItemAdapter(this.m_context, this.item_list));
 			
-			popup_view = new PopupWindow(conatinerLayout, this.getWidth(),LayoutParams.WRAP_CONTENT);
+			popup_view = new PopupWindow(conatinerLayout, (int)getPopupWindowWith(),LayoutParams.WRAP_CONTENT);
 
 			ColorDrawable cd = new ColorDrawable();
 			popup_view.setBackgroundDrawable(cd);
@@ -123,6 +125,17 @@ public class DropDownView extends Button{
 				}
 			});
 		}
+	}
+
+	private float getPopupWindowWith(){
+		float max_length=0;
+		Paint paint=new Paint();
+		paint.setTextSize(this.m_context.getResources().getDimension(R.dimen.textSize));
+		for(String item :this.item_list){
+			float current_length=paint.measureText(item);
+			max_length=max_length>current_length?max_length:current_length;
+		}
+		return max_length>getWidth()?max_length:getWidth();
 	}
 	
 	class DropItemAdapter extends BaseAdapter {

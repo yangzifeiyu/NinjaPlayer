@@ -40,6 +40,8 @@ public class BasicComponentView extends RelativeLayout implements OnLongClickLis
 	
 	public Boolean isLayoutChange=false;
 
+	public CallbackBundle changedListener;
+
 	private Boolean isSelected=false;
 
 	public int c_w=200,c_h=200,c_left,c_top;
@@ -55,6 +57,8 @@ public class BasicComponentView extends RelativeLayout implements OnLongClickLis
 	protected TextPaint paint_border,paint_bg,paint_selectd;
 
 	private DashPathEffect effects;
+
+	int distance=15;
 
 	protected int getDefaultColor(){
 		return Color.WHITE;
@@ -223,7 +227,6 @@ public class BasicComponentView extends RelativeLayout implements OnLongClickLis
 		
 	}
 
-	int distance=10;
 	@Override
 	public boolean onHover(View arg0, MotionEvent event) {
 		// TODO Auto-generated method stub
@@ -306,6 +309,8 @@ public class BasicComponentView extends RelativeLayout implements OnLongClickLis
 		@Override
 		public void callback(Bundle bundle) {
 			// TODO Auto-generated method stub
+			componentPropertyChanged();
+
 			c_back_color=Integer.valueOf(bundle.getString("color"));
 			paint_bg.setColor(c_back_color);
 			invalidate();
@@ -316,12 +321,16 @@ public class BasicComponentView extends RelativeLayout implements OnLongClickLis
 		@Override
 		public void callback(Bundle bundle) {
 			// TODO Auto-generated method stub
+			componentPropertyChanged();
+
 			Boolean operation=bundle.getInt("ZIndex")==1;
 			ViewOperateHelper.changeViewZindex((ViewGroup)getParent(), compView, operation);
 		}
 	};
 	
 	protected void updateViewLayout(Integer width,Integer height,Integer left,Integer top){
+		componentPropertyChanged();
+
 		c_w=width;
 		c_h=height;
 		c_left=left;
@@ -332,7 +341,13 @@ public class BasicComponentView extends RelativeLayout implements OnLongClickLis
 		layoutParams.topMargin=c_top;
 		setLayoutParams(PropertyValues.convertToVirtualLayout(layoutParams));
 	}
-	
+
+	protected void componentPropertyChanged(){
+		if(changedListener!=null)
+			changedListener.callback(null);
+
+	}
+
 	public View getPropertyView(ViewGroup rootViewGroup) {
 		return null;
 		

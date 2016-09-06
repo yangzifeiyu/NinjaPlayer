@@ -64,23 +64,15 @@
                     android:paddingTop="3dp"
                     style="@style/myTextStyle"
                     android:textColor="@android:color/holo_red_dark" />
-
-                <Button
-                    android:id="@+id/sche_default"
-                    style="@style/myTextStyle"
+                <com.mfusion.commons.view.DropDownView
+                    android:id="@+id/sche_default_list"
+                    style="?android:attr/buttonStyleSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="24dp"
-                    android:text="@string/sche_idle_template_tip"
-                    android:textSize="@dimen/textSizeSmall"
-                    android:padding="0dp"
                     android:background="@drawable/button_style"
-                    android:paddingLeft="0dp"
-                    android:paddingRight="5dp"
-                    android:textAlignment="center"
-                    android:textColor="@android:color/holo_red_dark"
-                    android:layout_gravity="center_vertical"
-                    android:maxWidth="300dp"
-                    android:hint="test" />
+                    android:text="Suquence"
+                    android:textSize="@dimen/textSize"
+                    android:textColor="@android:color/holo_red_dark" />
 
                 <Switch
                     android:layout_width="wrap_content"

@@ -1,5 +1,6 @@
 package com.mfusion.ninjaplayer.view;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -23,6 +24,7 @@ import com.mfusion.commons.entity.template.TemplateEntity;
 import com.mfusion.commons.entity.template.VisualTemplate;
 import com.mfusion.commons.entity.values.ResourceSourceType;
 import com.mfusion.commons.tools.CallbackBundle;
+import com.mfusion.commons.tools.FileNameTextWatcher;
 import com.mfusion.commons.tools.LogOperator;
 import com.mfusion.commons.tools.OperateCallbackBundle;
 import com.mfusion.commons.view.ImageTextView;
@@ -30,6 +32,8 @@ import com.mfusion.ninjaplayer.R;
 import com.mfusion.templatedesigner.TemplateEditPreviewLayout;
 import com.mfusion.templatedesigner.olddesigner.EventDispatcher;
 import com.mfusion.templatedesigner.olddesigner.TemplateDesigner;
+
+import java.io.FileNotFoundException;
 
 
 public class TemplateDesigningView extends LinearLayout {
@@ -121,24 +125,25 @@ public class TemplateDesigningView extends LinearLayout {
                 return false;
             }
 
-            final EditText etName=new EditText(getContext());
-            etName.setHint("Please input name fot this template");
-            AlertDialog.Builder builder =new AlertDialog.Builder(getContext()).setTitle("Create New Template")//���öԻ������
-                    .setView(etName)
+            AlertDialog.Builder builder =new AlertDialog.Builder(getContext()).setTitle("Create New Template")
+                    .setView(((Activity)context).getLayoutInflater().inflate(R.layout.view_editname, null))
                     .setPositiveButton("Apply",null).setNegativeButton("Cancel",new DialogInterface.OnClickListener() {//��ӷ��ذ�ť
                         @Override
-                        public void onClick(DialogInterface dialog, int which) {//��Ӧ�¼�
+                        public void onClick(DialogInterface dialog, int which) {
                             if(callbackBundle!=null)
                                 callbackBundle.onCancel("");
                             dialog.dismiss();
                         }
                     });
             builder.setCancelable(false);
-            final AlertDialog dialog =builder.show();//�ڰ�����Ӧ�¼�����ʾ�˶Ի���
+            final AlertDialog dialog =builder.show();
             Button negativeButton=((AlertDialog)dialog).getButton(AlertDialog.BUTTON_NEGATIVE);
-            builder.setView(etName);
             negativeButton.requestFocus();
             negativeButton.setFocusable(true);
+
+            final EditText etName=(EditText)dialog.findViewById(R.id.view_edit_name);
+            etName.setHint("Please input name for this template");
+            etName.addTextChangedListener(new FileNameTextWatcher(etName));
 
             ((AlertDialog)dialog).getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -218,11 +223,19 @@ public class TemplateDesigningView extends LinearLayout {
 
     private Boolean addTemplate(TemplateEntity templateEntity){
         try {
-            XMLTemplate.getInstance().addTemplate(templateEntity);
-            ((TemplateEditPreviewLayout)designer).parentFragment.isEditing=false;
-            m_warning_text.setText("Add Successfully");
-            return true;
-        } catch (IllegalTemplateException ex) {
+            if(XMLTemplate.getInstance().addTemplate(templateEntity)){
+                ((TemplateEditPreviewLayout)designer).parentFragment.isEditing=false;
+                ((TemplateEditPreviewLayout)designer).saveTemplateResult(templateEntity);
+                m_warning_text.setText("Add Successfully");
+                return true;
+            }else{
+                m_warning_text.setText("Add failed");
+                return true;
+            }
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+            m_warning_text.setText("Template can't find");
+        }catch (IllegalTemplateException ex) {
             ex.printStackTrace();
             m_warning_text.setText("Template has invalid property");
         }catch (Exception ex) {

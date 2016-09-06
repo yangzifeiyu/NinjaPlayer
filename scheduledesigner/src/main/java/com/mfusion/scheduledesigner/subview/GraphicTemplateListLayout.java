@@ -2,6 +2,7 @@ package com.mfusion.scheduledesigner.subview;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import com.mfusion.commons.data.XMLTemplate;
 import com.mfusion.commons.entity.exception.PathAccessException;
 import com.mfusion.commons.entity.template.VisualTemplate;
 import com.mfusion.commons.entity.values.FileSortType;
+import com.mfusion.commons.tools.CallbackBundle;
 import com.mfusion.commons.tools.FileOperator;
 import com.mfusion.commons.tools.ImageHelper;
 import com.mfusion.commons.tools.LogOperator;
@@ -23,6 +25,7 @@ import com.mfusion.scheduledesigner.R;
 import com.mfusion.commons.tools.ButtonHoverStyle;
 import com.mfusion.scheduledesigner.values.TemplateThumbAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,6 +36,8 @@ public class GraphicTemplateListLayout extends LinearLayout{
     private GraphicTemplateListLayout owner;
 
     private List<VisualTemplate> template_list;
+
+    private CallbackBundle loadFinishCall;
 
     private Context context;
 
@@ -117,7 +122,7 @@ public class GraphicTemplateListLayout extends LinearLayout{
         }
     };
 
-    public void bindingTemplates(){
+    public void bindingTemplates(CallbackBundle loadFinish){
         template_grid.setVisibility(GONE);
         if(template_adapter!=null){
             template_adapter.clearImageResource();
@@ -127,6 +132,7 @@ public class GraphicTemplateListLayout extends LinearLayout{
             template_list.clear();
             template_list=null;
         }
+        loadFinishCall=loadFinish;
         LoadingAsyncTask async=new LoadingAsyncTask(context,template_grid);
         async.execute("");
     }
@@ -149,6 +155,17 @@ public class GraphicTemplateListLayout extends LinearLayout{
                 this.getAllTemplates();
 
                 FileOperator.orderByName(template_list,FileSortType.NameAsce);
+
+                if(loadFinishCall!=null){
+                    ArrayList<String> template_id_list=new ArrayList<>();
+                    for(VisualTemplate visualTemplate : template_list){
+                        template_id_list.add(visualTemplate.id);
+                    }
+                    Bundle result=new Bundle();
+                    result.putStringArrayList("temp_list",template_id_list);
+                    loadFinishCall.callback(result);
+                }
+
             } catch (Exception e) {
                 // TODO: handle exception
                 e.printStackTrace();

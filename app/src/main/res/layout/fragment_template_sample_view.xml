@@ -37,6 +37,7 @@
         android:stretchMode="columnWidth"
         android:verticalSpacing="@dimen/thumb_space_v"
         android:horizontalSpacing="@dimen/thumb_space_h"
-        android:numColumns="auto_fit"/>
+        android:numColumns="auto_fit"
+        android:padding="5dp"/>
 
 </LinearLayout>

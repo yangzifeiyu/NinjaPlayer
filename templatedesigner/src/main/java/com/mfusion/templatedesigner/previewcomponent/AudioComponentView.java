@@ -13,11 +13,8 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.VideoView;
 
 import com.mfusion.commons.entity.exception.IllegalTemplateException;
 import com.mfusion.commons.entity.template.ComponentEntity;
@@ -28,8 +25,7 @@ import com.mfusion.templatedesigner.HandleTimer;
 import com.mfusion.templatedesigner.R;
 import com.mfusion.templatedesigner.previewcomponent.dialog.MediaSelectDialog;
 import com.mfusion.templatedesigner.previewcomponent.entity.ScheduleMediaEntity;
-import com.mfusion.templatedesigner.previewcomponent.subview.CustomerVideoSurfaceView;
-import com.mfusion.templatedesigner.previewcomponent.subview.DropDownView;
+import com.mfusion.commons.view.DropDownView;
 import com.mfusion.templatedesigner.previewcomponent.values.PropertyValues;
 import com.mfusion.templatedesigner.previewcomponent.values.ScheduleMediaPlayMode;
 import com.mfusion.templatedesigner.previewcomponent.values.ScheduleMediaType;
@@ -209,6 +205,10 @@ public class AudioComponentView extends BasicComponentView {
 				@Override
 				public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
 					// TODO Auto-generated method stub
+
+					if(c_play_mode.toString().equalsIgnoreCase(arg0.toString()))
+						return;
+					componentPropertyChanged();
 					c_play_mode=ScheduleMediaPlayMode.valueOf(arg0.toString());
 				}
 				
@@ -235,6 +235,7 @@ public class AudioComponentView extends BasicComponentView {
 					(new MediaSelectDialog()).createDialog( m_context,new CallbackBundle() {
 		                @Override  
 		                public void callback(Bundle bundle) {
+							componentPropertyChanged();
 							getMediaListInfo();
 							return;
 		                }  

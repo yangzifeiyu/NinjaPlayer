@@ -98,7 +98,7 @@ public class TemplateSampleView extends LinearLayout {
                 VisualTemplate visualTemplate=(VisualTemplate) gridView.getItemAtPosition(position);
                 listener.goDesigner(visualTemplate);
             }
-        },null,null,false));
+        },null,null,null,false));
     }
 
     public void setListener(TemplateFragmentListener listener) {

@@ -342,10 +342,10 @@ public class XMLSchedule {
         // TODO Auto-generated method stub
         try {
             String shutDownTime=DALSettings.getInstance().getSettingByKey(InternalKeyWords.Config_ShutDownTime);
-            if(shutDownTime==null||shutDownTime.isEmpty())
-                return null;
 
             Element deviceElement=document.createElement("Device");
+            if(shutDownTime==null||shutDownTime.isEmpty())
+                return deviceElement;
 
             Element powerElement=document.createElement("Power");
             deviceElement.appendChild(powerElement);
@@ -357,7 +357,7 @@ public class XMLSchedule {
 
             Element cmdElement=document.createElement("Command");
             cmdElement.setAttribute("name", "Shutdown");
-            cmdElement.setAttribute("target", "AF1");
+            cmdElement.setAttribute("target", InternalKeyWords.PlayerOriginal);
             timelinElement.appendChild(cmdElement);
 
             powerElement.appendChild(timelinElement);
