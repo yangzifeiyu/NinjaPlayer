@@ -229,9 +229,9 @@ public class ConfigurationFragment extends AbstractFragment {
                 tvtime.setText("00:00:00");
                 tvtime.setTextColor(Color.LTGRAY);
             }
-/*
+
             shut.setFocusable(isChecked);
-            shut.setClickable(isChecked);*/
+            shut.setClickable(isChecked);
         }
     };
 
@@ -247,8 +247,8 @@ public class ConfigurationFragment extends AbstractFragment {
                 tvwtime.setText("00:00:00");
                 tvwtime.setTextColor(Color.LTGRAY);
             }
-            /*wake.setFocusable(isChecked);
-            wake.setClickable(isChecked);*/
+            wake.setFocusable(isChecked);
+            wake.setClickable(isChecked);
         }
     };
 
