@@ -53,7 +53,7 @@ public class ScheduleLoaderService implements BasicServiceInterface{
 	public void Restart() {
 		try 
 		{
-			LoggerHelper.WriteLogfortxt("SchduleLoader Restart");
+			LoggerHelper.WriteLogfortxt("SchduleLoader Restarted");
 			this.Loaded();// ����
 		} 
 		catch (Exception e)

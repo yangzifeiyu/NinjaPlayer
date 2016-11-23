@@ -1,5 +1,7 @@
 package com.mfusion.scheduledesigner.entity;
 
+import com.mfusion.commons.tools.DateConverter;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -21,7 +23,7 @@ public class ScheduleDrawHelper {
 		return recurrence;
 	}
 	
-	public static String getRecurrenceBylocation(int lineH,int y){
+	public static String getRecurrenceByLocation(int lineH,int y){
 
 		String recurrence="0000000";
 		try {
@@ -37,14 +39,22 @@ public class ScheduleDrawHelper {
 		return recurrence;
 	}
 
+	public static Date getDateByLocation(float lineH,int y, Calendar currentCalendar){
+		int line_num=(int) (y/lineH);
+		Calendar calendar = (Calendar)currentCalendar.clone();
+		calendar.add(Calendar.DAY_OF_WEEK, line_num+1);
+		return calendar.getTime();
+	}
+
 	private static int minsInDaily=1440;
-	public static void initBlockBylocation(BlockUIEntity block, float mins_w, int x, float lineH, int y, Calendar calendar){
+	public static void initBlockByLocation(BlockUIEntity block, float mins_w, int x, float lineH, int y, Calendar currentCalendar){
 		
 		int line_num=(int) (y/lineH);
 		String recurrence="0000000";
 		block.recurrence=recurrence.substring(0, line_num)+"1"+recurrence.substring(line_num+1);
+		Calendar calendar = (Calendar)currentCalendar.clone();
 		calendar.add(Calendar.DAY_OF_WEEK, line_num+1);
-		block.startDate =block.endDate =  calendar.getTime();
+		block.startDate =block.endDate =  DateConverter.clearCalendarNoneHHmmss(calendar).getTime();
 
 		int startTotalMins=(int) (x/mins_w)-block.duration/2;
 		startTotalMins=startTotalMins<0?0:startTotalMins;
@@ -53,8 +63,9 @@ public class ScheduleDrawHelper {
 			startTotalMins=startTotalMins-(endTotalMins-minsInDaily+1);
 			endTotalMins=minsInDaily-1;
 		}
-		block.startTime=new Date(1970, 1, 1, 0, startTotalMins, 0);
-		block.endTime=new Date(1970, 1, 1, 0, endTotalMins, 0);
+
+		block.startTime=new Date(70,0,1,0,startTotalMins,0);
+		block.endTime=new Date(70,0,1,0,endTotalMins,0);
 		
 	}
 	
@@ -81,14 +92,14 @@ public class ScheduleDrawHelper {
 		int totalMins=(int) (leftMargin/per_mins_w);
 		int start_h=totalMins/60;
 		int start_m=totalMins%60;
-		
-		block.startTime=new Date(1970, 1, 1, start_h, start_m, 0);
-		block.endTime=new Date(1970, 1, 1, start_h, start_m+block.duration, 0);
+		block.startTime=new Date(70, 0, 1, start_h, start_m, 0);
+		block.endTime=new Date(70, 0, 1, start_h, start_m+block.duration, 0);
 	}
 	
 	public static List<BlockUIEntity> getBlockByDateRange(List<BlockUIEntity> all_block_list, Date startDate, Date endDate) {
 		List<BlockUIEntity> block_list=new ArrayList<BlockUIEntity>();
-		
+		if(startDate==null||endDate==null)
+			return block_list;
 		for (BlockUIEntity blockEntity : all_block_list) {
 			if(blockEntity.startDate!=null&&blockEntity.startDate.compareTo(endDate)>0)
 				continue;

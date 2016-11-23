@@ -11,6 +11,7 @@ import com.mfusion.commons.tools.rss.RssFeed;
 import com.mfusion.commons.tools.rss.RssFeed_SAXParser;
 import com.mfusion.player.common.Player.MainActivity;
 import com.mfusion.player.library.Helper.DateTimeHelper;
+import com.mfusion.player.library.Helper.LoggerHelper;
 
 public class RSSContentHelper {
 	private int interval = 1000;
@@ -103,7 +104,7 @@ public class RSSContentHelper {
 			}
 			catch (Exception ex)
 			{
-				//LoggerHelper.WriteLogfortxt("RSSContentHelper UpdateRSSContents==> " + ex.getMessage()); 
+				LoggerHelper.WriteLogfortxt("RSSContentHelper UpdateRSSContents==> " + ex.getMessage());
 			}
 		}
 	}

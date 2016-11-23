@@ -146,7 +146,7 @@ public class AndroidXmlParser extends BaseXmlParser {
 
 		Element bgElement=this.getSubNode(rootElement, "Background");
 		if(bgElement!=null){
-			template.BackColor=Integer.valueOf(bgElement.getAttribute("Color"));
+			template.BackColor=this.convertColorStrToInt(bgElement.getAttribute("Color"));
 			String imagePath=bgElement.getAttribute("ImagePath");
 			if(imagePath!=null&&!imagePath.isEmpty()){
 				template.BackMediaFile=new MediaFile();

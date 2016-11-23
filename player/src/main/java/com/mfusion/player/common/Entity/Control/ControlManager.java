@@ -142,6 +142,12 @@ public class ControlManager {
 
 	}
 
+	public void releaseControls(){
+		for (ControlStatus control : this.m_controls)
+			if(control.ControlObject!=null)
+				control.ControlObject.Release();
+		this.m_controls.clear();
+	}
 
 
 }

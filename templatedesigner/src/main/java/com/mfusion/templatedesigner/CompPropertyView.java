@@ -5,7 +5,9 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -50,8 +52,9 @@ public class CompPropertyView extends LinearLayout {
 
 	private ImageButton m_delete_btn;
 
-	private LinearLayout otherPropertiesLayout=null;
-	
+	private LinearLayout basicPropertiesLayout=null,otherPropertiesLayout=null;
+	private ImageButton basicPropertiesExpandBtn,otherPropertiesExpandBtn;
+
 	private View otherPropertiesView=null;
 	
 	public CompPropertyView(Context context, final CallbackBundle deleteCallback) {
@@ -59,7 +62,7 @@ public class CompPropertyView extends LinearLayout {
 		// TODO Auto-generated constructor stub
 		this.m_context=context;
 		
-		propertiesLayout = (LinearLayout)LayoutInflater.from(this.getContext()).inflate(R.layout.com_basic_properties, this,true); 
+		propertiesLayout = (LinearLayout)LayoutInflater.from(this.getContext()).inflate(R.layout.com_basic_properties, this,true);
 		
 		this.m_comp_name=(TextView)propertiesLayout.findViewById(R.id.temp_comp_name);
 		
@@ -80,8 +83,9 @@ public class CompPropertyView extends LinearLayout {
 		this.m_size_edit_btn.setOnClickListener(new OnClickListener() {
 			
 			@Override
-			public void onClick(View arg0) {
+			public void onClick(View view) {
 				// TODO Auto-generated method stub
+				((ViewGroup)propertiesLayout).requestChildFocus(view,view);
 				if(m_size_edit_callback!=null){
 					(new SizeDialog()).createDialog( m_context,width,height, new CallbackBundle() {
 		                @Override  
@@ -100,8 +104,9 @@ public class CompPropertyView extends LinearLayout {
 		this.m_location_edit_btn.setOnClickListener(new OnClickListener() {
 			
 			@Override
-			public void onClick(View arg0) {
+			public void onClick(View view) {
 				// TODO Auto-generated method stub
+				((ViewGroup)propertiesLayout).requestChildFocus(view,view);
 				if(m_location_edit_callback!=null){
 					(new LocationDialog()).createDialog( m_context,left,top, new CallbackBundle() {  
 		                @Override  
@@ -120,8 +125,9 @@ public class CompPropertyView extends LinearLayout {
 		this.m_color_edit_btn.setOnClickListener(new OnClickListener() {
 			
 			@Override
-			public void onClick(View arg0) {
+			public void onClick(View view) {
 				// TODO Auto-generated method stub
+				((ViewGroup)propertiesLayout).requestChildFocus(view,view);
 				Dialog dialog =(new ColorDialog()).createDialog(0, m_context, new CallbackBundle() {  
 	                @Override  
 	                public void callback(Bundle bundle) {  
@@ -138,8 +144,9 @@ public class CompPropertyView extends LinearLayout {
 		this.m_zindex_up_btn.setOnClickListener(new OnClickListener() {
 			
 			@Override
-			public void onClick(View arg0) {
+			public void onClick(View view) {
 				// TODO Auto-generated method stub
+				((ViewGroup)propertiesLayout).requestChildFocus(view,view);
 				if(m_zindex_edit_callback!=null){
 					Bundle resultBundle=new Bundle();
 					resultBundle.putInt("ZIndex", 1);
@@ -150,8 +157,9 @@ public class CompPropertyView extends LinearLayout {
 		this.m_zindex_down_btn.setOnClickListener(new OnClickListener() {
 			
 			@Override
-			public void onClick(View arg0) {
+			public void onClick(View view) {
 				// TODO Auto-generated method stub
+				((ViewGroup)propertiesLayout).requestChildFocus(view,view);
 				if(m_zindex_edit_callback!=null){
 					Bundle resultBundle=new Bundle();
 					resultBundle.putInt("ZIndex", -1);
@@ -163,8 +171,9 @@ public class CompPropertyView extends LinearLayout {
 		m_bgimage_btn.setOnClickListener(new OnClickListener() {
 			
 			@Override
-			public void onClick(View arg0) {
+			public void onClick(View view) {
 				// TODO Auto-generated method stub
+				((ViewGroup)propertiesLayout).requestChildFocus(view,view);
 				if(m_bgimage_edit_callback!=null){
 					Dialog dialog = OpenFileDialog.createDialog(m_context, "Select a background image", new CallbackBundle() {
 		                @Override  
@@ -185,7 +194,46 @@ public class CompPropertyView extends LinearLayout {
 					deleteCallback.callback(null);
 			}
 		});
+		basicPropertiesLayout=(LinearLayout)propertiesLayout.findViewById(R.id.temp_comp_basic_properties);
+		basicPropertiesExpandBtn=(ImageButton) propertiesLayout.findViewById(R.id.temp_basic_expan_btn);
+		bindingExpandEvent(basicPropertiesExpandBtn,R.drawable.mf_toggle,basicPropertiesLayout);
+
 		otherPropertiesLayout=(LinearLayout)propertiesLayout.findViewById(R.id.temp_comp_other_properties);
+		otherPropertiesExpandBtn=(ImageButton) propertiesLayout.findViewById(R.id.temp_other_expan_btn);
+		bindingExpandEvent(otherPropertiesExpandBtn,R.drawable.mf_toggle,otherPropertiesLayout);
+	}
+
+	private void bindingExpandEvent(final ImageButton button, int defaultDrawable, final LinearLayout relatedLayout){
+		button.setImageDrawable(getResources().getDrawable(defaultDrawable));
+		button.setTag(defaultDrawable);
+		if(defaultDrawable==R.drawable.mf_toggle) {
+			relatedLayout.setVisibility(VISIBLE);
+			((View)button.getParent()).setBackground(getResources().getDrawable(R.drawable.mf_propertysubbar));
+		}
+		if(defaultDrawable==R.drawable.mf_toggle_expand) {
+			relatedLayout.setVisibility(GONE);
+			((View)button.getParent()).setBackground(getResources().getDrawable(R.drawable.mf_propertybar));
+		}
+
+		button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				((ViewGroup)propertiesLayout).requestChildFocus(view,view);
+
+				int currentDrawable=(int)view.getTag();
+				if(currentDrawable==R.drawable.mf_toggle){
+					currentDrawable=R.drawable.mf_toggle_expand;
+					relatedLayout.setVisibility(GONE);
+					((View)button.getParent()).setBackground(getResources().getDrawable(R.drawable.mf_propertybar));
+				}else if(currentDrawable==R.drawable.mf_toggle_expand){
+					currentDrawable=R.drawable.mf_toggle;
+					relatedLayout.setVisibility(VISIBLE);
+					((View)button.getParent()).setBackground(getResources().getDrawable(R.drawable.mf_propertysubbar));
+				}
+				button.setImageDrawable(getResources().getDrawable(currentDrawable));
+				button.setTag(currentDrawable);
+			}
+		});
 	}
 	
 	public void bingingBasicProperties(BasicComponentView compView) {

@@ -9,7 +9,7 @@
 package com.mfusion.player.common.Entity.Components;
 import com.mfusion.player.common.Entity.Control.ErrorControl;
 import com.mfusion.player.common.Entity.Control.VideoControl1;
-import com.mfusion.player.library.Controller.HandleTimer;
+import com.mfusion.commons.tools.HandleTimer;
 import com.mfusion.player.library.Helper.LoggerHelper;
 import com.mfusion.player.common.Enum.ControlType;
 import com.mfusion.player.common.Helper.Helper;

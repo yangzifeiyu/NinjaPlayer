@@ -15,7 +15,13 @@ public abstract class AbstractFragment extends Fragment {
 
     //public Boolean isSavedSuccess=true;
 
-    public Boolean isEditing=false;
+    protected Boolean isEditing=false;
+    public void setIsEditing(Boolean isEditing){
+        this.isEditing=isEditing;
+    }
+    public Boolean getIsEditing(){
+        return this.isEditing;
+    }
 
     public abstract void saveModification(OperateCallbackBundle callbackBundle);
 

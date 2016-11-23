@@ -17,6 +17,8 @@ public class TimeRuleView  extends View implements View.OnLayoutChangeListener {
 
     int width=0,height=0;
 
+    int rule_range=24, rule_min_scale=1;
+
     TextPaint paint_rule=null;
 
     TextPaint paint_time=null;
@@ -62,12 +64,15 @@ public class TimeRuleView  extends View implements View.OnLayoutChangeListener {
             canvas.drawColor(Color.WHITE);
             canvas.drawRect(0, color_h, width, height, this.paint_rule);
 
-            float hour_w=width/24.0f;
+            float hour_w=width*1.0f/rule_range;
+            rule_min_scale=hour_w>this.paint_time.measureText("00:00")?1:2;
+            hour_w=hour_w*rule_min_scale;
             float line_x=0;
-            for (int i = 1; i < 24; i++) {
+            for (int i = 1*rule_min_scale; i < rule_range; ) {
                 line_x+=hour_w;
                 canvas.drawLine(line_x, color_h, line_x, height, this.paint_line);
                 canvas.drawText((i>9?i:("0"+i))+":00", line_x-20, color_h-5, this.paint_time);
+                i=i+rule_min_scale;
             }
         }
     }

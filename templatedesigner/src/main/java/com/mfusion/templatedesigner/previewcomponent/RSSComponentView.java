@@ -33,6 +33,7 @@ import com.mfusion.commons.entity.exception.IllegalTemplateException;
 import com.mfusion.commons.entity.template.ComponentEntity;
 import com.mfusion.commons.entity.template.TemplateEntity;
 import com.mfusion.commons.entity.values.ComponentType;
+import com.mfusion.commons.tools.WindowsDecorHelper;
 import com.mfusion.commons.tools.rss.RssFeed_SAXParser;
 import com.mfusion.commons.tools.rss.RssFeed;
 import com.mfusion.commons.tools.rss.RssItem;
@@ -169,7 +170,7 @@ public class RSSComponentView extends BasicComponentView {
     {  
 		super.onDraw(canvas);
 		
-		if(canvas!=null)
+		if(canvas!=null&&this.m_rss_contents.size()>0)
 		{
 			int paint_x=left;
 			for(RssPaintEntity paintEntity : this.m_rss_contents){
@@ -270,8 +271,14 @@ public class RSSComponentView extends BasicComponentView {
 		return componentEntity;
 		
 	}
-	
+
+	@Override
+	public Boolean canDeleted(){
+		return m_content_editview==null?true:!m_content_editview.hasFocus();
+	}
+
 	private View propertyView;
+    private ImageButton m_body_font_edit_btn,m_font_edit_btn;
 	private TextView m_title_font_text;
 	private Button m_title_color_edit_btn;
 	private TextView m_body_font_text;
@@ -284,12 +291,13 @@ public class RSSComponentView extends BasicComponentView {
 		
 			propertyView=LayoutInflater.from(this.m_context).inflate(R.layout.comp_rss_property, null,true); 
 			m_title_font_text=(TextView)propertyView.findViewById(R.id.comp_rss_title_font);
-			ImageButton m_font_edit_btn=(ImageButton)propertyView.findViewById(R.id.comp_rss_title_font_btn);
+			m_font_edit_btn=(ImageButton)propertyView.findViewById(R.id.comp_rss_title_font_btn);
 			m_font_edit_btn.setOnClickListener(new OnClickListener() {
 				
 				@Override
-				public void onClick(View arg0) {
+				public void onClick(View view) {
 					// TODO Auto-generated method stub
+					((ViewGroup)propertyView).requestChildFocus(view,view);
 					(new FontDialog()).createDialog( m_context,c_title_font, new CallbackBundle() {
 		                @Override  
 		                public void callback(Bundle bundle) {
@@ -314,8 +322,9 @@ public class RSSComponentView extends BasicComponentView {
 			m_title_color_edit_btn.setOnClickListener(new OnClickListener() {
 				
 				@Override
-				public void onClick(View arg0) {
+				public void onClick(View view) {
 					// TODO Auto-generated method stub
+					((ViewGroup)propertyView).requestChildFocus(view,view);
 					Dialog dialog =(new ColorDialog()).createDialog(0, m_context, new CallbackBundle() {
 		                @Override  
 		                public void callback(Bundle bundle) {
@@ -331,13 +340,14 @@ public class RSSComponentView extends BasicComponentView {
 			});
 			
 			m_body_font_text=(TextView)propertyView.findViewById(R.id.comp_rss_body_font);
-			ImageButton m_body_font_edit_btn=(ImageButton)propertyView.findViewById(R.id.comp_rss_body_font_btn);
+			m_body_font_edit_btn=(ImageButton)propertyView.findViewById(R.id.comp_rss_body_font_btn);
 			m_body_font_edit_btn.setOnClickListener(new OnClickListener() {
 				
 				@Override
-				public void onClick(View arg0) {
+				public void onClick(View view) {
 					// TODO Auto-generated method stub
-					(new FontDialog()).createDialog( m_context,c_title_font, new CallbackBundle() {  
+					((ViewGroup)propertyView).requestChildFocus(view,view);
+					(new FontDialog()).createDialog( m_context,c_body_font, new CallbackBundle() {
 		                @Override  
 		                public void callback(Bundle bundle) {
 		                	if(bundle==null)
@@ -362,8 +372,9 @@ public class RSSComponentView extends BasicComponentView {
 			m_body_color_edit_btn.setOnClickListener(new OnClickListener() {
 				
 				@Override
-				public void onClick(View arg0) {
+				public void onClick(View view) {
 					// TODO Auto-generated method stub
+					((ViewGroup)propertyView).requestChildFocus(view,view);
 					Dialog dialog =(new ColorDialog()).createDialog(0, m_context, new CallbackBundle() {  
 		                @Override  
 		                public void callback(Bundle bundle) {
@@ -379,6 +390,7 @@ public class RSSComponentView extends BasicComponentView {
 			});
 			
 			m_content_editview=(EditText)propertyView.findViewById(R.id.comp_rss_address);
+			WindowsDecorHelper.hideSoftInputInEditText(m_content_editview);
 			m_content_editview.addTextChangedListener(new TextWatcher() {
 				
 				@Override
@@ -408,28 +420,14 @@ public class RSSComponentView extends BasicComponentView {
 			
 			m_speed_ddv=(DropDownView)propertyView.findViewById(R.id.comp_rss_speed);
 			m_speed_ddv.setSelectList(PropertyValues.getSpeedList());
-			m_speed_ddv.addTextChangedListener(new TextWatcher() {
-				
+			m_speed_ddv.setOnChangeListener(new DropDownView.OnSelectTextChangedListener() {
 				@Override
-				public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-					// TODO Auto-generated method stub
+				public void onSelectTextChange(String selectText) {
 
-					if(c_speed.toString().equalsIgnoreCase(arg0.toString()))
+					if(c_speed.toString().equalsIgnoreCase(selectText))
 						return;
 					componentPropertyChanged();
-					c_speed=TextSpeedType.valueOf(arg0.toString());
-				}
-				
-				@Override
-				public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
-						int arg3) {
-					// TODO Auto-generated method stub
-					System.out.println();
-				}
-				
-				@Override
-				public void afterTextChanged(Editable arg0) {
-					// TODO Auto-generated method stub
+					c_speed=TextSpeedType.valueOf(selectText);
 				}
 			});
 		}
@@ -475,9 +473,7 @@ public class RSSComponentView extends BasicComponentView {
 			try {
 				
 				RssFeed rssFeed = m_rss_parser.getFeed(rssUrl);
-				if(rssFeed==null||rssFeed.getRssItems()==null)
-					return null;
-				
+
 				List<RssPaintEntity> contents=new ArrayList<RssPaintEntity>();
 				int total_lenght=0;
 				RssPaintEntity paintEntity=null;
@@ -501,6 +497,8 @@ public class RSSComponentView extends BasicComponentView {
 			} catch (Exception e) {
 				// TODO: handle exception
 				e.printStackTrace();
+				m_rss_contents.clear();
+				m_content_lenght=-1;
 			}
 			return null;
 		}

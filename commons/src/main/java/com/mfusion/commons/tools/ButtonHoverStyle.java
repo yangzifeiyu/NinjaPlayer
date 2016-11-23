@@ -13,6 +13,15 @@ import com.mfusion.commontools.R;
  */
 public class ButtonHoverStyle {
     public static void bindingHoverEffect(View view, final Resources resources){
+        bindingHoverEffect(view,false,resources);
+    }
+
+    public static void bindingHoverEffect(View view,Boolean isSelected, final Resources resources){
+        if(isSelected)
+            view.setBackgroundColor(resources.getColor(R.color.selected));
+        else
+            view.setBackgroundColor(Color.TRANSPARENT);
+
         view.setOnHoverListener(new View.OnHoverListener() {
             @Override
             public boolean onHover(View v, MotionEvent event) {

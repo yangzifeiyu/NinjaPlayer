@@ -1,32 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:focusable="true"
-    android:background="@drawable/layout_border_style">
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="5dp"
-        android:text="Properties : "
-        android:textSize="@dimen/textSizeBig"
-        style="@style/myTextStyle" />
+    android:background="@drawable/layout_border_style"
+    android:gravity="center">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="7dp">
+        android:layout_margin="7dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
             <TextView
                 android:id="@+id/textView4"
@@ -36,7 +27,7 @@
                 android:textSize="@dimen/textSize"
                 style="@style/myTextStyle" />
 
-            <Button
+            <!--<Button
                 android:id="@+id/block_property_time_start"
                 style="@style/myTextStyle"
                 android:layout_width="90dp"
@@ -45,7 +36,13 @@
                 android:enabled="false"
                 android:text="00:00"
                 android:background="@drawable/button_style"
-                android:textSize="@dimen/textSize" />
+                android:textSize="@dimen/textSize" />-->
+
+            <com.mfusion.commons.view.TimePickerView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="24dp"
+                android:id="@+id/block_property_time_start" />
 
             <TextView
                 android:id="@+id/textView3"
@@ -56,7 +53,7 @@
                 android:textSize="@dimen/textSize"
                 style="@style/myTextStyle" />
 
-            <Button
+            <!--<Button
                 android:id="@+id/block_property_time_end"
                 style="@style/myTextStyle"
                 android:layout_width="90dp"
@@ -65,29 +62,43 @@
                 android:enabled="false"
                 android:text="00:00"
                 android:background="@drawable/button_style"
-                android:textSize="@dimen/textSize" />
+                android:textSize="@dimen/textSize" />-->
 
-            <CheckBox
-                android:id="@+id/block_property_recurrence"
+            <com.mfusion.commons.view.TimePickerView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_marginLeft="35dp"
-                android:text="Recurrence"
-                android:textSize="@dimen/textSize"
-                style="@style/myTextStyle" />
-
-            <com.mfusion.commons.view.ImageTextView
-                android:id="@+id/block_property_apply"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_marginLeft="100dp"
-                android:visibility="gone" />
+                android:layout_marginLeft="24dp"
+                android:id="@+id/block_property_time_end" />
 
         </LinearLayout>
 
-        <RelativeLayout
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Recurrence"
+                android:id="@+id/textView2"
+                android:textSize="@dimen/textSize"
+                style="@style/myTextStyle" />
+
+            <com.mfusion.commons.view.CheckSwitchButton
+                android:id="@+id/block_property_recurrence"
+                android:layout_width="60dp"
+                android:layout_height="25dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="35dp" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="0dp"
             android:layout_marginLeft="-5dp"
@@ -103,7 +114,8 @@
                 android:enabled="false"
                 android:text="Sunday"
                 android:textSize="@dimen/textSize"
-                style="@style/myTextStyle" />
+                style="@style/myTextStyle"
+                android:button="@drawable/check_style"/>
 
             <CheckBox
                 android:id="@+id/block_property_recurrence_mon"
@@ -111,12 +123,13 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@+id/block_property_recurrence_sun"
                 android:layout_alignBottom="@+id/block_property_recurrence_sun"
-                android:layout_marginLeft="25dp"
+                android:layout_marginLeft="@dimen/block_property_checkbox_margin"
                 android:layout_toRightOf="@+id/block_property_recurrence_sun"
                 android:enabled="false"
                 android:text="Monday"
                 android:textSize="@dimen/textSize"
-                style="@style/myTextStyle" />
+                style="@style/myTextStyle"
+                android:button="@drawable/check_style" />
 
             <CheckBox
                 android:id="@+id/block_property_recurrence_tuse"
@@ -124,24 +137,26 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@+id/block_property_recurrence_mon"
                 android:layout_alignBottom="@+id/block_property_recurrence_mon"
-                android:layout_marginLeft="15dp"
+                android:layout_marginLeft="@dimen/block_property_checkbox_margin"
                 android:layout_toRightOf="@+id/block_property_recurrence_mon"
                 android:enabled="false"
                 android:text="Tuesday"
                 android:textSize="@dimen/textSize"
-                style="@style/myTextStyle" />
+                style="@style/myTextStyle"
+                android:button="@drawable/check_style" />
 
             <CheckBox
                 android:id="@+id/block_property_recurrence_web"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@+id/block_property_recurrence_tuse"
-                android:layout_marginLeft="15dp"
+                android:layout_marginLeft="@dimen/block_property_checkbox_margin"
                 android:layout_toRightOf="@+id/block_property_recurrence_tuse"
                 android:enabled="false"
                 android:text="Wednesday"
                 android:textSize="@dimen/textSize"
-                style="@style/myTextStyle" />
+                style="@style/myTextStyle"
+                android:button="@drawable/check_style" />
 
             <CheckBox
                 android:id="@+id/block_property_recurrence_thur"
@@ -149,57 +164,60 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@+id/block_property_recurrence_web"
                 android:layout_alignBottom="@+id/block_property_recurrence_web"
-                android:layout_marginLeft="15dp"
+                android:layout_marginLeft="@dimen/block_property_checkbox_margin"
                 android:layout_toRightOf="@+id/block_property_recurrence_web"
                 android:enabled="false"
                 android:text="Thursday"
                 android:textSize="@dimen/textSize"
-                style="@style/myTextStyle" />
+                style="@style/myTextStyle"
+                android:button="@drawable/check_style" />
 
             <CheckBox
                 android:id="@+id/block_property_recurrence_fir"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/block_property_recurrence_thur"
-                android:layout_marginLeft="15dp"
-                android:layout_toRightOf="@+id/block_property_recurrence_thur"
                 android:enabled="false"
                 android:text="Friday"
                 android:textSize="@dimen/textSize"
-                style="@style/myTextStyle" />
+                style="@style/myTextStyle"
+                android:button="@drawable/check_style"
+                android:layout_below="@+id/block_property_recurrence_sun"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="6dp" />
 
             <CheckBox
                 android:id="@+id/block_property_recurrence_sat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/block_property_recurrence_fir"
-                android:layout_marginLeft="15dp"
-                android:layout_toRightOf="@+id/block_property_recurrence_fir"
                 android:enabled="false"
                 android:text="Saturday"
                 android:textSize="@dimen/textSize"
-                style="@style/myTextStyle" />
+                style="@style/myTextStyle"
+                android:button="@drawable/check_style"
+                android:layout_alignTop="@+id/block_property_recurrence_fir"
+                android:layout_alignStart="@+id/block_property_recurrence_mon" />
 
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:id="@+id/block_property_date_layout">
+            android:layout_height="80dp"
+            android:id="@+id/block_property_date_layout"
+            android:layout_marginTop="2dp">
 
             <TextView
                 android:id="@+id/textView1"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="28dp"
                 android:layout_marginLeft="2dp"
                 android:text="Start Date"
                 android:textSize="@dimen/textSize"
-                android:layout_alignBaseline="@+id/block_property_bt_startdate"
-                android:layout_alignBottom="@+id/block_property_bt_startdate"
+                style="@style/myTextStyle"
+                android:layout_alignTop="@+id/block_property_bt_startdate"
                 android:layout_alignParentStart="true"
-                style="@style/myTextStyle" />
+                android:gravity="center_vertical" />
 
+<!--
             <Button
                 android:id="@+id/block_property_bt_startdate"
                 style="@style/myTextStyle"
@@ -211,6 +229,16 @@
                 android:enabled="false"
                 android:text="2016-04-22"
                 android:textSize="@dimen/textSize" />
+-->
+
+            <com.mfusion.commons.view.DatePickerPopupView
+                android:layout_width="110dp"
+                android:layout_height="26dp"
+                android:id="@+id/block_property_bt_startdate"
+                android:layout_marginLeft="71dp"
+                android:enabled="false"
+                android:background="@drawable/button_style"
+                android:layout_marginTop="10dp" />
 
             <CheckBox
                 android:id="@+id/block_property_cb_noend"
@@ -223,21 +251,23 @@
                 android:enabled="false"
                 android:text="No End Date"
                 android:textSize="@dimen/textSize"
-                style="@style/myTextStyle" />
+                style="@style/myTextStyle"
+                android:button="@drawable/check_style" />
 
             <CheckBox
                 android:id="@+id/block_property_cb_hasend"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:layout_alignLeft="@+id/block_property_cb_noend"
                 android:layout_below="@+id/block_property_cb_noend"
                 android:layout_marginTop="2dp"
                 android:enabled="false"
                 android:text="End by"
                 android:textSize="@dimen/textSize"
-                style="@style/myTextStyle" />
+                style="@style/myTextStyle"
+                android:button="@drawable/check_style" />
 
-            <Button
+            <!--<Button
                 android:id="@+id/block_property_bt_enddate"
                 style="@style/myTextStyle"
                 android:layout_width="90dp"
@@ -248,8 +278,47 @@
                 android:background="@drawable/button_style"
                 android:enabled="false"
                 android:text="2016-04-23"
-                android:textSize="@dimen/textSize" />
+                android:textSize="@dimen/textSize"
+                android:layout_marginBottom="5dp"></Button>-->
 
+            <com.mfusion.commons.view.DatePickerPopupView
+                android:id="@+id/block_property_bt_enddate"
+                android:layout_width="110dp"
+                android:layout_height="26dp"
+                android:background="@drawable/button_style"
+                android:enabled="false"
+                android:text="2016-04-23"
+                android:textSize="@dimen/textSize"
+                android:layout_alignBottom="@+id/block_property_cb_hasend"
+                android:layout_toEndOf="@+id/block_property_cb_noend"
+                android:layout_marginLeft="10dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp">
+
+            <com.mfusion.commons.view.ImageTextHorizontalView
+                android:id="@+id/block_property_apply"
+                android:layout_width="wrap_content"
+                android:layout_height="26dp"
+                android:visibility="visible"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:id="@+id/block_property_warning"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"
+                android:textSize="@dimen/textSize"
+                android:textColor="@android:color/holo_red_dark"
+                android:layout_toLeftOf="@+id/block_property_apply"
+                android:textAlignment="textEnd" />
         </RelativeLayout>
     </LinearLayout>
 

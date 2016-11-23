@@ -6,9 +6,9 @@
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="35dp"
+        android:layout_height="@dimen/active_tab_image_height"
         android:id="@+id/menu_tab_image"
-        android:src="@drawable/comp_audio"
+        android:src="@drawable/mf_menu_configuration"
         android:scaleType="fitCenter" />
 
     <TextView
@@ -19,5 +19,6 @@
         android:id="@+id/menu_tab_name"
         android:layout_below="@+id/menu_tab_image"
         android:layout_centerHorizontal="true"
-        android:textColor="#ffffff" />
+        android:textColor="#ffffff"
+        android:textStyle="bold" />
 </RelativeLayout>

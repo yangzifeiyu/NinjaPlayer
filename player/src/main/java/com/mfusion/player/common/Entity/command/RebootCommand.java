@@ -21,9 +21,6 @@ public class RebootCommand extends Command {
 		// TODO Auto-generated method stub
 		try {
 			if(this.target!=null&&this.target.equalsIgnoreCase("af1")){
-				LoggerHelper.WriteLogfortxt("Command shutdown==>af1");
-				DisplayControl control=new DisplayControl();
-				control.setPowerOn(0);
 				return;
 			}
 			

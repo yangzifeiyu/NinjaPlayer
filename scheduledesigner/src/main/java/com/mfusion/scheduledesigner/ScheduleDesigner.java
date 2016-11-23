@@ -1,30 +1,43 @@
 package com.mfusion.scheduledesigner;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.ClipData;
 import android.content.ClipDescription;
+import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import com.mfusion.commons.controllers.AbstractFragment;
 import com.mfusion.commons.controllers.AbstractScheduleDesigner;
+import com.mfusion.commons.controllers.KeyBoardCenter;
 import com.mfusion.commons.entity.schedule.Schedule;
 import com.mfusion.commons.entity.values.BlockType;
 import com.mfusion.commons.entity.values.SchedulePlayType;
+import com.mfusion.commons.tools.AlertDialogHelper;
+import com.mfusion.commons.tools.DateConverter;
+import com.mfusion.commons.tools.HandleTimer;
+import com.mfusion.commons.tools.InternalKeyWords;
 import com.mfusion.commons.view.DropDownView;
+import com.mfusion.commons.view.ImageTextHorizontalView;
+import com.mfusion.commons.view.SystemInfoDialog;
 import com.mfusion.scheduledesigner.entity.BlockUIEntity;
 import com.mfusion.scheduledesigner.entity.BlockUIItemEntity;
 import com.mfusion.commons.tools.CallbackBundle;
@@ -34,11 +47,13 @@ import com.mfusion.scheduledesigner.subview.BlockDailyView;
 import com.mfusion.scheduledesigner.subview.BlockPropertyEditView;
 import com.mfusion.scheduledesigner.subview.BlockView;
 import com.mfusion.scheduledesigner.subview.GraphicTemplateListLayout;
+import com.mfusion.scheduledesigner.subview.ScheduleConflictView;
 import com.mfusion.scheduledesigner.subview.ScheduleWeeklyView;
 import com.mfusion.scheduledesigner.subview.SelectAreaRect;
 import com.mfusion.scheduledesigner.subview.TimeRuleView;
 import com.mfusion.scheduledesigner.subview.WeekSelectView;
 import com.mfusion.scheduledesigner.values.CompOperateType;
+import com.mfusion.scheduledesigner.values.ScheduleConflictChecker;
 import com.mfusion.scheduledesigner.values.ScheduleDataConverter;
 import com.mfusion.scheduledesigner.values.ScreenAdjustHelper;
 
@@ -76,9 +91,13 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
 
     View scheduleLayout;
 
-    RelativeLayout property_layout;
+    LinearLayout property_layout;
 
-    BlockPropertyEditView property_view;
+    LinearLayout sche_select_temp_list_layout;
+
+    BlockPropertyEditView property_view,property_dialog_view;
+
+    SystemInfoDialog property_dialog;
 
     LinearLayout sche_pbu_layut=null;
 
@@ -92,7 +111,10 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
 
     ScheduleWeeklyView sche_weekly_view=null;
 
-    DropDownView sche_idle_view;
+    DropDownView sche_idle_view,sche_selected_day_temp_view;
+    Date sche_selected_day;
+    TextView sche_selected_day_view;
+    ImageTextHorizontalView sche_selected_block_edit_btn,sche_selected_block_delete_btn;
 
     Switch sche_playmode_view;
 
@@ -117,7 +139,13 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
 
     List<BlockUIEntity> block_list=new ArrayList<BlockUIEntity>();
 
+    List<BlockUIEntity> block_list_in_date=new ArrayList<BlockUIEntity>();
+
     Schedule m_schedule_data =null;
+
+    ScheduleConflictView m_conflict_view;
+
+    HandleTimer m_time_refresh_timer;
 
     public AbstractFragment parentFragment;
     /**
@@ -133,9 +161,9 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
 
         scheduleLayout=LayoutInflater.from(this.getContext()).inflate(R.layout.view_schedule_designer, this,true);
 
-        property_layout =(RelativeLayout)scheduleLayout.findViewById(R.id.sche_property_layout);
+        property_layout =(LinearLayout)scheduleLayout.findViewById(R.id.sche_property_layout);
         ViewGroup.LayoutParams propertyLayoutParams=property_layout.getLayoutParams();
-        property_view=new BlockPropertyEditView(this.getContext(),propertyLayoutParams.width,propertyLayoutParams.height,new CallbackBundle() {
+        /*property_view=new BlockPropertyEditView(this.getContext(),new CallbackBundle() {
 
             @Override
             public void callback(Bundle bundle) {
@@ -148,7 +176,7 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
                 ((BlockView)selectedComp.selectedView).changeBlockProperty();
             }
         });
-        property_layout.addView(property_view, new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
+        property_layout.addView(property_view, new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));*/
         propertyLayoutParams.height =(int)(screen_h*ScreenAdjustHelper.BlockPropertyLayoutScale);
         property_layout.setLayoutParams(propertyLayoutParams);
 
@@ -201,9 +229,62 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
         if(this.m_schedule_data!=null)
             sche_idle_view.setText(m_schedule_data.idleItem);
 
+        sche_selected_day_temp_view=(DropDownView)scheduleLayout.findViewById(R.id.sche_selected_day_temp_list);
+        sche_selected_day_temp_view.setOnChangeListener(new DropDownView.OnSelectTextChangedListener() {
+            @Override
+            public void onSelectTextChange(String selectText) {
+                selectControl(selectText);
+            }
+        });
+        sche_selected_day_view=(TextView) scheduleLayout.findViewById(R.id.sche_selected_day);
+        sche_selected_block_edit_btn=(ImageTextHorizontalView) scheduleLayout.findViewById(R.id.sche_selected_block_edit);
+        sche_selected_block_edit_btn.setImage(R.drawable.mf_edit);
+        sche_selected_block_delete_btn=(ImageTextHorizontalView) scheduleLayout.findViewById(R.id.sche_selected_block_delete);
+        sche_selected_block_delete_btn.setImage(R.drawable.mf_delete);//android.R.drawable.ic_menu_close_clear_cancel
+        sche_selected_block_edit_btn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BlockView selectedBlockView = getSelectedViewInDayByName(sche_selected_day_temp_view.getText().toString());
+                editBlock(selectedBlockView,null);
+            }
+        });
+        sche_selected_block_delete_btn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BlockView selectedBlockView = getSelectedViewInDayByName(sche_selected_day_temp_view.getText().toString());
+                deleteBlock(selectedBlockView,null);
+            }
+        });
+
         sche_playmode_view=(Switch)findViewById(R.id.sche_playmode);
         sche_playmode_view.setSwitchTypeface(Typeface.DEFAULT,Typeface.ITALIC);
+
+        sche_select_temp_list_layout=(LinearLayout)scheduleLayout.findViewById(R.id.sche_select_temp_layout);
+        sche_select_temp_list_layout.setVisibility(INVISIBLE);
+        sche_select_temp_list_layout.addOnLayoutChangeListener(new OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                int other_control_width = (int)sche_selected_day_view.getPaint().measureText(m_context.getResources().getString(R.string.sche_temp_of_date)+" "+InternalKeyWords.DefaultDisplayDateFormat)
+                        +(int)m_context.getResources().getDimension(R.dimen.global_margin_medium)*3+(int)m_context.getResources().getDimension(R.dimen.sche_select_temp_icon_width)*2;
+                sche_selected_day_temp_view.setMaxWidth((right-left)-other_control_width);
+            }
+        });
+
         this.initCalendar();
+
+        final TextView systemTimeText=(TextView)scheduleLayout.findViewById(R.id.sche_system_time);
+        this.m_time_refresh_timer=new HandleTimer() {
+            @Override
+            protected void onTime() {
+                systemTimeText.setText(DateConverter.convertCurrentTimeToStr());
+                if(m_conflict_view!=null)
+                    m_conflict_view.refresh();
+            }
+        };
+
+        this.m_time_refresh_timer.start(100,1000);
+
+        KeyBoardCenter.deleteKeyCallbackList.add(deleteCompCallBack);
     }
 
     /**
@@ -212,19 +293,35 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
     private void insertBlock(String temp_name,int x,int y,ViewGroup container) {
 
         if(parentFragment!=null)
-            parentFragment.isEditing=true;
+            parentFragment.setIsEditing(true);
 
         BlockUIEntity block_info=new BlockUIEntity();
         block_info.blockType= BlockType.Single;
         BlockUIItemEntity itemEntity=new BlockUIItemEntity();
         itemEntity.blockItemName=temp_name;
         block_info.itemList.add(itemEntity);
+        ScheduleDrawHelper.initBlockByLocation(block_info,this.per_mins_w, x,pre_day_h, y,calendar);
+
+        Boolean conflict = ScheduleConflictChecker.isBlockConflict(block_list,block_info);
+        if(conflict) {
+            showConflictView(x,y);
+            return;
+        }
 
         this.block_list.add(block_info);
 
-        ScheduleDrawHelper.initBlockBylocation(block_info,this.per_mins_w, x,pre_day_h, y,(Calendar)calendar.clone());
-
         BlockView blockView=new BlockView(m_context,block_info,per_mins_w,pre_day_h,this.block_touch_listener,this.calendar);
+        blockView.setOnBlockOperateMenuListener(new BlockView.BlockOperateMenuListener() {
+            @Override
+            public void requestBlockEdit(View blockView) {
+                editBlock((BlockView) blockView,null);
+            }
+
+            @Override
+            public void requestBlockDelete(View blockView) {
+                deleteBlock(blockView,null);
+            }
+        });
         container.addView(blockView, new RelativeLayout.LayoutParams((int)Math.ceil(block_info.duration*this.per_mins_w),sche_ws_h));
 
         RelativeLayout.LayoutParams layoutParams=(RelativeLayout.LayoutParams)blockView.getLayoutParams();
@@ -232,23 +329,90 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
         blockView.setLayoutParams(layoutParams);
 
         selectControl(blockView,null);
+
+        showBlockInSpecificDate(y);
+    }
+    CallbackBundle deleteCompCallBack=new CallbackBundle() {
+        @Override
+        public void callback(Bundle bundle) {
+            if(selectedComp.selectedView==null)
+                return;
+            deleteBlock(selectedComp.selectedView,null);;
+        }
+    };
+    private void deleteBlock(final View deletedView, MotionEvent event) {
+
+        if(deletedView==null)
+            return;
+        AlertDialogHelper.showAlertDialog(m_context, "Information", "Do you want to delete this template?", new CallbackBundle() {
+            @Override
+            public void callback(Bundle bundle) {
+                try {
+
+                    if(parentFragment!=null)
+                        parentFragment.setIsEditing(true);
+
+                    BlockView deletedBlock = (BlockView) deletedView;
+                    block_list.remove(deletedBlock.block_info);
+                    sche_ws_layout.removeView(deletedBlock);
+                    sche_selected_day_temp_view.setText("");
+                    selectedComp.selectedView=null;
+                    refreshBlockInSpecificDate();
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }, null);
     }
 
-    private void deleteBlock(View deletedView) {
-        if(parentFragment!=null)
-            parentFragment.isEditing=true;
+    private void editBlock(BlockView selectedView, MotionEvent event){
 
-        BlockView deletedBlock = (BlockView) deletedView;
-        block_list.remove(deletedBlock.block_info);
-        sche_ws_layout.removeView(deletedBlock);
-        property_view.setPropertyEditability(false);
+        if(selectedView==null)
+            return;
+
+        selectControl(selectedView,event);
+
+        if(property_dialog_view==null){
+            property_dialog_view=new BlockPropertyEditView(this.getContext(),block_list,new CallbackBundle() {
+
+                @Override
+                public void callback(Bundle bundle) {
+                    // TODO Auto-generated method stub
+                    if(selectedComp.selectedView!=null) {
+
+                        if (parentFragment != null)
+                            parentFragment.setIsEditing(true);
+                        ((BlockView) selectedComp.selectedView).changeBlockProperty();
+                        refreshBlockInSpecificDate();
+                    }
+                    property_dialog.dismiss();
+                }
+            });
+
+            property_dialog_view.initPropertyView();
+        }
+
+        property_dialog_view.setPropertyEditability(false);
+        property_dialog_view.bindingBlockInfo((BlockView)selectedComp.selectedView,true);
+
+        if(property_dialog==null) {
+            SystemInfoDialog.Builder builder = new SystemInfoDialog.Builder(this.m_context);
+            builder.setContentView(property_dialog_view);
+            builder.setIcon(R.drawable.mf_edit);
+            builder.setTitle("EDIT PROPERTIES");
+
+            property_dialog = builder.create();
+        }
+        property_dialog.show();
+
     }
-
     /**
      * search block in specified week
      */
     private void changeWeek() {
 
+        clearBlockInSpecificDate();
         this.sche_ws_layout.removeAllViews();
 
         if(sche_weekly_view!=null){
@@ -268,12 +432,70 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
         for (BlockUIEntity blockEntity : blockInWeek) {
 
             BlockView blockView=new BlockView(m_context,blockEntity,per_mins_w,pre_day_h,this.block_touch_listener,this.calendar);
+            blockView.setOnBlockOperateMenuListener(new BlockView.BlockOperateMenuListener() {
+                @Override
+                public void requestBlockEdit(View blockView) {
+                    editBlock((BlockView) blockView,null);
+                }
+
+                @Override
+                public void requestBlockDelete(View blockView) {
+                    deleteBlock(blockView,null);
+                }
+            });
             sche_ws_layout.addView(blockView, new RelativeLayout.LayoutParams((int)(Math.ceil(blockEntity.duration*this.per_mins_w)),sche_ws_h));
 
             RelativeLayout.LayoutParams layoutParams=(RelativeLayout.LayoutParams)blockView.getLayoutParams();
             layoutParams.leftMargin=ScheduleDrawHelper.getBlockLeftMargin(blockEntity.startTime, per_mins_w);
             blockView.setLayoutParams(layoutParams);
         }
+    }
+    private void clearBlockInSpecificDate() {
+        sche_select_temp_list_layout.setVisibility(INVISIBLE);
+        sche_selected_day=null;
+        sche_selected_day_view.setText("");
+        block_list_in_date.clear();
+        sche_selected_day_temp_view.setText("");
+        sche_selected_day_temp_view.setSelectList(null);
+    }
+
+    private void showBlockInSpecificDate(int location){
+        System.out.println("Mouse Location :"+location);
+        sche_select_temp_list_layout.setVisibility(VISIBLE);
+        sche_selected_day = ScheduleDrawHelper.getDateByLocation(pre_day_h, location,calendar);
+        sche_selected_day_view.setText(" "+DateConverter.convertToDisplayStr(sche_selected_day));
+        if(block_list_in_date!=null) {
+            block_list_in_date.clear();
+            sche_selected_day_temp_view.setText("");
+        }
+        refreshBlockInSpecificDate();
+    }
+
+    private void refreshBlockInSpecificDate(){
+
+        block_list_in_date=ScheduleDrawHelper.getBlockByDateRange(block_list, sche_selected_day, sche_selected_day);
+        List<String> block_info_list=new ArrayList<>();
+        String oldBlockInfo,currentBlockInfo,selectedBlockInfo="";
+        for(BlockUIEntity blockUIEntity :block_list_in_date){
+            int index=block_info_list.size()-1;
+            currentBlockInfo=blockUIEntity.toString();
+            for(;index>=0;index--){
+                oldBlockInfo=block_info_list.get(index);
+                if(currentBlockInfo.compareTo(oldBlockInfo)>=0){
+                    break;
+                }
+            }
+
+            if(index==(block_info_list.size()-1))
+                block_info_list.add(currentBlockInfo);
+            else block_info_list.add(index+1,currentBlockInfo);
+
+            if(selectedComp.selectedView!=null&&((BlockView)selectedComp.selectedView).block_info==blockUIEntity)
+                selectedBlockInfo=currentBlockInfo;
+        }
+
+        sche_selected_day_temp_view.setText(selectedBlockInfo);
+        sche_selected_day_temp_view.setSelectList(block_info_list);
     }
 
     public Handler mHandler = new Handler() {
@@ -310,7 +532,6 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
 
             mHandler.sendEmptyMessage(0);
 
-            System.out.println("layout change");
         }
     };
 
@@ -371,11 +592,16 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
             // TODO Auto-generated method stub
             switch (event.getActionMasked()) {
                 case MotionEvent.ACTION_DOWN:{
+                    RelativeLayout.LayoutParams layout_block_item=(RelativeLayout.LayoutParams)view.getLayoutParams();
 
+                    showBlockInSpecificDate((int)(layout_block_item.topMargin+event.getY()));
                     int viewStatus=((BlockDailyView)view).checkViewStatus(event);
-                    if(viewStatus==BlockDailyView.Delete){
-
-                        deleteBlock((View)view.getParent());
+                    if(viewStatus!=BlockDailyView.None){
+                        if(viewStatus==BlockDailyView.Delete){
+                            deleteBlock((View)view.getParent(),event);
+                        }else  if(viewStatus==BlockDailyView.Edit){
+                            editBlock((BlockView) view.getParent(),event);
+                        }
                         break;
                     }
 
@@ -385,7 +611,6 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
                     selectedComp.left=layout_block.leftMargin;
                     selectedComp.width=layout_block.width;
 
-                    RelativeLayout.LayoutParams layout_block_item=(RelativeLayout.LayoutParams)view.getLayoutParams();
                     selectedComp.top=layout_block_item.topMargin;
                     selectedComp.height=layout_block_item.height;
 
@@ -394,16 +619,13 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
 
                     selectedComp.operateType=((BlockView)selectedComp.selectedView).getOperateTypeByLocation(layout_block, event);
 
-                    System.out.println("Comp  :ACTION_DOWN" +" Type:  "+selectedComp.operateType);
                     break;
                 }
                 case MotionEvent.ACTION_UP:{
-                    System.out.println("Comp  :ACTION_UP");
 
                     break;
                 }
                 case MotionEvent.ACTION_MOVE:{
-                    System.out.println("Comp  :ACTION_MOVE");
                     break;
                 }
             }
@@ -414,8 +636,11 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
     OnTouchListener workspaceTouchListener= new OnTouchListener() {
         @Override
         public boolean onTouch(View v, MotionEvent ev) {
-
-            System.out.println("Workspace :"+ev.getAction());
+            if (ev.getAction() == MotionEvent.ACTION_UP){
+                //showBlockInSpecificDate((int)ev.getY());
+            } if (ev.getAction() == MotionEvent.ACTION_DOWN){
+                showBlockInSpecificDate((int)ev.getY());
+            }
             /*if(selectedComp.operateType == CompOperateType.none){
                 //mouse in blank area
                 if (ev.getAction() == MotionEvent.ACTION_DOWN){
@@ -450,12 +675,11 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
 
-        System.out.println("Total :"+ev.getAction());
         if(selectedComp.operateType!= CompOperateType.none){
             if (ev.getAction() == MotionEvent.ACTION_MOVE) {
                 if(selectedComp.selectedView!=null){
                     if(parentFragment!=null)
-                        parentFragment.isEditing=true;
+                        parentFragment.setIsEditing(true);
 
                     ((BlockView)selectedComp.selectedView).isLayoutChange=true;
                     RelativeLayout.LayoutParams layout=(RelativeLayout.LayoutParams)selectedComp.selectedView.getLayoutParams();
@@ -509,11 +733,13 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
             }else if (ev.getAction() == MotionEvent.ACTION_UP) {
                 if(selectedComp.selectedView!=null){
 
-                    ((BlockView)selectedComp.selectedView).changeBlockProperty(selectedComp.operateType==CompOperateType.move?(int)(ev.getY() - sche_ws_top):-1);
+                    if(((BlockView)selectedComp.selectedView).changeBlockPropertyWithConflictCheck(selectedComp.operateType==CompOperateType.move?(int)(ev.getY() - sche_ws_top):-1,block_list))
+                        showConflictView((int)(ev.getX()-sche_ws_left),(int)(ev.getY()-sche_ws_top));
+
                     ((BlockView)selectedComp.selectedView).isLayoutChange=false;
 
-                    ShowBlockInfo(selectedComp.selectedView,true);
-
+                    //ShowBlockInfo(selectedComp.selectedView,true);
+                    showBlockInSpecificDate((int)ev.getY()-sche_ws_top);
                     selectedComp.operateType=CompOperateType.none;
                 }
             }
@@ -522,12 +748,47 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
         return super.dispatchTouchEvent(ev);
     }
 
-    private void ShowBlockInfo(View view,Boolean forceBinding){
+    /*private void ShowBlockInfo(View view,Boolean forceBinding){
 
         if(this.selectedComp==null||this.selectedComp.selectedView==null)
             return;
 
         property_view.bindingBlockInfo((BlockView)view,forceBinding);
+    }*/
+
+    private BlockView getSelectedViewInDayByName(String blockName){
+        if(blockName.isEmpty())
+            return null;
+        if(block_list_in_date!=null){
+            BlockUIEntity selectBlockEntity=null;
+            for(int index=0;index<block_list_in_date.size();index++){
+                BlockUIEntity blockUIEntity=block_list_in_date.get(index);
+                if(blockUIEntity.toString().equals(blockName)){
+                    selectBlockEntity=blockUIEntity;
+                    break;
+                }
+            }
+
+            if(selectBlockEntity!=null){
+                View subView=null;
+                for(int view_index=1;view_index<sche_ws_layout.getChildCount();view_index++) {
+                    subView=sche_ws_layout.getChildAt(view_index);
+                    if(subView.getClass()==BlockView.class) {
+                        BlockView blockView = (BlockView) subView;
+                        if (blockView.block_info == selectBlockEntity) {
+                            return blockView;
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private void selectControl(String blockName){
+        BlockView selectedBlockView = getSelectedViewInDayByName(blockName);
+        if(selectedBlockView!=null)
+            selectControl(selectedBlockView,null);
     }
 
     private void selectControl(View selectedBlock, MotionEvent event){
@@ -538,7 +799,7 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
 
                 ((BlockView)selectedComp.selectedView).onSelected(false,event);
                 selectedComp.selectedView=null;
-                property_view.setPropertyEditability(false);
+                //property_view.setPropertyEditability(false);
             }
 
             if(selectedBlock!=null){
@@ -546,7 +807,8 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
                 selectedComp.selectedView=selectedBlock;
                 ((BlockView)selectedComp.selectedView).onSelected(true,event);
 
-                ShowBlockInfo((BlockView)selectedBlock,false);
+                sche_selected_day_temp_view.setText(((BlockView)selectedComp.selectedView).block_info.toString());
+                //ShowBlockInfo((BlockView)selectedBlock,false);
             }
         }
     }
@@ -568,7 +830,6 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
     @Override
     public Boolean openSchedule(Schedule schedule) {
         // TODO Auto-generated method stub
-
         m_schedule_data = schedule;
         ScheduleDataConverter.convertToDisplay(m_schedule_data,block_list);
 
@@ -578,7 +839,7 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
 
             changeWeek();
 
-            property_view.initPropertyView();
+            //property_view.initPropertyView();
 
             Message msg=new Message();
             msg.what=0;
@@ -632,12 +893,25 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
 
     private void initCalendar(){
         calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
+        if(calendar.get(Calendar.DAY_OF_WEEK)==1){
+            calendar.add(Calendar.DAY_OF_WEEK, -7);
+        }else
+            calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
+        DateConverter.clearCalendarNoneHHmmss(calendar);
 
         sche_week_selecter.initWeek(calendar);
+    }
+
+    private void showConflictView(int x,int y){
+
+        if(m_conflict_view==null){
+            m_conflict_view=new ScheduleConflictView(m_context);
+        }
+
+        if(m_conflict_view.getParent()!=sche_ws_layout)
+            sche_ws_layout.addView(m_conflict_view);
+
+        sche_ws_layout.bringChildToFront(m_conflict_view);
+        m_conflict_view.show(x,y,this.sche_ws_w);
     }
 }

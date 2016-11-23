@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <com.mfusion.commons.view.calendar.CalendarPickerView
+		    xmlns:android="http://schemas.android.com/apk/res/android"
+		    android:id="@+id/date_picker_view"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:paddingLeft="@dimen/calendar_month_left"
+			android:paddingBottom="@dimen/calendar_month_left"
+		    android:scrollbarStyle="outsideOverlay"
+		    android:clipToPadding="false"
+		    android:background="#FFFFFF"
+			android:paddingRight="@dimen/calendar_month_left" />
+        
+        <ImageButton
+            android:id="@+id/date_picker_next"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="@dimen/calendar_month_left"
+            android:layout_marginTop="5dp"
+			android:src="@drawable/mf_date_next"
+			android:scaleType="fitCenter"
+			android:background="#00ffffff" />
+
+        <ImageButton
+            android:id="@+id/date_picker_pre"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="@dimen/calendar_month_left"
+            android:layout_marginTop="5dp"
+			android:scaleType="fitCenter"
+			android:src="@drawable/mf_date_pre"
+			android:background="#ffffff" />
+        
+    </RelativeLayout>
+
+
+</LinearLayout>

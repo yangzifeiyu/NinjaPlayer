@@ -6,10 +6,14 @@ import org.w3c.dom.Element;
 import com.mfusion.commons.controllers.AbstractFragment;
 import com.mfusion.commons.controllers.AbstractTemplateDesigner;
 import com.mfusion.commons.controllers.KeyBoardCenter;
+import com.mfusion.commons.data.XMLTemplate;
 import com.mfusion.commons.entity.template.ComponentEntity;
 import com.mfusion.commons.entity.template.TemplateEntity;
+import com.mfusion.commons.entity.template.VisualTemplate;
+import com.mfusion.commons.tools.AlertDialogHelper;
 import com.mfusion.commons.tools.CallbackBundle;
 import com.mfusion.commons.tools.XmlOperator;
+import com.mfusion.commons.view.ImageTextHorizontalView;
 import com.mfusion.templatedesigner.previewcomponent.BGComponentView;
 import com.mfusion.templatedesigner.previewcomponent.BasicComponentView;
 import com.mfusion.templatedesigner.previewcomponent.ComponenCenter;
@@ -23,10 +27,12 @@ import com.mfusion.templatedesigner.previewcomponent.values.TemplateDesignerKeys
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.app.usage.UsageEvents;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -44,6 +50,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnDragListener;
 import android.view.View.OnTouchListener;
 import android.view.View.OnLayoutChangeListener;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -67,7 +74,9 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 	
 	CompPropertyView comp_properties_view=null;
 
-	TextView m_temp_name_view;
+	TextView m_temp_name_view,m_temp_size_view;
+
+	ImageTextHorizontalView m_template_rename_btn;
 
 	ComponenCenter m_component_center;
 
@@ -119,8 +128,18 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 	private void initUIControl() {
 
 		templateLayout=(LinearLayout)LayoutInflater.from(this.getContext()).inflate(R.layout.activity_template, this,true);
+		templateLayout.setClickable(true);
+		templateLayout.setOnTouchListener(new OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				if(event.getAction()== MotionEvent.ACTION_UP)
+					templateLayout.requestChildFocus(m_template_rename_btn,m_template_rename_btn);
+				return false;
+			}
+		});
 
 		this.m_temp_name_view=(TextView) templateLayout.findViewById(R.id.temp_title_view);
+		this.m_temp_size_view=(TextView) templateLayout.findViewById(R.id.temp_size_view);
 
 		this.temp_complist=(LinearLayout)templateLayout.findViewById(R.id.temp_comp);
 		
@@ -132,7 +151,7 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 		
 		this.temp_workspace=(RelativeLayout)templateLayout.findViewById(R.id.temp_workspace);
 
-		((ListView)templateLayout.findViewById(R.id.comp_list)).setAdapter(new ComponentListAdapter(this.m_context, PropertyValues.getComponentList()));
+		((ListView)templateLayout.findViewById(R.id.comp_list)).setAdapter(new ComponentListAdapter(this.m_context, PropertyValues.getComponentList(getResources())));
 
 		this.temp_workspace.setOnDragListener(new OnDragListener() {
 			
@@ -177,37 +196,72 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 			}
 		});
 
-		KeyBoardCenter.deleteKeyCallbackList.add(deleteCompCallBack);
+		this.m_template_rename_btn=(ImageTextHorizontalView)templateLayout.findViewById(R.id.temp_name_editer);
+		this.m_template_rename_btn.setImage(R.drawable.mf_edit);
+		this.m_template_rename_btn.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(templateNameChangingListener!=null&&currentTemplate!=null)
+					templateNameChangingListener.templateNameChanging(currentTemplate.id);
+			}
+		});
+		KeyBoardCenter.deleteKeyCallbackList.add(deleteKeyCallBack);
 	}
+
+	CallbackBundle deleteKeyCallBack=new CallbackBundle() {
+		@Override
+		public void callback(Bundle bundle) {
+			if(selectedComp.selectedView==null||!((BasicComponentView)selectedComp.selectedView).canDeleted())
+				return;
+			showDeleteDialog();
+		}
+	};
 
 	CallbackBundle deleteCompCallBack=new CallbackBundle() {
 		@Override
 		public void callback(Bundle bundle) {
 			if(selectedComp.selectedView==null)
 				return;
-			temp_workspace.removeView(selectedComp.selectedView);
-			if(temp_workspace.getChildCount()>0)
-				comp_properties_view.bingingBasicProperties((BasicComponentView) temp_workspace.getChildAt(0));
-			else
-				comp_properties_view.unBinding();
+			showDeleteDialog();
 		}
 	};
+
+	private void showDeleteDialog(){
+		AlertDialogHelper.showAlertDialog(m_context, "Information", "Do you want to delete this component?", new CallbackBundle() {
+			@Override
+			public void callback(Bundle bundle) {
+				try {
+
+					temp_workspace.removeView(selectedComp.selectedView);
+					if(temp_workspace.getChildCount()>0)
+						comp_properties_view.bingingBasicProperties((BasicComponentView) temp_workspace.getChildAt(0));
+					else
+						comp_properties_view.unBinding();
+
+					selectedComp.selectedView=null;
+
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		}, null);
+	}
 
 	private void initTemplate() {
 		temp_workspace.removeAllViews();
 
 		if(currentTemplate==null){
 			currentTemplate=new TemplateEntity();
-			currentTemplate.width=((Activity)m_context).getWindowManager().getDefaultDisplay().getWidth();
-			currentTemplate.height=((Activity)m_context).getWindowManager().getDefaultDisplay().getHeight();
-			currentTemplate.backColor=Color.BLACK;
+			m_template_rename_btn.setVisibility(GONE);
 		}
 
 		String displayText="New Template";
 		if(currentTemplate.id!=null&&!currentTemplate.id.isEmpty())
 			displayText=currentTemplate.id;
-		this.m_temp_name_view.setText(displayText+" ( "+currentTemplate.width+" X "+currentTemplate.height+" )");
+		this.m_temp_name_view.setText(displayText);
 		this.m_temp_name_view.setTag(displayText);
+		this.m_temp_size_view.setText(currentTemplate.width+" X "+currentTemplate.height);
+		this.m_temp_name_view.setMaxWidth(temp_container_w/2);
 
 		getTemplateScaleData(currentTemplate.width,currentTemplate.height);
 		
@@ -235,7 +289,7 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 			getTemplateScaleData(bundle.getInt("w"),bundle.getInt("h"));
 			for(int i=1;i<temp_workspace.getChildCount();i++)
 				((BasicComponentView)temp_workspace.getChildAt(i)).refreshLayout();
-			m_temp_name_view.setText(m_temp_name_view.getTag()+" ( "+temp_real_w+" X "+temp_real_h+" )");
+			m_temp_size_view.setText(temp_real_w+" X "+temp_real_h);
 		}
 	};
 
@@ -263,21 +317,39 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 		layoutParams.topMargin=(this.temp_container_h-this.temp_ws_h)/2;
 		this.temp_workspace.setLayoutParams(layoutParams);
 
-		this.temp_ws_absolute_h=layoutParams.topMargin+((RelativeLayout)findViewById(R.id.temp_title_layout)).getLayoutParams().height;
+		this.temp_ws_absolute_h=layoutParams.topMargin+((LinearLayout)findViewById(R.id.temp_title_layout)).getLayoutParams().height;
 
 	}
 
 	private void CreateComponent(String type,int x,int y,RelativeLayout parentLayout){
 		if(parentFragment!=null)
-			parentFragment.isEditing=true;
+			parentFragment.setIsEditing(true);
 
 		BasicComponentView componentView=this.m_component_center.CreateComponent(m_context, type);
-		if(componentView!=null) {
+		if(componentView!=null) {//this.temp_ws_h
 			bindCompEvent(parentLayout, componentView, x, y, componentView.c_w, componentView.c_h);
 			comp_properties_view.bingingBasicProperties(componentView);
+			if(selectedComp.selectedView!=null)
+				((BasicComponentView)selectedComp.selectedView).onSelected(false);
+			selectedComp.selectedView=componentView;
+			componentView.onSelected(true);
 		}
 	}
-	
+
+	private void deleteComponent(final View deletedView){
+		AlertDialogHelper.showAlertDialog(m_context, "Information", "Do you want to delete this component?", new CallbackBundle() {
+			@Override
+			public void callback(Bundle bundle) {
+				try {
+					temp_workspace.removeView(deletedView);
+					comp_properties_view.unBinding();
+
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		}, null);
+	}
 	private void bindCompEvent(RelativeLayout parentLayout,BasicComponentView componentView,int x,int y,int width,int height){
 
 		if(componentView==null)
@@ -292,8 +364,9 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 		componentLayout.topMargin=y;
 		componentLayout.width=width;
 		componentLayout.height=height;
-		
-		componentView.setLayoutParams(PropertyValues.convertToVirtualLayout(componentLayout));
+		componentLayout = PropertyValues.convertToVirtualLayout(componentLayout);
+
+		componentView.setLayoutParams(componentLayout);
 		componentView.setClickable(true);
 		
 		componentView.setOnTouchListener(new OnTouchListener() {
@@ -308,9 +381,7 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 							((BasicComponentView)selectedComp.selectedView).onSelected(false);
 
 						if(((BasicComponentView)view).isDeleteComponent(event)){
-
-							temp_workspace.removeView(view);
-							comp_properties_view.unBinding();
+							deleteComponent(view);
 							return false;
 						}
 						
@@ -352,7 +423,7 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 		@Override
 		public void callback(Bundle bundle) {
 			if(parentFragment!=null)
-				parentFragment.isEditing=true;
+				parentFragment.setIsEditing(true);
 		}
 	};
 	@Override
@@ -362,7 +433,7 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 			if(selectedComp.selectedView!=null&&selectedComp.operateType!=CompOperateType.none){
 
 				if(parentFragment!=null)
-					parentFragment.isEditing=true;
+					parentFragment.setIsEditing(true);
 
 				RelativeLayout.LayoutParams layout=(RelativeLayout.LayoutParams)selectedComp.selectedView.getLayoutParams();
 				((BasicComponentView)selectedComp.selectedView).isLayoutChange=true;
@@ -438,10 +509,19 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 			Float comp_weight = ((LinearLayout.LayoutParams)this.temp_complist.getLayoutParams()).weight;
 			Float property_weight = ((LinearLayout.LayoutParams)this.comp_properties.getLayoutParams()).weight;
 			Float workspace_weight = ((LinearLayout.LayoutParams)this.temp_container.getLayoutParams()).weight;
-			Float pre_weight_lenght=containerWidth/(comp_weight+property_weight+workspace_weight);
-			this.temp_cl_w=(int)(pre_weight_lenght*comp_weight);
-			this.temp_container_w=(int)(pre_weight_lenght*workspace_weight)-this.temp_container.getPaddingLeft()-this.temp_container.getPaddingRight();
-			this.temp_container_h=containerHeight-((RelativeLayout)findViewById(R.id.temp_title_layout)).getLayoutParams().height-this.temp_container.getPaddingTop()-this.temp_container.getPaddingBottom();
+			Float designer_weight = ((LayoutParams)((LinearLayout)findViewById(R.id.temp_designer)).getLayoutParams()).weight;
+			Float pre_weight_lenght=containerWidth/(comp_weight+designer_weight);
+
+			if(containerWidth<containerHeight){
+				this.temp_cl_w=(int)(pre_weight_lenght*comp_weight);
+				this.temp_container_w=(int)(pre_weight_lenght*designer_weight)-this.temp_container.getPaddingLeft()-this.temp_container.getPaddingRight();
+				this.temp_container_h=(int)((containerHeight-((LinearLayout)findViewById(R.id.temp_title_layout)).getLayoutParams().height)*workspace_weight/(workspace_weight+property_weight))-this.temp_container.getPaddingTop()-this.temp_container.getPaddingBottom();
+
+			}else{
+				this.temp_cl_w=(int)(pre_weight_lenght*comp_weight);
+				this.temp_container_w=(int)((pre_weight_lenght*designer_weight)*workspace_weight/(workspace_weight+property_weight))-this.temp_container.getPaddingLeft()-this.temp_container.getPaddingRight();
+				this.temp_container_h=containerHeight-((LinearLayout)findViewById(R.id.temp_title_layout)).getLayoutParams().height-this.temp_container.getPaddingTop()-this.temp_container.getPaddingBottom();
+			}
 
 			isInitUI=true;
 
@@ -471,7 +551,8 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 					break;
 				case 2:
 					m_temp_name_view.setTag(currentTemplate.id);
-					m_temp_name_view.setText(m_temp_name_view.getTag() + " ( " + temp_real_w + " X " + temp_real_h + " )");
+					m_temp_name_view.setText(currentTemplate.id);
+					m_template_rename_btn.setVisibility(VISIBLE);
 					invalidate();
 					break;
 			}
@@ -516,7 +597,27 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 	}
 
 	@Override
+	public String getTemplateName() {
+		return currentTemplate==null?"":currentTemplate.id;
+	}
+
+	@Override
+	public void renameTemplate(String newName) {
+		if(currentTemplate!=null) {
+			currentTemplate.id=newName;
+			Message msg=new Message();
+			msg.what=2;
+			handler.sendMessage(msg);
+		}
+	}
+
+	@Override
 	public void closeTemplate() {
+		if(currentTemplate!=null){
+			for(int index=0;index<temp_workspace.getChildCount();index++){
+				((BasicComponentView)temp_workspace.getChildAt(index)).stop();
+			}
+		}
 		Message msg=new Message();
 		msg.what=0;
 		handler.sendMessage(msg);

@@ -20,6 +20,7 @@ import android.text.TextPaint;
 import android.text.TextWatcher;
 import android.text.Layout.Alignment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -36,6 +37,7 @@ import com.mfusion.commons.entity.exception.IllegalTemplateException;
 import com.mfusion.commons.entity.template.ComponentEntity;
 import com.mfusion.commons.entity.template.TemplateEntity;
 import com.mfusion.commons.entity.values.ComponentType;
+import com.mfusion.commons.tools.WindowsDecorHelper;
 import com.mfusion.templatedesigner.R;
 import com.mfusion.templatedesigner.previewcomponent.subview.UserWebView;
 import com.mfusion.templatedesigner.previewcomponent.values.PropertyValues;
@@ -90,7 +92,7 @@ public class InteractiveComponentView  extends BasicComponentView {
 	
 	private void init(){
 		
-		this.c_type= ComponentType.Interactive;
+		this.c_type= ComponentType.WebPage;
 
 		this.no_value_paint=new TextPaint();
 		this.no_value_paint.setAntiAlias(true);
@@ -108,7 +110,7 @@ public class InteractiveComponentView  extends BasicComponentView {
 		{
 			if(this.c_address==null||this.c_address.isEmpty()){
 				ViewGroup.LayoutParams layoutParams=this.getLayoutParams();
-				if(this.no_value_paint.measureText(this.c_type.toString())>layoutParams.width)
+				if(this.no_value_paint.measureText(this.c_name)>layoutParams.width)
 					text_paint_layout = new StaticLayout(this.c_name,this.no_value_paint,layoutParams.width,Alignment.ALIGN_NORMAL,1.0F,0.0F,true);
 				else
 					text_paint_layout = new StaticLayout(this.c_name,this.no_value_paint,layoutParams.width,Alignment.ALIGN_CENTER,1.0F,0.0F,true);
@@ -123,6 +125,7 @@ public class InteractiveComponentView  extends BasicComponentView {
 	
 	@Override
 	public void render(){
+		c_name="Web Page "+c_index;
 		if(this.c_address==null||this.c_address.isEmpty()){
 			return;
 		}
@@ -172,7 +175,12 @@ public class InteractiveComponentView  extends BasicComponentView {
 
 		return componentEntity;
 	}
-	
+
+	@Override
+	public Boolean canDeleted(){
+		return m_content_editview==null?true:!m_content_editview.hasFocus();
+	}
+
 	private View propertyView;
 	private EditText m_content_editview;
 	@Override
@@ -181,6 +189,8 @@ public class InteractiveComponentView  extends BasicComponentView {
 		
 			propertyView=LayoutInflater.from(this.m_context).inflate(R.layout.comp_interactive_property, null,true);
 			m_content_editview=(EditText)propertyView.findViewById(R.id.comp_interactive_address);
+
+			WindowsDecorHelper.hideSoftInputInEditText(m_content_editview);
 			m_content_editview.addTextChangedListener(new TextWatcher() {
 				
 				@Override

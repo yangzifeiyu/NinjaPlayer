@@ -8,10 +8,16 @@
     android:layout_height="0dp"
     android:layout_weight="8"/>-->
 
+    <com.mfusion.templatedesigner.TemplateEditPreviewLayout
+        android:id="@+id/template_designer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="26dp"
-        android:gravity="center_vertical|right">
+        android:layout_height="@dimen/manager_title"
+        android:gravity="center_vertical|right"
+        android:layout_marginRight="5dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -19,17 +25,28 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:id="@+id/template_warning_view"
             android:textColor="@color/warningColor"
-            android:textSize="@dimen/textSize" />
+            android:textSize="@dimen/textSize"
+            android:layout_marginRight="10dp" />
 
-        <com.mfusion.commons.view.ImageTextView
+        <com.mfusion.commons.view.ImageTextVerticalView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/manager_btn_height"
+            android:text="Rename"
+            android:id="@+id/template_designing_view_btn_rename"
+            android:textSize="@dimen/textSizeSmall"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp" />
+
+        <com.mfusion.commons.view.ImageTextVerticalView
             android:layout_width="wrap_content"
             android:layout_height="@dimen/manager_btn_height"
             android:text="Save"
             android:id="@+id/template_designing_view_btn_save"
             android:textSize="@dimen/textSizeSmall"
-            android:layout_alignParentRight="true" />
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/global_margin_medium" />
 
-        <com.mfusion.commons.view.ImageTextView
+        <com.mfusion.commons.view.ImageTextVerticalView
             android:layout_width="wrap_content"
             android:layout_height="@dimen/manager_btn_height"
             android:text="Cancel"
@@ -38,10 +55,5 @@
             android:layout_alignParentRight="true" />
 
     </LinearLayout>
-
-    <com.mfusion.templatedesigner.TemplateEditPreviewLayout
-        android:id="@+id/template_designer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
 
 </RelativeLayout>

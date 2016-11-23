@@ -51,6 +51,8 @@ public class BasicComponentView extends RelativeLayout implements OnLongClickLis
 	protected ComponentType c_type;
 	
 	public String c_name="Component 1";
+
+	public int c_index=0;
 	
 	private BasicComponentView compView;
 	
@@ -232,7 +234,6 @@ public class BasicComponentView extends RelativeLayout implements OnLongClickLis
 		// TODO Auto-generated method stub
 		switch (event.getActionMasked()) {
 			case MotionEvent.ACTION_HOVER_ENTER:{
-				System.out.println("Comp  :ACTION_HOVER_ENTER");
             	break;
 			}
 			case MotionEvent.ACTION_HOVER_MOVE:{
@@ -244,7 +245,6 @@ public class BasicComponentView extends RelativeLayout implements OnLongClickLis
             	break;
 			}
 			case MotionEvent.ACTION_HOVER_EXIT:{
-				System.out.println("Comp  :ACTION_HOVER_EXIT");
             	break;
 			}
 		}
@@ -269,8 +269,15 @@ public class BasicComponentView extends RelativeLayout implements OnLongClickLis
 		*/
 		return false;
 	}
+
+	public Boolean canDeleted(){
+		return true;
+	}
 	
 	public CompOperateType getOperateTypeByLocation(LayoutParams layout,MotionEvent event) {
+		/*if(this.getClass()==BGComponentView.class)
+			return CompOperateType.none;*/
+
 		String operateString="";
 		if(event.getY()<distance){
 			operateString="n";

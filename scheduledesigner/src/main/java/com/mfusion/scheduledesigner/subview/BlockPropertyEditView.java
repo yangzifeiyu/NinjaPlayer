@@ -16,22 +16,26 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.mfusion.commons.tools.DateConverter;
 import com.mfusion.commons.tools.LogOperator;
-import com.mfusion.commons.view.ImageTextView;
+import com.mfusion.commons.view.CheckSwitchButton;
+import com.mfusion.commons.view.DatePickerPopupView;
+import com.mfusion.commons.view.ImageTextHorizontalView;
+import com.mfusion.commons.view.ImageTextVerticalView;
+import com.mfusion.commons.view.TimePickerView;
 import com.mfusion.scheduledesigner.R;
 import com.mfusion.scheduledesigner.entity.BlockUIEntity;
 import com.mfusion.commons.tools.CallbackBundle;
 import com.mfusion.scheduledesigner.entity.ScheduleDrawHelper;
-import com.mfusion.commons.tools.ButtonHoverStyle;
 import com.mfusion.scheduledesigner.values.RangeTimePickerDialog;
+import com.mfusion.scheduledesigner.values.ScheduleConflictChecker;
 import com.mfusion.scheduledesigner.values.StaticTitleDatePickerDialog;
 
 /**
@@ -40,15 +44,16 @@ import com.mfusion.scheduledesigner.values.StaticTitleDatePickerDialog;
 public class BlockPropertyEditView extends LinearLayout implements View.OnLayoutChangeListener{
 
     Context m_context;
-    int original_width=0,original_height=0;
 
-    Button time_start_view,time_end_view;
-    CheckBox recurrence_view;
+    TimePickerView time_start_view,time_end_view;
+    CheckSwitchButton recurrence_view;
     ListView item_list_view;
     List<CheckBox> recurrence_list=new ArrayList<CheckBox>();
-    Button date_start_bt,date_end_bt;
+    DatePickerPopupView date_start_bt,date_end_bt;
     CheckBox date_end_cb,date_no_end_cb;
-    ImageTextView apply_btn;
+    ImageTextHorizontalView apply_btn;
+
+    TextView property_warning_view;
 
     LinearLayout properties_layout =null;
     
@@ -57,6 +62,9 @@ public class BlockPropertyEditView extends LinearLayout implements View.OnLayout
 
     BlockView block_view=null;
     BlockUIEntity block_entity=null;
+    List<BlockUIEntity> all_block_list;
+
+    Date currentDate;
 
     private CallbackBundle editResponseCall;
 
@@ -64,11 +72,12 @@ public class BlockPropertyEditView extends LinearLayout implements View.OnLayout
         super(context);
     }
 
-    public BlockPropertyEditView(Context context,CallbackBundle editResponse) {
+    public BlockPropertyEditView(Context context,List<BlockUIEntity> all_block_list,CallbackBundle editResponse) {
         super(context);
         // TODO Auto-generated constructor stub
 
         this.m_context=context;
+        this.all_block_list=all_block_list;
         this.editResponseCall=editResponse;
         try {
             properties_layout =(LinearLayout) LayoutInflater.from(this.getContext()).inflate(R.layout.view_block_properties, this,true);
@@ -76,12 +85,10 @@ public class BlockPropertyEditView extends LinearLayout implements View.OnLayout
             property_recurrence_layout=(RelativeLayout) properties_layout.findViewById(R.id.block_property_recurrence_layout);
             property_date_layout=(RelativeLayout) properties_layout.findViewById(R.id.block_property_date_layout);
 
-            time_start_view=(Button)properties_layout.findViewById(R.id.block_property_time_start);
-            time_start_view.setOnClickListener(time_click_listener);
-            time_end_view=(Button)properties_layout.findViewById(R.id.block_property_time_end);
-            time_end_view.setOnClickListener(time_click_listener);
+            time_start_view=(TimePickerView) properties_layout.findViewById(R.id.block_property_time_start);
+            time_end_view=(TimePickerView)properties_layout.findViewById(R.id.block_property_time_end);
 
-            recurrence_view=(CheckBox)properties_layout.findViewById(R.id.block_property_recurrence);
+            recurrence_view=(CheckSwitchButton)properties_layout.findViewById(R.id.block_property_recurrence);
             recurrence_list.add((CheckBox)properties_layout.findViewById(R.id.block_property_recurrence_mon));
             recurrence_list.add((CheckBox)properties_layout.findViewById(R.id.block_property_recurrence_tuse));
             recurrence_list.add((CheckBox)properties_layout.findViewById(R.id.block_property_recurrence_web));
@@ -90,39 +97,38 @@ public class BlockPropertyEditView extends LinearLayout implements View.OnLayout
             recurrence_list.add((CheckBox)properties_layout.findViewById(R.id.block_property_recurrence_sat));
             recurrence_list.add((CheckBox)properties_layout.findViewById(R.id.block_property_recurrence_sun));
 
-            recurrence_view.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
+            recurrence_view.setOnChangeListener(new CheckSwitchButton.OnSwitchChangedListener() {
                 @Override
-                public void onCheckedChanged(CompoundButton arg0, boolean checked) {
+                public void onSwitchChange(CheckSwitchButton switchView, boolean isChecked) {
                     // TODO Auto-generated method stub
                     for (CheckBox checkBox : recurrence_list){
-                        checkBox.setEnabled(checked);
-                        checkBox.setChecked(checked);
+                        checkBox.setEnabled(isChecked);
+                        checkBox.setChecked(isChecked);
                     }
 
-                    if(checked){
-                        date_end_cb.setChecked(!checked);
-                        date_no_end_cb.setChecked(checked);
+                    if(isChecked){
+                        date_end_cb.setChecked(!isChecked);
+                        date_no_end_cb.setChecked(isChecked);
                     }
 
-                    updateRecurrence();
+                    //updateRecurrence();
 
-                    bindingRecurrenceCheckEvent(checked);
+                    bindingRecurrenceCheckEvent(isChecked);
 
-                    date_start_bt.setEnabled(checked);
-                    date_end_bt.setEnabled(checked);
-                    date_end_cb.setEnabled(checked);
-                    date_no_end_cb.setEnabled(checked);
+                    date_start_bt.setEnabled(isChecked);
+                    //date_end_bt.setEnabled(isChecked);
+                    date_end_cb.setEnabled(isChecked);
+                    date_no_end_cb.setEnabled(isChecked);
 
-                    property_date_layout.setEnabled(checked);
-                    property_recurrence_layout.setEnabled(checked);
+                    property_date_layout.setEnabled(isChecked);
+                    property_recurrence_layout.setEnabled(isChecked);
                 }
             });
 
-            date_start_bt=(Button)properties_layout.findViewById(R.id.block_property_bt_startdate);
-            date_start_bt.setOnClickListener(date_click_listener);
-            date_end_bt=(Button)properties_layout.findViewById(R.id.block_property_bt_enddate);
-            date_end_bt.setOnClickListener(date_click_listener);
+            date_start_bt=(DatePickerPopupView)properties_layout.findViewById(R.id.block_property_bt_startdate);
+            //date_start_bt.setOnClickListener(date_click_listener);
+            date_end_bt=(DatePickerPopupView)properties_layout.findViewById(R.id.block_property_bt_enddate);
+            //date_end_bt.setOnClickListener(date_click_listener);
 
             date_end_cb=(CheckBox)properties_layout.findViewById(R.id.block_property_cb_hasend);
             date_end_cb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -131,7 +137,7 @@ public class BlockPropertyEditView extends LinearLayout implements View.OnLayout
                 public void onCheckedChanged(CompoundButton arg0, boolean checked) {
                     // TODO Auto-generated method stub
                     date_no_end_cb.setChecked(!checked);
-                    updateEndDate();
+                    //updateEndDate();
                 }
             });
             date_no_end_cb=(CheckBox)properties_layout.findViewById(R.id.block_property_cb_noend);
@@ -142,11 +148,13 @@ public class BlockPropertyEditView extends LinearLayout implements View.OnLayout
                     // TODO Auto-generated method stub
                     date_end_cb.setChecked(!checked);
                     date_end_bt.setEnabled(!checked);
-                    updateEndDate();
+                    //updateEndDate();
                 }
             });
 
-            apply_btn=(ImageTextView)properties_layout.findViewById(R.id.block_property_apply);
+            property_warning_view=(TextView)properties_layout.findViewById(R.id.block_property_warning);
+
+            apply_btn=(ImageTextHorizontalView)properties_layout.findViewById(R.id.block_property_apply);
             apply_btn.setText("Apply");
             apply_btn.setImage(R.drawable.apply);
             apply_btn.setOnClickListener(new OnClickListener() {
@@ -155,7 +163,6 @@ public class BlockPropertyEditView extends LinearLayout implements View.OnLayout
                 public void onClick(View arg0) {
                     // TODO Auto-generated method stub
                     updateBlockInfo();
-                    editResponseCall.callback(null);
                 }
             });
 
@@ -168,25 +175,21 @@ public class BlockPropertyEditView extends LinearLayout implements View.OnLayout
         this.addOnLayoutChangeListener(this);
     }
 
-    public BlockPropertyEditView(Context context,int width,int height,final CallbackBundle editResponse) {
-        this(context,editResponse);
-
-        original_width=width;
-        original_height=height;
-    }
-
     public void initPropertyView(){
         String current_date= DateConverter.convertToDisplayStr(null);
-        date_start_bt.setText(current_date);
-        date_end_bt.setText(current_date);
+        //date_start_bt.setText(current_date);
+        //date_end_bt.setText(current_date);
 
-        time_start_view.setText("00:00");
-        time_end_view.setText("00:00");
+        currentDate=DateConverter.getCurrentDate();
+        time_start_view.setTime("00:00",false);
+        time_end_view.setTime("00:00",false);
 
         setPropertyEditability(false);
     }
 
     public void setPropertyEditability(Boolean editable){
+
+        property_warning_view.setVisibility(GONE);
 
         property_recurrence_layout.setEnabled(editable);
         property_date_layout.setEnabled(editable);
@@ -216,7 +219,6 @@ public class BlockPropertyEditView extends LinearLayout implements View.OnLayout
             else
                 checkBox.setOnCheckedChangeListener(null);
         }
-
     }
 
     public void bindingBlockInfo(BlockView blockView,Boolean forceBinding){
@@ -231,24 +233,13 @@ public class BlockPropertyEditView extends LinearLayout implements View.OnLayout
             this.block_view=blockView;
             this.block_entity=blockView.block_info;
 
-            time_start_view.setText(DateConverter.convertShortTimeToStr(block_entity.startTime));
-            time_end_view.setText(DateConverter.convertShortTimeToStr(block_entity.endTime));
+            time_start_view.setTime(DateConverter.convertShortTimeToStr(block_entity.startTime),false);
+            time_end_view.setTime(DateConverter.convertShortTimeToStr(block_entity.endTime),false);
 
-            date_start_bt.setText(DateConverter.convertToDisplayStr(block_entity.startDate));
-            if(block_entity.endDate==null){
-                date_end_bt.setText(date_start_bt.getText());
-                date_no_end_cb.setChecked(true);
-                date_end_bt.setEnabled(false);
-            }else {
-                date_end_bt.setText(DateConverter.convertToDisplayStr(block_entity.endDate));
-                date_end_cb.setChecked(true);
-                date_end_bt.setEnabled(true);
-            }
+            Date dateRange=getBlockDateRange(block_entity.startDate);
+            date_start_bt.setDateRange(dateRange,null,block_entity.startDate);
+            //date_start_bt.setText(DateConverter.convertToDisplayStr(block_entity.startDate));
 
-            date_start_bt.setEnabled(block_entity.isRecurrence);
-            date_end_bt.setEnabled(block_entity.isRecurrence);
-            date_end_cb.setEnabled(block_entity.isRecurrence);
-            date_no_end_cb.setEnabled(block_entity.isRecurrence);
             recurrence_view.setChecked(block_entity.isRecurrence);
             if(block_entity.isRecurrence){
                 for (int i = 0; i < block_entity.recurrence.length() ;i++) {
@@ -257,6 +248,24 @@ public class BlockPropertyEditView extends LinearLayout implements View.OnLayout
                 }
             }
 
+            if(block_entity.endDate==null){
+                date_end_bt.setDateRange(dateRange,null,block_entity.startDate);
+                //date_end_bt.setText(date_start_bt.getText());
+                date_no_end_cb.setChecked(true);
+                date_end_cb.setChecked(false);
+                date_end_bt.setEnabled(false);
+            }else {
+                date_end_bt.setDateRange(dateRange,null,block_entity.endDate);
+                //date_end_bt.setText(DateConverter.convertToDisplayStr(block_entity.endDate));
+                date_end_cb.setChecked(true);
+                date_no_end_cb.setChecked(false);
+                date_end_bt.setEnabled(true);
+            }
+
+            date_start_bt.setEnabled(block_entity.isRecurrence);
+            date_end_bt.setEnabled(block_entity.isRecurrence);
+            date_end_cb.setEnabled(block_entity.isRecurrence);
+            date_no_end_cb.setEnabled(block_entity.isRecurrence);
         } catch (Exception e) {
             // TODO: handle exception
             e.printStackTrace();
@@ -264,20 +273,33 @@ public class BlockPropertyEditView extends LinearLayout implements View.OnLayout
         }
     }
 
+    private Date getBlockDateRange(Date startDate){
+        return startDate.compareTo(currentDate)>=0?currentDate:startDate;
+    }
+
     public void updateBlockInfo() {
 
-        block_entity.startTime=DateConverter.convertShortStrToTime(time_start_view.getText().toString());
-        block_entity.endTime=DateConverter.convertShortStrToTime(time_end_view.getText().toString());
-        block_entity.duration=ScheduleDrawHelper.getDurtion(block_entity.startTime, block_entity.endTime);
+        Date startDate=DateConverter.convertDisplayStrToDate(date_start_bt.getText().toString()),endDate=null;
+        if(recurrence_view.isChecked()&&date_end_cb.isChecked()){
+            endDate=DateConverter.convertDisplayStrToDate(date_end_bt.getText().toString());
+            if(endDate.compareTo(startDate)<0){
+                property_warning_view.setText("EndDate is not greater than the StartDate");
+                property_warning_view.setVisibility(VISIBLE);
+                return;
+            }
+        }
 
-        block_entity.startDate=DateConverter.convertDisplayStrToDate(date_start_bt.getText().toString());
+        BlockUIEntity cloneBlock=block_entity.clone();
+
+        block_entity.startDate=startDate;
+        block_entity.endDate=endDate;
+
+        block_entity.startTime=DateConverter.convertShortStrToTime(time_start_view.getTime().toString());
+        block_entity.endTime=DateConverter.convertShortStrToTime(time_end_view.getTime().toString());
+        block_entity.duration=ScheduleDrawHelper.getDurtion(block_entity.startTime, block_entity.endTime);
 
         block_entity.isRecurrence=recurrence_view.isChecked();
         if(block_entity.isRecurrence){
-            if(date_end_cb.isChecked())
-                block_entity.endDate=DateConverter.convertDisplayStrToDate(date_end_bt.getText().toString());
-            else
-                block_entity.endDate=null;
 
             StringBuilder recurrence=new StringBuilder();
             for (CheckBox checkBox : this.recurrence_list) {
@@ -288,7 +310,17 @@ public class BlockPropertyEditView extends LinearLayout implements View.OnLayout
             block_entity.endDate=block_entity.startDate;
             block_entity.recurrence=ScheduleDrawHelper.getRecurrenceByStartDate(block_entity.startDate);
         }
+        Boolean conflict = ScheduleConflictChecker.isBlockConflict(all_block_list,block_entity);
+        if(conflict) {
+            property_warning_view.setText(m_context.getResources().getString(R.string.sche_block_conflict));
+            property_warning_view.setVisibility(VISIBLE);
+            block_entity.copy(cloneBlock);
+            return;
+        }
+        editResponseCall.callback(null);
+
     }
+/*
 
     private void updateRecurrence(){
         Boolean isRecurrence=recurrence_view.isChecked();
@@ -367,12 +399,13 @@ public class BlockPropertyEditView extends LinearLayout implements View.OnLayout
                 editResponseCall.callback(null);
         }
     }
+*/
 
     OnCheckedChangeListener recurrence_change_listener = new OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            if(property_recurrence_layout.isEnabled())
-                updateRecurrence();
+            /*if(property_recurrence_layout.isEnabled())
+                updateRecurrence();*/
         }
     };
 
@@ -400,13 +433,13 @@ public class BlockPropertyEditView extends LinearLayout implements View.OnLayout
                         newCalendar.set(year,monthOfYear,dayOfMonth,0,0,0);
                         if(view==date_start_bt) {
                             //block_entity.startDate = newCalendar.getTime();
-                            date_start_bt.setText(DateConverter.convertToDisplayStr(newCalendar.getTime()));
-                            updateStartDate();
+                            //date_start_bt.setText(DateConverter.convertToDisplayStr(newCalendar.getTime()));
+                            //updateStartDate();
                         }
                         else {
                             //block_entity.endDate = newCalendar.getTime();
-                            date_end_bt.setText(DateConverter.convertToDisplayStr(newCalendar.getTime()));
-                            updateEndDate();
+                            //date_end_bt.setText(DateConverter.convertToDisplayStr(newCalendar.getTime()));
+                            //updateEndDate();
                         }
                     }
                 }
@@ -461,12 +494,12 @@ public class BlockPropertyEditView extends LinearLayout implements View.OnLayout
                         newCalendar.set(Calendar.MINUTE,minute);
                         if(view==time_start_view){
                             //block_entity.startTime = newCalendar.getTime();
-                            time_start_view.setText(DateConverter.convertShortTimeToStr(newCalendar.getTime()));
-                            updateStartTime();
+                            time_start_view.setTime(DateConverter.convertShortTimeToStr(newCalendar.getTime()),false);
+                            //updateStartTime();
                         }else{
                             //block_entity.endTime = newCalendar.getTime();
-                            time_end_view.setText(DateConverter.convertShortTimeToStr(newCalendar.getTime()));
-                            updateEndTime();
+                            time_end_view.setTime(DateConverter.convertShortTimeToStr(newCalendar.getTime()),false);
+                            //updateEndTime();
                         }
                     }
                 }

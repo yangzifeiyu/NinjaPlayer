@@ -13,10 +13,10 @@
 	            android:id="@+id/textView1"
 	            android:layout_width="@dimen/propertyName"
 	            android:layout_height="match_parent"
-	            android:gravity="left|center"
-	            android:text="Font "
+				android:text="Font :"
 	            android:textAppearance="?android:attr/textAppearanceSmall"
-	            android:textSize="@dimen/textSize" />
+	            android:textSize="@dimen/textSize"
+				style="@style/property_name" />
 	
 	        <TextView
 	            android:id="@+id/comp_dt_font"
@@ -31,11 +31,13 @@
 	
 	        <ImageButton
 	            android:id="@+id/comp_dt_font_btn"
-	            android:layout_width="24dp"
-	            android:layout_height="24dp"
+	            android:layout_width="@dimen/propertyEditBtn"
+	            android:layout_height="@dimen/propertyEditBtn"
 	            android:layout_gravity="left|top|center"
 	            android:background="#00ffffff"
-	            android:src="@drawable/edit" />
+	            android:src="@drawable/mf_edit"
+				android:scaleType="fitCenter"
+				android:padding="@dimen/propertyEditBtnPadding" />
 	        
 	    </LinearLayout>
 	    
@@ -49,10 +51,10 @@
 	            android:id="@+id/textView2"
 	            android:layout_width="@dimen/propertyName"
 	            android:layout_height="match_parent"
-	            android:gravity="left|center"
-	            android:text="Font Color "
+				android:text="Font Color :"
 	            android:textAppearance="?android:attr/textAppearanceSmall"
-	            android:textSize="@dimen/textSize" />
+	            android:textSize="@dimen/textSize"
+				style="@style/property_name" />
 		
 			<Button
 			    android:id="@+id/comp_dt_font_color_btn"
@@ -67,27 +69,30 @@
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
 	        android:layout_marginTop="@dimen/propertyHSpace"
-	        android:orientation="horizontal" >
+	        android:orientation="horizontal"
+			android:gravity="center_vertical">
 	         
 	        <TextView
 	            android:id="@+id/textView3"
 	            android:layout_width="@dimen/propertyName"
 	            android:layout_height="match_parent"
 	            android:layout_gravity="left|center"
-	            android:gravity="center|left"
-	            android:text="Format "
+				android:text="Format :"
 	            android:textAppearance="?android:attr/textAppearanceSmall"
-	            android:textSize="@dimen/textSize" />
-		
-			<com.mfusion.commons.view.DropDownView
-			    android:id="@+id/comp_dt_format"
-			    style="?android:attr/buttonStyleSmall"
-			    android:layout_width="wrap_content"
-			    android:layout_height="28dp"
-			    android:background="@drawable/button_style"
-			    android:text="yyyy-MM-dd"
-			    android:textSize="@dimen/textSize" />
+	            android:textSize="@dimen/textSize"
+				style="@style/property_name" />
 
+			<TextView
+				android:id="@+id/comp_dt_format"
+				style="@style/myFontStrStyle"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center"
+				android:background="@drawable/button_style"
+				android:ellipsize="end"
+				android:text="yyyy-MM-dd"
+				android:textAppearance="?android:attr/textAppearanceSmall"
+				android:textSize="@dimen/textSize" />
 	    </LinearLayout>
 
 </LinearLayout>

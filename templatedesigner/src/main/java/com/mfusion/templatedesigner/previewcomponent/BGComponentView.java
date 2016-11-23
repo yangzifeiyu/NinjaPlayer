@@ -76,6 +76,11 @@ public class BGComponentView extends BasicComponentView {
 		}
 	}
 
+	@Override
+	public Boolean canDeleted(){
+		return false;
+	}
+
 	public CallbackBundle TemplateSizeChangedCallback=null;
 
 	public CallbackBundle ImageChangedCallback=new CallbackBundle() {
@@ -97,4 +102,9 @@ public class BGComponentView extends BasicComponentView {
             }
 		}
 	};
+
+	@Override
+	public void stop(){
+		ImageHelper.recycleBitmap(c_bg_image);
+	}
 }

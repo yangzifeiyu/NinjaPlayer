@@ -262,7 +262,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         if (viewPager.getCurrentItem() == 2) {
             current_fragment = mAdapter.scheduleFragment;
         }//pop up window for schedule fragment
-        if(current_fragment!=null&&((AbstractFragment)current_fragment).isEditing){
+        if(current_fragment!=null&&((AbstractFragment)current_fragment).getIsEditing()){
             AlertDialogHelper.showAlertDialog(this, "Information", "Do you want to save these modification?", saveSaveCallback,cancelSaveCallback);
         }else
             viewPager.setCurrentItem(tab.getPosition());//pop up window for about fragment

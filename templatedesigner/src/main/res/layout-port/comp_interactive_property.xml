@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+	android:paddingLeft="@dimen/global_margin">
+
+		<LinearLayout
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_marginTop="@dimen/propertyHSpace"
+		    android:orientation="horizontal" >
+	         
+	        <TextView
+	            android:id="@+id/textView3"
+	            android:layout_width="wrap_content"
+	            android:layout_height="match_parent"
+	            android:gravity="left|center"
+	            android:text="Address "
+	            android:textAppearance="?android:attr/textAppearanceSmall"
+	            android:textSize="@dimen/textSize" />
+
+	        <EditText
+	            android:id="@+id/comp_interactive_address"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:ems="10"
+	            android:inputType="textMultiLine|textFilter"
+	            android:maxLines="5"
+	            android:minLines="1"
+	            android:textSize="@dimen/textSize" >
+
+	        </EditText>
+
+	    </LinearLayout>
+</LinearLayout>

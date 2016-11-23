@@ -7,15 +7,26 @@
     android:orientation="horizontal"
     android:padding="4dp" >
 
+    <CheckBox
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:background="@drawable/check_style"
+        android:button="@null"
+        android:id="@+id/pm_select"
+        android:layout_centerVertical="true" />
+
     <ImageView
         android:id="@+id/pm_type"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentLeft="false"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="4dp"
         android:layout_marginTop="8dp"
-        android:background="#ddd" />
+        android:background="#ddd"
+        android:layout_alignParentStart="false"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/pm_select" />
 
     <LinearLayout
         android:id="@+id/linearLayout1"
@@ -33,7 +44,7 @@
             android:layout_height="wrap_content"
             android:text="name"
             android:textColor="#000000"
-            android:textSize="16sp"
+            android:textSize="@dimen/textSizeBig"
             android:textStyle="bold" />
 
         <TextView
@@ -43,19 +54,21 @@
             android:paddingLeft="10dp"
             android:text="path"
             android:textColor="#000000"
-            android:textSize="12sp" />
+            android:textSize="@dimen/textSizeSmall" />
     </LinearLayout>
 
     <ImageButton
         android:id="@+id/pm_delete"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="4dp"
         android:background="#00000000"
         android:src="@drawable/delete_rubbish"
-        android:padding="2dp" />
+        android:padding="2dp"
+        android:scaleType="fitCenter"
+        android:layout_centerVertical="true" />
 
     <EditText
         android:id="@+id/pm_duration"
@@ -65,7 +78,8 @@
         android:layout_toLeftOf="@+id/pm_delete"
         android:ems="10"
         android:inputType="time"
-        android:text="00:00:00" >
+        android:text="00:00:00"
+        android:textSize="@dimen/textSizeSmall">
     </EditText>
 
 </RelativeLayout>

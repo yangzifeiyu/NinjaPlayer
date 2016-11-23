@@ -15,13 +15,15 @@ import java.util.Stack;
 import java.util.concurrent.locks.ReentrantLock;
 
 import com.mfusion.player.R;
-import com.mfusion.player.library.Controller.HandleTimer;
+import com.mfusion.commons.tools.HandleTimer;
 import com.mfusion.player.library.Helper.DateTimeHelper;
 import com.mfusion.player.library.Helper.ImageHelper;
 import com.mfusion.player.library.Helper.LoggerHelper;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -69,6 +71,7 @@ public class PBUDispatcherService implements BasicServiceInterface {
 
 	private ReentrantLock m_screen_locker = new ReentrantLock();
 
+	private Bitmap m_template_bg_bitmap;
 
 	public Handler mHandler = new Handler() {
 		@Override
@@ -175,7 +178,7 @@ public class PBUDispatcherService implements BasicServiceInterface {
 
 
 		this.downloadspeedview=new TextView(MainActivity.Instance);
-		this.downloadspeedview.setTextColor(-16728064);
+		this.downloadspeedview.setTextColor(Color.GREEN);
 		downloadspeedParams = new RelativeLayout.LayoutParams(
 				LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		downloadspeedParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
@@ -294,7 +297,7 @@ public class PBUDispatcherService implements BasicServiceInterface {
 				{
 					pbu.isResetTime = true;
 					pbu.StartTime = MainActivity.Instance.Clock.Now;
-					pbu.EndTime = DateTimeHelper.GetAddedDate(MainActivity.Instance.Clock.Now,pbu.OriginalDuration,MainActivity.Instance.PlayerSetting.Timezone);
+					pbu.EndTime = DateTimeHelper.GetAddedDate(MainActivity.Instance.Clock.Now,pbu.Duration,MainActivity.Instance.PlayerSetting.Timezone);
 					this.BeforeChangePBU(pbu);
 				}
 				else
@@ -533,6 +536,8 @@ public class PBUDispatcherService implements BasicServiceInterface {
 			{
 				Drawable drawable =new BitmapDrawable(bmp);
 				this.template.setBackground(drawable);
+				com.mfusion.commons.tools.ImageHelper.recycleBitmap(m_template_bg_bitmap);
+				m_template_bg_bitmap=bmp;
 				/*if(!bmp.isRecycled())
 				{
 					bmp.recycle();
@@ -593,6 +598,8 @@ public class PBUDispatcherService implements BasicServiceInterface {
 					{
 						Drawable drawable =new BitmapDrawable(bmp);
 						template.setBackground(drawable);
+						com.mfusion.commons.tools.ImageHelper.recycleBitmap(m_template_bg_bitmap);
+						m_template_bg_bitmap=bmp;
 						/*if(!bmp.isRecycled())
 						{
 							bmp.recycle();
@@ -714,7 +721,7 @@ public class PBUDispatcherService implements BasicServiceInterface {
 		{
 
 
-			LoggerHelper.WriteLogfortxt("PBUDispatcher Restart");
+			LoggerHelper.WriteLogfortxt("PBUDispatcher Restarted");
 			this.m_pbu_deep_compare = true;
 			this.m_pbu_stack=MainActivity.Instance.ScheduleLoader.pbus;
 			this.m_pbu_idlist=MainActivity.Instance.ScheduleLoader.pbuid_list;
@@ -737,7 +744,10 @@ public class PBUDispatcherService implements BasicServiceInterface {
 	@Override
 	public void Stop() {
 		// TODO Auto-generated method stub
-		//this.mTimer.stop();
+		this.mTimer.stop();
+		this.EndComponents(this.m_playing_pbu);
+		com.mfusion.commons.tools.ImageHelper.recycleBitmap(m_template_bg_bitmap);
+		m_template_bg_bitmap=null;
 	}
 
 	//trigger app

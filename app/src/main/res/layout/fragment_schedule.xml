@@ -42,19 +42,21 @@
             android:textColor="@color/warningColor"
             android:textSize="@dimen/textSize" />
 
-        <com.mfusion.commons.view.ImageTextView
+        <com.mfusion.commons.view.ImageTextVerticalView
             android:id="@+id/sche_save"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/manager_btn_height" />
+            android:layout_height="@dimen/manager_btn_height"
+            android:layout_marginRight="@dimen/global_big_btn_margin" />
 
-        <com.mfusion.commons.view.ImageTextView
+        <com.mfusion.commons.view.ImageTextVerticalView
             android:id="@+id/sche_assign"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/manager_btn_height" />
+            android:layout_height="@dimen/manager_btn_height"
+            android:layout_marginRight="@dimen/global_margin_medium" />
 
         <ImageButton
             android:layout_width="32dp"
-            android:layout_height="@dimen/manager_btn_height"
+            android:layout_height="wrap_content"
             android:id="@+id/sche_open"
             android:src="@android:drawable/ic_menu_upload_you_tube"  />
 

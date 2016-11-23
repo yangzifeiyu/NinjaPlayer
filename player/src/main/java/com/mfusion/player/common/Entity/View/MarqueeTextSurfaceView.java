@@ -128,9 +128,11 @@ public class MarqueeTextSurfaceView extends SurfaceView  implements SurfaceHolde
 				} catch (Exception e) {
 					e.printStackTrace();
 				} finally {
-					if (c != null) {
-						holder.unlockCanvasAndPost(c);
-					}
+					try{
+						if (c != null&&holder.getSurface().isValid()) {
+							holder.unlockCanvasAndPost(c);
+						}
+					}catch (Exception ex){}
 					if (xOffset <=-textWidth) {
 						xOffset =width;
 					} 

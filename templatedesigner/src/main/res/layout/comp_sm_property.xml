@@ -7,16 +7,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/propertyHSpace"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+		android:gravity="center_vertical">
 
 		<CheckBox
 		    android:id="@+id/comp_sm_mute"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
-		    android:text="Mute"
-		    android:textSize="@dimen/textSize" />
+			android:textSize="@dimen/textSize"
+			android:background="@drawable/check_style"
+			android:button="@null"/>
 
-    </LinearLayout>
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textAppearance="?android:attr/textAppearanceSmall"
+			android:text="Mute"
+			android:id="@+id/textView9"
+			android:textSize="@dimen/textSize" />
+
+	</LinearLayout>
     
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,10 +39,10 @@
             android:layout_width="@dimen/propertyName"
             android:layout_height="match_parent"
             android:layout_gravity="left|center"
-            android:gravity="center|left"
-            android:text="PlayMode "
+			android:text="PlayMode :"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textSize="@dimen/textSize" />
+            android:textSize="@dimen/textSize"
+			style="@style/property_name" />
 	
 		<com.mfusion.commons.view.DropDownView
 		    android:id="@+id/comp_sm_playmode"
@@ -55,10 +65,10 @@
             android:id="@+id/textView3"
             android:layout_width="@dimen/propertyName"
             android:layout_height="match_parent"
-            android:gravity="left|center"
-            android:text="MediaList "
+			android:text="MediaList :"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textSize="@dimen/textSize" />
+            android:textSize="@dimen/textSize"
+			style="@style/property_name" />
 
         <TextView
             android:id="@+id/comp_sm_mediainfo"
@@ -72,11 +82,13 @@
 
         <ImageButton
             android:id="@+id/comp_sm_mediaedit"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="@dimen/propertyEditBtn"
+            android:layout_height="@dimen/propertyEditBtn"
             android:layout_gravity="left|top"
             android:background="#00ffffff"
-            android:src="@drawable/edit" />
+            android:src="@drawable/mf_edit"
+			android:scaleType="fitCenter"
+			android:padding="@dimen/propertyEditBtnPadding" />
         
     </LinearLayout>
 </LinearLayout>

@@ -13,6 +13,7 @@ import com.mfusion.player.common.Entity.TimelineCommand;
 import com.mfusion.player.common.Entity.command.RebootCommand;
 import com.mfusion.player.common.Entity.command.ShutdownCommand;
 import com.mfusion.player.common.Entity.command.VolumeCommand;
+import com.mfusion.player.common.Entity.command.WakeUpCommand;
 import com.mfusion.player.common.Enum.CommandType;
 import com.mfusion.player.common.Player.MainActivity;
 import com.mfusion.player.library.Database.Xml.XMLHelper;
@@ -149,6 +150,9 @@ public class CommandXML {
 								}
 								if(cmdType==CommandType.Restart){
 									com=new RebootCommand();
+								}
+								if(cmdType==CommandType.WakeUp){
+									com=new WakeUpCommand();
 								}
 							}
 							if(com!=null){

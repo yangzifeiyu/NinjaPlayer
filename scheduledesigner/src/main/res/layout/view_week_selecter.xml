@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:padding="2dp">
 
     <ImageButton
         android:layout_width="24dp"
@@ -18,10 +19,9 @@
         android:id="@+id/sche_week_value"
         style="@style/myTextStyle"
         android:layout_width="95dp"
-        android:layout_height="fill_parent"
+        android:layout_height="26dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:gravity="center_vertical"
         android:text="2016/04/06"
         android:textSize="@dimen/textSize"
         android:background="@drawable/button_style"
@@ -29,28 +29,29 @@
         android:textColor="@android:color/secondary_text_dark"
         android:layout_marginTop="0dp"
         android:layout_marginBottom="0dp"
-        android:padding="0dp" />
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical" />
 
     <ImageButton
         android:id="@+id/sche_week_pre"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
         android:background="#00ffffff"
         android:src="@drawable/pre"
         android:layout_gravity="center_vertical"
         android:adjustViewBounds="false"
-        android:scaleType="fitXY"
-        android:padding="4dp" />
+        android:scaleType="fitCenter"
+        android:padding="2dp" />
 
     <ImageButton
         android:id="@+id/sche_week_next"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
         android:background="#00ffffff"
         android:src="@drawable/next"
         android:scaleType="fitCenter"
         android:layout_gravity="center_vertical"
-        android:padding="4dp" />
+        android:padding="2dp" />
 
 
 

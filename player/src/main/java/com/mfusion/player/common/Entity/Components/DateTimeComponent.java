@@ -9,7 +9,7 @@
 package com.mfusion.player.common.Entity.Components;
 
 import java.util.Date;
-import com.mfusion.player.library.Controller.HandleTimer;
+import com.mfusion.commons.tools.HandleTimer;
 import com.mfusion.player.library.Helper.DateTimeHelper;
 import com.mfusion.player.library.Helper.LoggerHelper;
 import android.annotation.SuppressLint;
@@ -17,7 +17,6 @@ import android.content.Context;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 import com.mfusion.player.common.Player.MainActivity;
 import com.mfusion.player.common.Setting.Component.DateTimeSetting;

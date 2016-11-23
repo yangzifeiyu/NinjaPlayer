@@ -8,11 +8,8 @@
  */
 package com.mfusion.player.common.Entity.Components;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
-import com.mfusion.player.library.Controller.HandleTimer;
-import com.mfusion.player.library.Helper.DateTimeHelper;
+import com.mfusion.commons.tools.HandleTimer;
 import com.mfusion.player.library.Helper.FileHelper;
 import com.mfusion.player.library.Helper.LoggerHelper;
 import com.mfusion.player.common.Entity.Control.ErrorControl;
@@ -21,13 +18,12 @@ import com.mfusion.player.common.Entity.Control.ImageControl;
 import com.mfusion.player.common.Entity.Control.VideoControl1;
 import com.mfusion.player.common.Entity.Control.WebControl;
 import com.mfusion.player.common.Entity.Effect.TransitionEffectHelper;
-import android.R.color;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.View;
-import android.view.ViewGroup;
+
 import com.mfusion.player.common.Entity.MediaFile;
-import com.mfusion.player.common.Entity.Playlist;
 import com.mfusion.player.common.Enum.ControlType;
 import com.mfusion.player.common.Enum.FileType;
 import com.mfusion.player.common.Enum.PlayMode;
@@ -197,7 +193,7 @@ public class ScheduleMediaComponent extends BasicComponent {
 								{
 									this.container.bringChildToFront(ImageControl1.Element);
 									ImageControl1.Element.setVisibility(View.VISIBLE);
-									ImageControl1.LoadImage(mediaSourcePath,this.getCmpwidth(),this.getCmpheight());	
+									//ImageControl1.LoadImage(mediaSourcePath,this.getCmpwidth(),this.getCmpheight());
 									m_CurView=ImageControl1.Element;
 
 								}
@@ -205,7 +201,7 @@ public class ScheduleMediaComponent extends BasicComponent {
 								{
 									this.container.bringChildToFront(ImageControl2.Element);
 									ImageControl2.Element.setVisibility(View.VISIBLE);
-									ImageControl2.LoadImage(mediaSourcePath,this.getCmpwidth(),this.getCmpheight());	
+									//ImageControl2.LoadImage(mediaSourcePath,this.getCmpwidth(),this.getCmpheight());
 									m_CurView=ImageControl2.Element;
 
 								}
@@ -362,10 +358,12 @@ public class ScheduleMediaComponent extends BasicComponent {
 					}
 				}
 
+				if(this.setting.Idleplaylist.Medias.size()==1)
+					return;
 
 				this.GetCurrentFileIndex();
 				
-				this.preloadImage();
+				this.preloadImage(this.CurrentFileIndex,true);
 			}
 			
 		}
@@ -380,9 +378,9 @@ public class ScheduleMediaComponent extends BasicComponent {
 
 	}
 
-	private void preloadImage(){
+	private void preloadImage(int mediaIndex,Boolean isAsync){
 		try {
-			MediaFile mediafile =this.setting.Idleplaylist.Medias.get(this.CurrentFileIndex);
+			MediaFile mediafile =this.setting.Idleplaylist.Medias.get(mediaIndex);
 			if(mediafile.Type!=FileType.Image||mediafile.ExtName.equalsIgnoreCase(".gif"))
 				return;
 			
@@ -395,11 +393,11 @@ public class ScheduleMediaComponent extends BasicComponent {
 			
 			if(ImageControl1.Element.getVisibility()!=View.VISIBLE)
 			{
-				ImageControl1.LoadImage(imagePath,this.getCmpwidth(),this.getCmpheight());	
+				ImageControl1.LoadImage(imagePath,this.getCmpwidth(),this.getCmpheight(),isAsync);
 			}
 			else
 			{
-				ImageControl2.LoadImage(imagePath,this.getCmpwidth(),this.getCmpheight());	
+				ImageControl2.LoadImage(imagePath,this.getCmpwidth(),this.getCmpheight(),isAsync);
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -493,8 +491,10 @@ public class ScheduleMediaComponent extends BasicComponent {
 			this.AddView(this.WebControl2.Element);
 			this.AddView(this.ErrorControl1.Element);
 			this.AddView(this.ErrorControl2.Element);
-			MainActivity.Instance.PBUDispatcher.template.addView(container);	
-			
+			MainActivity.Instance.PBUDispatcher.template.addView(container);
+
+			this.preloadImage(0,false);
+
 			this.timer.start(0);
 		}
 		catch(Exception ex)

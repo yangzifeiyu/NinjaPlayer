@@ -1,5 +1,6 @@
 package com.mfusion.ninjaplayer.view;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -7,7 +8,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -16,7 +16,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -24,22 +23,29 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mfusion.commons.data.XMLTemplate;
+import com.mfusion.commons.entity.exception.IllegalTemplateException;
 import com.mfusion.commons.entity.exception.PathAccessException;
 import com.mfusion.commons.entity.exception.TemplateNotFoundException;
 import com.mfusion.commons.entity.template.VisualTemplate;
+import com.mfusion.commons.entity.values.FileSelectType;
 import com.mfusion.commons.entity.values.FileSortType;
 import com.mfusion.commons.tools.AlertDialogHelper;
 import com.mfusion.commons.tools.CallbackBundle;
+import com.mfusion.commons.tools.FileNameTextWatcher;
 import com.mfusion.commons.tools.FileOperator;
 import com.mfusion.commons.tools.InternalKeyWords;
 import com.mfusion.commons.tools.LogOperator;
-import com.mfusion.commons.view.ImageTextView;
+import com.mfusion.commons.tools.OperateCallbackBundle;
+import com.mfusion.commons.tools.WindowsDecorHelper;
+import com.mfusion.commons.view.FileNameEditor;
+import com.mfusion.commons.view.ImageTextHorizontalView;
+import com.mfusion.commons.view.ImageTextVerticalView;
 import com.mfusion.commons.view.OpenFileDialog;
+import com.mfusion.commons.view.SystemInfoDialog;
 import com.mfusion.commons.view.adapter.TemplateInfoAdapter;
 import com.mfusion.ninjaplayer.R;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 
@@ -54,8 +60,8 @@ public class TemplateUserCreatedView extends LinearLayout{
     private ImageView loadingView;
 
     private CheckBox cb_select_all;
-    private ImageTextView btn_new,btn_import,btn_delete,btn_export;
-    private ImageTextView btn_sort_name,btn_sort_time;
+    private ImageTextVerticalView btn_new,btn_import,btn_delete,btn_export,btn_edit,btn_copy,btn_rename;
+    private ImageTextHorizontalView btn_sort_name,btn_sort_time;
 
     private View userCreatedView;
     private Context context;
@@ -79,7 +85,7 @@ public class TemplateUserCreatedView extends LinearLayout{
         loadingView = (ImageView) userCreatedView.findViewById(R.id.template_load_image);
         gridView = (GridView) userCreatedView.findViewById(R.id.template_list_user_created_grid_view);
         gridView.setVisibility(View.VISIBLE);
-        btn_new=(ImageTextView)userCreatedView.findViewById(R.id.template_new);
+        btn_new=(ImageTextVerticalView)userCreatedView.findViewById(R.id.template_new);
         btn_new.setText("New");
         btn_new.setImage(R.drawable.mf_add);
         btn_new.setOnClickListener(new OnClickListener() {
@@ -88,7 +94,7 @@ public class TemplateUserCreatedView extends LinearLayout{
                 listener.goSampleView();
             }
         });
-        btn_import=(ImageTextView)userCreatedView.findViewById(R.id.template_import);
+        btn_import=(ImageTextVerticalView)userCreatedView.findViewById(R.id.template_import);
         btn_import.setText("Import");
         btn_import.setImage(R.drawable.mf_import);
         btn_import.setOnClickListener(new OnClickListener() {
@@ -104,12 +110,13 @@ public class TemplateUserCreatedView extends LinearLayout{
                             importTemplates(bundle.getStringArrayList("selectedFiles"));
                         }catch (Exception ex){
                             ex.printStackTrace();
+                            AlertDialogHelper.showWarningDialog(context, "Warning", ex.getMessage(), null);
                         }
                     }
                 },"zip",true,true);
             }
         });
-        btn_delete=(ImageTextView)userCreatedView.findViewById(R.id.template_delete);
+        btn_delete=(ImageTextVerticalView)userCreatedView.findViewById(R.id.template_delete);
         btn_delete.setText("Delete");
         btn_delete.setImage(R.drawable.mf_trash);
         btn_delete.setOnClickListener(new OnClickListener() {
@@ -118,7 +125,7 @@ public class TemplateUserCreatedView extends LinearLayout{
                 deleteTemplates(templateInfoAdapter.getSelectTemplateEntities());
             }
         });
-        btn_export=(ImageTextView)userCreatedView.findViewById(R.id.template_export);
+        btn_export=(ImageTextVerticalView)userCreatedView.findViewById(R.id.template_export);
         btn_export.setText("Export");
         btn_export.setImage(R.drawable.mf_export);
         btn_export.setOnClickListener(new OnClickListener() {
@@ -127,7 +134,36 @@ public class TemplateUserCreatedView extends LinearLayout{
                 exportTemplates(templateInfoAdapter.getSelectTemplates());
             }
         });
+        btn_edit=(ImageTextVerticalView)userCreatedView.findViewById(R.id.template_edit);
+        btn_edit.setText("Edit");
+        btn_edit.setImage(R.drawable.mf_edit);
+        btn_edit.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editTemplate(templateInfoAdapter.getSelectTemplateEntities());
+            }
+        });
+        btn_rename=(ImageTextVerticalView)userCreatedView.findViewById(R.id.template_rename);
+        btn_rename.setText("Rename");
+        btn_rename.setImage(R.drawable.mf_rename);
+        btn_rename.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                renameTemplate(templateInfoAdapter.getSelectTemplateEntities());
+            }
+        });
+        btn_copy=(ImageTextVerticalView)userCreatedView.findViewById(R.id.template_copy);
+        btn_copy.setText("Save As");
+        btn_copy.setImage(R.drawable.mf_save);
+        btn_copy.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                copyTemplate(templateInfoAdapter.getSelectTemplateEntities());
+            }
+        });
+
         cb_select_all=(CheckBox) userCreatedView.findViewById(R.id.template_select_all);
+        cb_select_all.setVisibility(GONE);
         cb_select_all.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -135,40 +171,28 @@ public class TemplateUserCreatedView extends LinearLayout{
                     templateInfoAdapter.selectAllItem(cb_select_all.isChecked());
             }
         });
-        /*cb_select_all.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(templateInfoAdapter!=null)
-                    templateInfoAdapter.selectAllItem(isChecked);
-            }
-        });*/
 
-        btn_sort_name=(ImageTextView)userCreatedView.findViewById(R.id.template_sort_name);
+        btn_sort_name=(ImageTextHorizontalView)userCreatedView.findViewById(R.id.template_sort_name);
+        btn_sort_name.setVisibility(GONE);
         btn_sort_name.setText("Name");
         btn_sort_name.setImage(R.drawable.sort_name_asce);
         btn_sort_name.setTag(FileSortType.NameAsce);
         btn_sort_name.setOnClickListener(sortTypeListener);
-        btn_sort_time=(ImageTextView)userCreatedView.findViewById(R.id.template_sort_time);
+        btn_sort_time=(ImageTextHorizontalView)userCreatedView.findViewById(R.id.template_sort_time);
+        btn_sort_time.setVisibility(GONE);
         btn_sort_time.setText("Modify Time");
         btn_sort_time.setImage(R.drawable.sort_time_desc);
         btn_sort_time.setTag(FileSortType.TimeDesc);
         btn_sort_time.setOnClickListener(sortTypeListener);
-        //loadingDatas();
-
-        /*gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                VisualTemplate visualTemplate = (VisualTemplate) gridView.getItemAtPosition(position);
-                listener.goDesigner(visualTemplate);
-            }
-        });*/
 
         addView(userCreatedView);
     }
     public void loadingDatas(){
         try {
             //gridView.setVisibility(View.GONE);
+
+            refreshOperatorBtn(false);
+
             cb_select_all.setChecked(false);
             loadingPage = ProgressDialog.show(getContext(), null, "Loading...");
             loadingPage.show();
@@ -197,30 +221,35 @@ public class TemplateUserCreatedView extends LinearLayout{
         this.listener = listener;
     }
 
-    private void refreshOperaorBtn(){
-        Boolean buttonEnable=true;
-        if(visualTemplates.size()>= InternalKeyWords.MaxTemplateCount)
+    private void refreshOperatorBtn(Boolean enable){
+        Boolean buttonEnable=enable;
+        if(enable&&visualTemplates!=null&&visualTemplates.size()>= InternalKeyWords.MaxTemplateCount)
             buttonEnable=false;
 
         btn_new.setEnabled(buttonEnable);
         btn_import.setEnabled(buttonEnable);
+        btn_copy.setEnabled(buttonEnable);
 
+        btn_delete.setEnabled(false);
+        btn_edit.setEnabled(false);
+        btn_export.setEnabled(false);
+        btn_rename.setEnabled(false);
     }
     OnClickListener sortTypeListener = new OnClickListener() {
         @Override
         public void onClick(View view) {
             FileSortType sortType=(FileSortType) view.getTag();
             if(sortType==FileSortType.NameAsce){
-                ((ImageTextView)view).setImage(R.drawable.sort_name_desc);
+                ((ImageTextVerticalView)view).setImage(R.drawable.sort_name_desc);
                 sortType=FileSortType.NameDesc;
             }else if(sortType==FileSortType.NameDesc){
-                ((ImageTextView)view).setImage(R.drawable.sort_name_asce);
+                ((ImageTextVerticalView)view).setImage(R.drawable.sort_name_asce);
                 sortType=FileSortType.NameAsce;
             }else if(sortType==FileSortType.TimeAsce){
-                ((ImageTextView)view).setImage(R.drawable.sort_time_desc);
+                ((ImageTextVerticalView)view).setImage(R.drawable.sort_time_desc);
                 sortType=FileSortType.TimeDesc;
             }else if(sortType==FileSortType.TimeDesc){
-                ((ImageTextView)view).setImage(R.drawable.sort_time_asce);
+                ((ImageTextVerticalView)view).setImage(R.drawable.sort_time_asce);
                 sortType=FileSortType.TimeAsce;
             }
 
@@ -294,61 +323,63 @@ public class TemplateUserCreatedView extends LinearLayout{
         }
     };
 
-    CallbackBundle renameCallback =new CallbackBundle() {
-        @Override
-        public void callback(Bundle bundle) {
+    private void editTemplate(List<VisualTemplate> select_list){
+        if(select_list==null||select_list.size()==0)
+            return;
+        listener.goDesigner(select_list.get(0));
+        if(templateInfoAdapter!=null)
+            templateInfoAdapter.clearImageResource();
+    }
 
-            final Dialog dialog = OpenFileDialog.createDialog(context, "Please input new name for this template", new CallbackBundle() {
-                @Override
-                public void callback(Bundle bundle) {
-                    try {
-                        if(bundle==null)
-                            return;
-                        int position=bundle.getInt("position");
-                        final VisualTemplate visualTemplate = (VisualTemplate) gridView.getItemAtPosition(position);
-
-                        final EditText etName=new EditText(getContext());
-                        etName.setHint(visualTemplate.id);
-                        AlertDialog.Builder builder =new AlertDialog.Builder(getContext()).setTitle("Create New Template")//���öԻ������
-                                .setView(etName)
-                                .setPositiveButton("Apply",null).setNegativeButton("Cancel",new DialogInterface.OnClickListener() {//��ӷ��ذ�ť
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                });
-                        builder.setCancelable(true);
-                        final AlertDialog dialog =builder.show();//�ڰ�����Ӧ�¼�����ʾ�˶Ի���
-                        Button negativeButton=((AlertDialog)dialog).getButton(AlertDialog.BUTTON_NEGATIVE);
-                        builder.setView(etName);
-                        negativeButton.requestFocus();
-                        negativeButton.setFocusable(true);
-
-                        ((AlertDialog)dialog).getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                String name=etName.getText().toString();
-                                if(name.isEmpty()) {
-                                    return;
-                                }
-                                try {
-                                    XMLTemplate.getInstance().renameTemplate(visualTemplate.id,name);
-                                } catch (TemplateNotFoundException e) {
-                                    e.printStackTrace();
-                                }catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                                dialog.dismiss();
-                            }
-                        });
-                    }catch (Exception ex){
-                        ex.printStackTrace();
-                    }
+    private void renameTemplate(final List<VisualTemplate> select_list){
+        if(select_list==null||select_list.size()==0)
+            return;
+        FileNameEditor.createDialog(context, "Rename Template", "Please input name for this template",select_list.get(0).id, new OperateCallbackBundle() {
+            @Override
+            public void onConfim(String content) {
+                try {
+                    XMLTemplate.getInstance().renameTemplate(select_list.get(0).id,content);
+                    loadingDatas();
+                }catch (TemplateNotFoundException ex) {
+                    ex.printStackTrace();
+                    AlertDialogHelper.showWarningDialog(context, "Warning", "Template can't find", null);
+                }catch (Exception ex) {
+                    ex.printStackTrace();
+                    AlertDialogHelper.showWarningDialog(context, "Warning", "Rename failed", null);
+                    LogOperator.WriteLogfortxt("TemplateDesigningView==>addTemplate :"+ex.getMessage());
                 }
-            },null,true,true,true);
+            }
 
-        }
-    };
+            @Override
+            public void onCancel(String errorMsg) {
+
+            }
+        });
+    }
+
+    private void copyTemplate(final List<VisualTemplate> select_list){
+        if(select_list==null||select_list.size()==0)
+            return;
+
+        FileNameEditor.createDialog(context, "Copy To New Template", "Please input name for this template", new OperateCallbackBundle() {
+            @Override
+            public void onConfim(String content) {
+                try {
+                    XMLTemplate.getInstance().copyTemplate(select_list.get(0).id,content);
+                    loadingDatas();
+                }catch (Exception ex){
+                    ex.printStackTrace();
+
+                    AlertDialogHelper.showWarningDialog(context, "Warning", ex.getMessage(), null);
+                }
+            }
+
+            @Override
+            public void onCancel(String errorMsg) {
+            }
+        });
+
+    }
 
     private void importTemplates(List<String> zip_list){
 
@@ -383,9 +414,12 @@ public class TemplateUserCreatedView extends LinearLayout{
                     }
 
                     templateInfoAdapter.notifyDataSetChanged();
-                    refreshOperaorBtn();
+                    refreshOperatorBtn(true);
+
                 } catch (Exception ex) {
                     ex.printStackTrace();
+
+                    AlertDialogHelper.showWarningDialog(context, "Warning", ex.getMessage(), null);
                 }
             }
         }, null);
@@ -412,6 +446,9 @@ public class TemplateUserCreatedView extends LinearLayout{
 
                     cb_select_all.setChecked(false);
 
+                    AlertDialogHelper.showInformationDialog(context, "Information", "These templates export successfully .", null);
+
+                    return;
                 }catch (TemplateNotFoundException ex){
                     ex.printStackTrace();
                 }catch (PathAccessException ex){
@@ -419,6 +456,8 @@ public class TemplateUserCreatedView extends LinearLayout{
                 }catch (Exception ex){
                     ex.printStackTrace();
                 }
+
+                AlertDialogHelper.showWarningDialog(context, "Warning", "These templates export failed .", null);
             }
         },null,true,true,true);
     }
@@ -439,13 +478,23 @@ public class TemplateUserCreatedView extends LinearLayout{
 
         @Override
         protected void onPostExecute(String result) {
-            /*TemplateGridViewAdapter adapter = new TemplateGridViewAdapter(context, visualTemplates);
-            gridView.setAdapter(adapter);*/
-            //gridView.setVisibility(View.VISIBLE);
+
             if(templateInfoAdapter!=null)
                 templateInfoAdapter.clearImageResource();
 
-            templateInfoAdapter=new TemplateInfoAdapter(context, null, visualTemplates, openCallback,deleteCallback,exportCallback,null,true,cb_select_all);
+            //templateInfoAdapter=new TemplateInfoAdapter(context, null, visualTemplates, openCallback,deleteCallback,exportCallback,null,true,cb_select_all);
+            templateInfoAdapter=new TemplateInfoAdapter(context, null, visualTemplates, null,null,null,null, FileSelectType.SingleSelect);
+            templateInfoAdapter.setOnSelectItemChangedListener(new TemplateInfoAdapter.OnSelectItemChangedListener() {
+                @Override
+                public void onSelectItemChange(String template, Boolean checked) {
+                    btn_edit.setEnabled(checked);
+                    btn_rename.setEnabled(checked);
+                    btn_delete.setEnabled(checked);
+                    if(visualTemplates!=null&&visualTemplates.size()< InternalKeyWords.MaxTemplateCount)
+                        btn_copy.setEnabled(checked);
+                    btn_export.setEnabled(checked);
+                }
+            });
             gridView.setAdapter(templateInfoAdapter);
 
             btn_sort_name.setImage(R.drawable.sort_name_asce);
@@ -453,13 +502,13 @@ public class TemplateUserCreatedView extends LinearLayout{
             btn_sort_name.setSelected(true);
             btn_sort_time.setSelected(false);
 
-            refreshOperaorBtn();
+            refreshOperatorBtn(true);
             
-            try {
+            /*try {
                 this.wait(1000);
             }catch (Exception ex){
                 ex.printStackTrace();
-            }
+            }*/
             Message msg=new Message();
             msg.what=1;
             handler.sendMessage(msg);

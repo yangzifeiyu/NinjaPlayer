@@ -1,5 +1,6 @@
 package com.mfusion.templatedesigner.previewcomponent.values;
 
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -136,6 +137,12 @@ public class PropertyValues {
 		return color_list;
 	}
 
+	public static RelativeLayout.LayoutParams convertToVirtualLayoutWithoutMargin(RelativeLayout.LayoutParams layoutParams){
+		layoutParams.width=(int)(layoutParams.width*TemplateDesignerKeys.temp_scale);
+		layoutParams.height=(int)(layoutParams.height*TemplateDesignerKeys.temp_scale);
+		return layoutParams;
+	}
+
 	public static RelativeLayout.LayoutParams convertToVirtualLayout(RelativeLayout.LayoutParams layoutParams){
 		layoutParams.width=(int)(layoutParams.width*TemplateDesignerKeys.temp_scale);
 		layoutParams.height=(int)(layoutParams.height*TemplateDesignerKeys.temp_scale);
@@ -166,17 +173,17 @@ public class PropertyValues {
 		return element;
 	}
 	static List<String> comp_list=null;
-	public static List<String> getComponentList() {
+	public static List<String> getComponentList(Resources resources) {
 
 		if(comp_list==null){
 			comp_list = new ArrayList<String>();
 
-			comp_list.add("DateTime");
-			comp_list.add("TickerText");
-			comp_list.add("ScheduleMedia");
-			comp_list.add("RSSComponent");
-			comp_list.add("InteractiveComponent");
-			comp_list.add("AudioComponent");
+			comp_list.add(resources.getString(R.string.comp_type_datetime));
+			comp_list.add(resources.getString(R.string.comp_type_schedulemedia));
+			comp_list.add(resources.getString(R.string.comp_type_ticker));
+			comp_list.add(resources.getString(R.string.comp_type_rss));
+			comp_list.add(resources.getString(R.string.comp_type_web));
+			comp_list.add(resources.getString(R.string.comp_type_audio));
 			//comp_list.add("WeatherComponent");
 		}
 
@@ -184,17 +191,17 @@ public class PropertyValues {
 	}
 
 	static HashMap<String, Integer> comp_image_list=null;
-	public static int getImageFotComponent(String type) {
+	public static int getImageFotComponent(Resources resources,String type) {
 		if(comp_image_list==null){
 			comp_image_list = new HashMap<String, Integer>();
 
-			comp_image_list.put("DateTime",R.drawable.comp_date);
-			comp_image_list.put("TickerText",R.drawable.comp_ticker);
-			comp_image_list.put("ScheduleMedia",R.drawable.comp_schedule);
-			comp_image_list.put("RSSComponent",R.drawable.comp_rss);
-			comp_image_list.put("InteractiveComponent",R.drawable.comp_interactive);
-			comp_image_list.put("AudioComponent",R.drawable.comp_audio);
-			comp_image_list.put("WeatherComponent",R.drawable.comp_weather);
+			comp_image_list.put(resources.getString(R.string.comp_type_datetime),R.drawable.comp_date);
+			comp_image_list.put(resources.getString(R.string.comp_type_ticker),R.drawable.comp_ticker);
+			comp_image_list.put(resources.getString(R.string.comp_type_schedulemedia),R.drawable.comp_schedule);
+			comp_image_list.put(resources.getString(R.string.comp_type_rss),R.drawable.comp_rss);
+			comp_image_list.put(resources.getString(R.string.comp_type_web),R.drawable.comp_interactive);
+			comp_image_list.put(resources.getString(R.string.comp_type_audio),R.drawable.comp_audio);
+			comp_image_list.put(resources.getString(R.string.comp_type_weather),R.drawable.comp_weather);
 		}
 
 		return comp_image_list.get(type);

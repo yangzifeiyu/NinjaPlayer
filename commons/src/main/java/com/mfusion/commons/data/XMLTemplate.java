@@ -96,6 +96,51 @@ public class XMLTemplate {
 
         throw new TemplateNotFoundException(tempId);
     }
+    public Boolean existTemplateWithResult(String tempId){
+        return this.existTemplateWithResult(InternalKeyWords.DefaultTemplateXmlPath,tempId);
+    }
+    public Boolean existTemplateWithResult(String XMLFolder,String tempId){
+        // TODO Auto-generated method stub
+
+        String templateFolder=this.getTemplateFolder(XMLFolder,tempId);
+        if(FileOperator.existFile(templateFolder))
+            return FileOperator.existFile(this.getTemplateXmlPath(templateFolder,tempId));
+
+        return false;
+    }
+    /**
+     * add new template in default folder.
+     * @param copiedTemp will copy this template
+     * @param newTempName
+     * @return true|false
+     * @throws IllegalTemplateException
+     */
+    public Boolean copyTemplate(String copiedTemp,String newTempName) throws Exception{
+       return copyTemplate(copiedTemp, newTempName,InternalKeyWords.DefaultTemplateXmlPath);
+    }
+
+    public Boolean copyTemplate(String copiedTemp,String newTempName,String XMLFolder) throws Exception{
+
+        try {
+            if(!this.existTemplate(XMLFolder,copiedTemp))
+                throw new TemplateNotFoundException(copiedTemp);
+
+            newTempName = FileOperator.CheckFileName(XMLFolder,newTempName);
+
+            String outputPath= this.getTemplateFolder(XMLFolder,newTempName);
+            String tempFolder=this.getTemplateFolder(XMLFolder,copiedTemp);
+
+            FileOperator.createWithDeleteDir(outputPath);
+            FileOperator.copyFile(this.getTemplateXmlPath(tempFolder,copiedTemp),this.getTemplateXmlPath(outputPath,newTempName));
+            FileOperator.copyFolder(tempFolder+ InternalKeyWords.TemplateResourceFolder, outputPath+InternalKeyWords.TemplateResourceFolder);
+
+            return true;
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+            throw e;
+        }
+    }
     /**
      * add new template in default folder.
      * @param tempInfo full information about template
@@ -179,7 +224,7 @@ public class XMLTemplate {
             File tempFolder=new File(XMLFolder,oldName);
             tempFolder.renameTo(new File(XMLFolder, newName));
 
-            return true;
+            return XMLSchedule.getInstance().refreshTemplateInSchedule(oldName,newName);
         }
         return false;
     }

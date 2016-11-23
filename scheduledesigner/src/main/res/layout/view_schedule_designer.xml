@@ -22,8 +22,7 @@
             android:layout_width="120dp"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:weightSum="1"
-            android:background="@drawable/layout_border_style">
+            android:weightSum="1">
 
             <com.mfusion.scheduledesigner.subview.GraphicTemplateListLayout
                 android:layout_width="match_parent"
@@ -36,58 +35,23 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="#ffffff">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="26dp"
+                android:layout_height="@dimen/manager_title"
                 android:orientation="horizontal"
-                android:background="#ffffff"
-                android:id="@+id/sche_base_info">
+                android:id="@+id/sche_base_info"
+                android:gravity="center_vertical">
 
                 <RelativeLayout
                     android:id="@+id/sche_calendar"
                     android:layout_width="200dp"
-                    android:layout_height="fill_parent">
+                    android:layout_height="wrap_content">
 
                 </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/property_medias_describe"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:alpha="0.5"
-                    android:text="Default Playing Content  "
-                    android:textAlignment="center"
-                    android:layout_marginLeft="20dp"
-                    android:textSize="@dimen/textSize"
-                    android:paddingTop="3dp"
-                    style="@style/myTextStyle"
-                    android:textColor="@android:color/holo_red_dark" />
-                <com.mfusion.commons.view.DropDownView
-                    android:id="@+id/sche_default_list"
-                    style="?android:attr/buttonStyleSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="24dp"
-                    android:background="@drawable/button_style"
-                    android:text="Suquence"
-                    android:textSize="@dimen/textSize"
-                    android:textColor="@android:color/holo_red_dark" />
-
-                <Switch
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Play Mode"
-                    android:id="@+id/sche_playmode"
-                    android:textSize="12sp"
-                    android:layout_marginLeft="20dp"
-                    android:textOff="Timeline"
-                    android:textStyle="italic"
-                    android:switchPadding="0dp"
-                    android:textColor="@android:color/secondary_text_dark"
-                    android:textOn="Sequence"
-                    android:switchTextAppearance="@style/mySwitchStyle"
-                    android:visibility="gone"/>
 
             </LinearLayout>
 
@@ -102,18 +66,168 @@
             <RelativeLayout
                 android:id="@+id/sche_workspace"
                 android:layout_width="fill_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:background="#ffffff">
 
             </RelativeLayout>
 
-            <RelativeLayout
-                android:id="@+id/sche_property_layout"
-                android:layout_width="fill_parent"
-                android:layout_height="150dp"
-                android:background="#dee">
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/manager_title"
+                android:id="@+id/sche_property_layout">
 
-            </RelativeLayout>
+
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/layout_border_style"
+                    android:layout_marginBottom="10dp">
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="4"
+                        android:id="@+id/sche_idle_temp_layout">
+
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:id="@+id/property_medias_describe"
+                                android:layout_width="@dimen/sche_idle_template_text_width"
+                                android:layout_height="match_parent"
+                                android:text="Default Template  "
+                                android:textSize="@dimen/textSize"
+                                style="@style/myTextStyle"
+                                android:textColor="@android:color/holo_red_dark"
+                                android:gravity="center_vertical|right" />
+                            <com.mfusion.commons.view.DropDownView
+                                android:id="@+id/sche_default_list"
+                                style="?android:attr/buttonStyleSmall"
+                                android:layout_width="wrap_content"
+                                android:layout_height="24dp"
+                                android:background="@drawable/button_style"
+                                android:text="Idle Template"
+                                android:textSize="@dimen/textSize"
+                                android:textColor="@android:color/holo_red_dark"
+                                android:singleLine="true" />
+
+                            <Switch
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Play Mode"
+                                android:id="@+id/sche_playmode"
+                                android:textSize="12sp"
+                                android:layout_marginLeft="20dp"
+                                android:textOff="Timeline"
+                                android:textStyle="italic"
+                                android:switchPadding="0dp"
+                                android:textColor="@android:color/secondary_text_dark"
+                                android:textOn="Sequence"
+                                android:switchTextAppearance="@style/mySwitchStyle"
+                                android:visibility="gone"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentTop="true"
+                        android:gravity="center_vertical"
+                        android:layout_weight="4"
+                        android:id="@+id/sche_select_temp_layout">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:text="@string/sche_temp_of_date"
+                            android:id="@+id/textView5"
+                            android:textSize="@dimen/textSize"
+                            android:textColor="@android:color/holo_red_dark"
+                            style="@style/myTextStyle" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:text="19-09-2016"
+                            android:id="@+id/sche_selected_day"
+                            android:layout_centerVertical="true"
+                            android:layout_alignParentStart="true"
+                            android:textColor="#ff0000"
+                            android:textSize="@dimen/textSize"
+                            android:visibility="gone" />
+
+                        <com.mfusion.commons.view.DropDownView
+                            android:id="@+id/sche_selected_day_temp_list"
+                            style="?android:attr/buttonStyleSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="24dp"
+                            android:background="@drawable/button_style"
+                            android:textSize="@dimen/textSize"
+                            android:textColor="@android:color/holo_red_dark"
+                            android:minWidth="70dp"
+                            android:maxWidth="200dp"
+                            android:layout_centerVertical="true"
+                            android:layout_toEndOf="@+id/sche_selected_day"
+                            android:singleLine="true"
+                            android:layout_marginLeft="@dimen/global_margin_medium" />
+
+                        <com.mfusion.commons.view.ImageTextHorizontalView
+                            android:layout_width="@dimen/sche_select_temp_icon_width"
+                            android:layout_height="@dimen/sche_select_temp_icon_width"
+                            android:id="@+id/sche_selected_block_edit"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="@dimen/global_margin_medium"
+                            android:layout_toEndOf="@+id/sche_selected_day_temp_list" />
+
+                        <com.mfusion.commons.view.ImageTextHorizontalView
+                            android:layout_width="@dimen/sche_select_temp_icon_width"
+                            android:layout_height="@dimen/sche_select_temp_icon_width"
+                            android:id="@+id/sche_selected_block_delete"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="@dimen/global_margin_medium"
+                            android:layout_toEndOf="@+id/sche_selected_block_edit" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical|center_horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:text="Current Time"
+                            android:id="@+id/textView6"
+                            android:textSize="@dimen/textSizeSmall" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:text="14:00"
+                            android:id="@+id/sche_system_time"
+                            android:textSize="@dimen/textSizeSmall" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
 
         </LinearLayout>
 

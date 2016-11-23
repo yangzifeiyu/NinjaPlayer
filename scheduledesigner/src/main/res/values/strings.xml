@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Schedule Designer</string>
-    <string name="sche_idle_template_tip"> Please drag template in </string>
+    <string name="sche_idle_template_tip"> Please select a idle template </string>
+    <string name="sche_temp_list">TEMPLATES\nAVAILABLE</string>
+    <string name="sche_temp_of_date">Selected Templates </string>
+    <string name="sche_block_conflict">Template conflict detected.</string>
 </resources>

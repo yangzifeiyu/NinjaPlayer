@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.mfusion.commons.entity.template.ComponentEntity;
 import com.mfusion.commons.entity.template.TemplateEntity;
 import com.mfusion.commons.entity.values.ComponentType;
+import com.mfusion.commons.tools.ButtonHoverStyle;
 import com.mfusion.commons.tools.DateConverter;
 import com.mfusion.templatedesigner.HandleTimer;
 import com.mfusion.templatedesigner.R;
@@ -33,6 +34,7 @@ import com.mfusion.templatedesigner.previewcomponent.dialog.ColorDialog;
 import com.mfusion.commons.view.DropDownView;
 import com.mfusion.templatedesigner.previewcomponent.dialog.FontDialog;
 import com.mfusion.commons.tools.CallbackBundle;
+import com.mfusion.templatedesigner.previewcomponent.dialog.TimeFormatDialog;
 import com.mfusion.templatedesigner.previewcomponent.values.ComponentFont;
 import com.mfusion.templatedesigner.previewcomponent.values.PropertyValues;
 import com.mfusion.templatedesigner.previewcomponent.values.TemplateDesignerKeys;
@@ -177,7 +179,7 @@ public class DateTimeComponentView extends BasicComponentView {
 	private View propertyView;
 	private TextView m_font_text;
 	private Button m_fontcolor_edit_btn;
-	private DropDownView m_format_ddv;
+	private TextView m_format_ddv;
 	@Override
 	public View getPropertyView(ViewGroup rootViewGroup) {
 		if(propertyView==null){
@@ -228,30 +230,22 @@ public class DateTimeComponentView extends BasicComponentView {
 				}
 			});
 			
-			m_format_ddv=(DropDownView)propertyView.findViewById(R.id.comp_dt_format);
-			m_format_ddv.setSelectList(PropertyValues.getTimeFormatList());
-			m_format_ddv.addTextChangedListener(new TextWatcher() {
-				
+			m_format_ddv=(TextView)propertyView.findViewById(R.id.comp_dt_format);
+			ButtonHoverStyle.bindingHoverEffectWithBorder(m_format_ddv,m_context.getResources());
+			m_format_ddv.setOnClickListener(new OnClickListener() {
 				@Override
-				public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-					// TODO Auto-generated method stub
-
-					if(c_format.toString().equalsIgnoreCase(arg0.toString()))
-						return;
-					componentPropertyChanged();
-					c_format=arg0.toString();
-				}
-				
-				@Override
-				public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
-						int arg3) {
-					// TODO Auto-generated method stub
-					System.out.println();
-				}
-				
-				@Override
-				public void afterTextChanged(Editable arg0) {
-					// TODO Auto-generated method stub
+				public void onClick(View v) {
+					Dialog dialog =(new TimeFormatDialog()).createDialog( m_context, c_format,new CallbackBundle() {
+						@Override
+						public void callback(Bundle bundle) {
+							String format=bundle.getString("format");
+							if(c_format.toString().equalsIgnoreCase(format.toString()))
+								return;
+							componentPropertyChanged();
+							c_format=format;
+							m_format_ddv.setText(c_format);
+						}
+					});
 				}
 			});
 		}

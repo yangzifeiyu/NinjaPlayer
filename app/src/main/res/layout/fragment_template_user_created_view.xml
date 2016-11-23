@@ -8,7 +8,7 @@
     tools:context=".New.MainActivity">
 
     <RelativeLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/manager_title">
 
         <TextView
@@ -25,20 +25,20 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/manager_btn_height"
+            android:layout_height="@dimen/image_text_width"
             android:layout_centerVertical="true"
             android:layout_toEndOf="@+id/template_listinfo"
             android:layout_marginLeft="5dp"
             android:padding="0dp"
             android:gravity="center">
 
-            <com.mfusion.commons.view.ImageTextView
+            <com.mfusion.commons.view.ImageTextHorizontalView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:id="@+id/template_sort_name"
                 android:layout_marginLeft="5dp" />
 
-            <com.mfusion.commons.view.ImageTextView
+            <com.mfusion.commons.view.ImageTextHorizontalView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:id="@+id/template_sort_time"
@@ -46,49 +46,68 @@
 
         </LinearLayout>
 
-        <com.mfusion.commons.view.ImageTextView
+
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/manager_btn_height"
-            android:id="@+id/template_new"
-            android:layout_centerVertical="true"
-            android:layout_alignParentLeft="false"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="5dp" />
+            android:layout_alignParentEnd="false"
+            android:gravity="center"
+            android:layout_centerVertical="true">
 
-        <com.mfusion.commons.view.ImageTextView
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/manager_btn_height"
-            android:id="@+id/template_import"
-            android:layout_centerVertical="true"
-            android:layout_toStartOf="@+id/template_new"
-            android:layout_marginEnd="5dp" />
+            <CheckBox
+                android:layout_width="@dimen/thumb_item_operator_size"
+                android:layout_height="@dimen/thumb_item_operator_size"
+                android:id="@+id/template_select_all"
+                android:background="@drawable/check_style"
+                android:button="@null"
+                android:padding="5dp"
+                android:layout_marginEnd="5dp"/>
 
-        <com.mfusion.commons.view.ImageTextView
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/manager_btn_height"
-            android:id="@+id/template_export"
-            android:layout_centerVertical="true"
-            android:layout_toStartOf="@+id/template_import"
-            android:layout_marginEnd="5dp"/>
+            <com.mfusion.commons.view.ImageTextVerticalView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/template_new"
+                android:layout_marginRight="@dimen/global_big_btn_margin" />
 
-        <com.mfusion.commons.view.ImageTextView
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/manager_btn_height"
-            android:id="@+id/template_delete"
-            android:layout_centerVertical="true"
-            android:layout_toStartOf="@+id/template_export"
-            android:layout_marginEnd="5dp"/>
+            <com.mfusion.commons.view.ImageTextVerticalView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/template_delete"
+                android:layout_marginEnd="@dimen/global_big_btn_margin"/>
 
-        <CheckBox
-            android:layout_width="@dimen/thumb_item_operator_size"
-            android:layout_height="@dimen/thumb_item_operator_size"
-            android:id="@+id/template_select_all"
-            android:background="@drawable/check_style"
-            android:button="@null"
-            android:padding="5dp"
-            android:layout_centerVertical="true"
-            android:layout_toStartOf="@+id/template_delete"
-            android:layout_marginEnd="5dp"/>
+            <com.mfusion.commons.view.ImageTextVerticalView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/template_edit"
+                android:layout_marginEnd="@dimen/global_big_btn_margin"/>
+
+            <com.mfusion.commons.view.ImageTextVerticalView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/template_rename"
+                android:layout_marginEnd="@dimen/global_big_btn_margin"/>
+
+            <com.mfusion.commons.view.ImageTextVerticalView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/template_copy"
+                android:layout_marginEnd="@dimen/global_big_btn_margin"/>
+
+            <com.mfusion.commons.view.ImageTextVerticalView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/template_import"
+                android:layout_marginEnd="@dimen/global_big_btn_margin" />
+
+            <com.mfusion.commons.view.ImageTextVerticalView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/template_export"
+                android:layout_marginEnd="@dimen/global_margin_medium"/>
+
+        </LinearLayout>
 
     </RelativeLayout>
 

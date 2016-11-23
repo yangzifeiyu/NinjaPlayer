@@ -2,22 +2,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/LinearLayout1"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="7dp" >
+    android:layout_height="wrap_content"
+    android:layout_margin="7dp"
+    android:gravity="center_vertical"
+    android:padding="@dimen/compIconMarginH">
 
     <ImageView
         android:id="@+id/comp_type_img"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:src="@drawable/filedialog_audio" />
+        android:layout_width="@dimen/compIcon"
+        android:layout_height="@dimen/compIcon"
+        android:src="@drawable/filedialog_audio"
+        android:scaleType="fitCenter" />
 
     <TextView
         android:id="@+id/comp_type"
         style="@style/myTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="2dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginLeft="@dimen/global_margin_medium"
         android:text="TextView"
         android:textSize="@dimen/textSizeBig" />
 

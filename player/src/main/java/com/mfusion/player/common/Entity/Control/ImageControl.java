@@ -50,13 +50,21 @@ public class ImageControl extends AControl{
 		}
 	}
 
+	public void LoadImage(String url,int width,int height,Boolean isAsync)
+	{
+		if(isAsync)
+			LoadImageAsync(url,width,height);
+		else
+			LoadImage(url,width,height);
+	}
+
 	String imageUrl="";
 	ImageAsyncTask imageTask;
-	public void LoadImage(String url,int width,int height)
+	private void LoadImageAsync(String url,int width,int height)
 	{
 
-		if(url.compareToIgnoreCase(this.imageUrl)==0)
-			return;
+		/*if(url.compareToIgnoreCase(this.imageUrl)==0)
+			return;*/
 		this.imageUrl=url;
 		if(imageTask!=null){
 			imageTask.cancelTask();
@@ -64,19 +72,23 @@ public class ImageControl extends AControl{
 		}
 		imageTask=new ImageAsyncTask(context, (RecycleImageView)(this.Element),url, width, height);
 		imageTask.execute("");
-		/*try
-		{		
+	}
+
+	private void LoadImage(String url,int width,int height)
+	{
+		try
+		{
 			Bitmap bm=ImageHelper.readBitmapAutoSize(url, width, height);
 			if(bm!=null)
 			{
 				//((ImageView)(this.Element)).setImageBitmap(bm);
 				((RecycleImageView)(this.Element)).setImageDrawable(new RecycleBitmapDrawable(context.getResources(), bm));
 			}
-		} 
+		}
 		catch (Exception ex)
 		{
 			LoggerHelper.WriteLogfortxt("ImageControl LoadImage==>"+ex.getMessage());
-		}*/
+		}
 	}
 
 	@Override

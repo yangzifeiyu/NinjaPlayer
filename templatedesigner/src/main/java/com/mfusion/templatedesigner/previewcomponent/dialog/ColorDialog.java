@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -26,6 +27,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.mfusion.commons.tools.WindowsDecorHelper;
+import com.mfusion.commons.view.SystemInfoDialog;
 import com.mfusion.templatedesigner.R;
 import com.mfusion.commons.tools.CallbackBundle;
 import com.mfusion.templatedesigner.previewcomponent.values.PropertyValues;
@@ -44,20 +47,18 @@ public class ColorDialog {
 	
 	public  Dialog createDialog(int id, final Context context, final CallbackBundle callback, int color){
 
-        Dialog dialog = new Dialog(context);//builder.create();  
-        dialog.setCancelable(true);
-        //dialog.requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
-        dialog.setTitle("Color Selecter");
+		LinearLayout dialogContent = (LinearLayout)((Activity)context).getLayoutInflater().inflate(R.layout.activity_color_selecter, null);
 
-        dialog.setContentView(R.layout.activity_color_selecter);
-        
-        selelctButton=(Button)dialog.findViewById(R.id.color_selected);
+        selelctButton=(Button)dialogContent.findViewById(R.id.color_selected);
 
-        transCheckBox=(CheckBox)dialog.findViewById(R.id.color_trans);
+        transCheckBox=(CheckBox)dialogContent.findViewById(R.id.color_trans);
         
-        r_editer=(EditText)dialog.findViewById(R.id.color_red);
-        g_editer=(EditText)dialog.findViewById(R.id.color_green);
-        b_editer=(EditText)dialog.findViewById(R.id.color_blue);
+        r_editer=(EditText)dialogContent.findViewById(R.id.color_red);
+		WindowsDecorHelper.hideSoftInputInEditText(r_editer);
+        g_editer=(EditText)dialogContent.findViewById(R.id.color_green);
+		WindowsDecorHelper.hideSoftInputInEditText(g_editer);
+        b_editer=(EditText)dialogContent.findViewById(R.id.color_blue);
+		WindowsDecorHelper.hideSoftInputInEditText(b_editer);
         
         refreshRGB(color);
 
@@ -68,7 +69,7 @@ public class ColorDialog {
         if(Color.alpha(color)!=255)
         	transCheckBox.setChecked(true);
 
-		final RelativeLayout colorLayout=(RelativeLayout)dialog.findViewById(R.id.color_list_view);
+		final RelativeLayout colorLayout=(RelativeLayout)dialogContent.findViewById(R.id.color_list_view);
 		colorLayout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
 			@Override
 			public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
@@ -102,35 +103,36 @@ public class ColorDialog {
 			}
 		});
 
-		dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-			
-			@Override
-			public void onDismiss(DialogInterface arg0) {
-				// TODO Auto-generated method stub
-				Bundle bundle=new Bundle();
-				int color_trans=255;
-				if(transCheckBox.isChecked())
-					color_trans=0;
-				
-				bundle.putString("color",String.valueOf(Color.argb(color_trans, color_r, color_g, color_b)));
-				callback.callback(bundle);
-			}
-		});
-		dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
-			
-			@Override
-			public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-				// TODO Auto-generated method stub
-				return false;
-			}
-		});
+		SystemInfoDialog.Builder builder =new  SystemInfoDialog.Builder(context)
+				.setTitle("Color Selector").setIcon(R.drawable.mf_edit)
+				.setContentView(dialogContent, Gravity.CENTER_HORIZONTAL)
+				.setPositiveButton("Apply", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Bundle bundle=new Bundle();
+						int color_trans=255;
+						if(transCheckBox.isChecked())
+							color_trans=0;
+
+						bundle.putString("color",String.valueOf(Color.argb(color_trans, color_r, color_g, color_b)));
+						callback.callback(bundle);
+
+						dialog.dismiss();
+					}
+				}).setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+					}
+				});;
+        Dialog dialog = builder.create();
 
 		dialog.show();
 
-		WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
+		/*WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
 		params.width = context.getResources().getDisplayMetrics().widthPixels*1/3;
 		params.height=context.getResources().getDisplayMetrics().heightPixels*3/5;
-		dialog.getWindow().setAttributes(params);
+		dialog.getWindow().setAttributes(params);*/
 
         return dialog;  
     } 

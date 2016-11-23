@@ -13,8 +13,8 @@
 
     <!-- padding：Button里面的文字与Button边界的间隔 -->
     <padding
-        android:bottom="4dp"
-        android:left="4dp"
-        android:right="4dp"
-        android:top="4dp" />
+        android:bottom="@dimen/border_padding"
+        android:left="@dimen/border_padding"
+        android:right="@dimen/border_padding"
+        android:top="@dimen/border_padding" />
 </shape>

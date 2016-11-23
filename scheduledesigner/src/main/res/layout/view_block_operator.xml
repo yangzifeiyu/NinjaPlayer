@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/sche_select_temp_icon_width"
+    android:background="@drawable/button_style">
+
+    <ImageView
+        android:layout_width="@dimen/sche_select_temp_icon_width"
+        android:layout_height="match_parent"
+        android:id="@+id/sche_block_edit_btn"
+        android:src="@drawable/mf_edit"
+        android:background="@color/transparent"
+        android:scaleType="fitCenter" />
+
+    <ImageView
+        android:layout_width="@dimen/sche_select_temp_icon_width"
+        android:layout_height="match_parent"
+        android:id="@+id/sche_block_delete_btn"
+        android:src="@drawable/mf_delete"
+        android:scaleType="fitCenter"
+        android:background="@color/transparent" />
+</LinearLayout>

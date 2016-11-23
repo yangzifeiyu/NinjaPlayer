@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:gravity="center">
 
     <ImageView
-        android:id="@+id/customer_img"
-        android:layout_width="wrap_content"
+        android:id="@+id/view_imagetext_horizontal_img"
+        android:layout_width="@dimen/default_btn_height"
         android:layout_height="match_parent"
-        android:src="@android:drawable/btn_star_big_on"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="2dp"
-        android:background="@android:color/transparent" />
+        android:src="@drawable/mf_save"
+        android:background="@android:color/transparent"
+        android:scaleType="fitCenter"
+        android:padding="2dp" />
     <TextView
-        android:id="@+id/customer_text"
+        android:id="@+id/view_imagetext_horizontal_text"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:textSize="@dimen/textSize"

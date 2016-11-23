@@ -49,7 +49,7 @@ public class ComponentListAdapter  extends BaseAdapter {
         convertView = LayoutInflater.from(context).inflate(layout, null);
         convertView.setTag(comp_name);
         
-        ((ImageView)convertView.findViewById(R.id.comp_type_img)).setImageResource(PropertyValues.getImageFotComponent(comp_name));
+        ((ImageView)convertView.findViewById(R.id.comp_type_img)).setImageResource(PropertyValues.getImageFotComponent(this.context.getResources(),comp_name));
         
         ((TextView)convertView.findViewById(R.id.comp_type)).setText(comp_name);
 

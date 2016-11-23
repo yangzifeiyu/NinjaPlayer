@@ -11,6 +11,7 @@ import com.mfusion.commons.tools.DateConverter;
 import com.mfusion.commons.tools.FileOperator;
 import com.mfusion.commons.tools.FileZipHelper;
 import com.mfusion.commons.tools.InternalKeyWords;
+import com.mfusion.commons.tools.LogOperator;
 import com.mfusion.commons.tools.XmlOperator;
 
 import org.w3c.dom.Document;
@@ -18,6 +19,8 @@ import org.w3c.dom.Element;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 
 
@@ -93,6 +96,8 @@ public class XMLSchedule {
         scheduleEntity.id=scheduleName;
 
         File scheduleFile=new File(XMLFolder,scheduleName+".xml");
+        if(!scheduleFile.exists())
+            return scheduleEntity;
         Document scheduleDocument=this.m_XMLHelper.getXmlDocument(scheduleFile);
         if(scheduleDocument==null)
             return scheduleEntity;
@@ -111,21 +116,29 @@ public class XMLSchedule {
 
         BlockEntity blockEntity=null;
         ArrayList<Element> blockItemElementList=null;
+        Date currentDate=Calendar.getInstance().getTime();
         for (Element blockElement : blockElementList) {
             blockEntity=new BlockEntity();
             blockEntity.startDate= DateConverter.convertStrToDate(blockElement.getAttribute("StartDate"));
             blockEntity.endDate=DateConverter.convertStrToDate(blockElement.getAttribute("EndDate"));
+
+            blockItemElementList=this.m_XMLHelper.getSubNodeList(blockElement, "PBU");
+            for (Element item : blockItemElementList) {
+                String templateId=item.getAttribute("Id");
+                if(blockEntity.endDate!=null&&blockEntity.endDate.compareTo(currentDate)<0&&!XMLTemplate.getInstance().existTemplateWithResult(templateId)){
+                    continue;
+                }
+                blockEntity.itemList.add(templateId);
+            }
+
+            if(blockEntity.itemList.size()==0)
+                continue;
             blockEntity.startTime=DateConverter.convertStrToTime(blockElement.getAttribute("StartTime"));
             blockEntity.endTime=DateConverter.convertStrToTime(blockElement.getAttribute("EndTime"));
 
             String recurrence=blockElement.getAttribute("Recurrence");
             blockEntity.isRecurrence=recurrence.substring(0, 1).equals("1")?true:false;
             blockEntity.recurrence=recurrence.substring(1);
-
-            blockItemElementList=this.m_XMLHelper.getSubNodeList(blockElement, "PBU");
-            for (Element item : blockItemElementList) {
-                blockEntity.itemList.add(item.getAttribute("Id"));
-            }
 
             scheduleEntity.blockList.add(blockEntity);
         }
@@ -216,6 +229,7 @@ public class XMLSchedule {
             Integer blockItemIndex=0;
             Element timelineElement=null;
             Element blockItemElement=null;
+            Date currentDate= Calendar.getInstance().getTime();
             for (BlockEntity block : scheduleEntity.blockList) {
                 timelineElement=scheduleDocument.createElement("TimeLine");
                 timelineElement.setAttribute("StartDate", DateConverter.convertDateToStr(block.startDate));
@@ -227,7 +241,8 @@ public class XMLSchedule {
                 blockItemIndex=0;
                 for (String item : block.itemList) {
                     blockItemElement=scheduleDocument.createElement("PBU");
-                    XMLTemplate.getInstance().existTemplate(item);
+                    if(block.endDate==null||block.endDate.compareTo(currentDate)>=0)
+                        XMLTemplate.getInstance().existTemplate(item);
                     blockItemElement.setAttribute("Id", item);
                     blockItemElement.setAttribute("Index", String.valueOf(blockItemIndex++));
                     timelineElement.appendChild(blockItemElement);
@@ -237,10 +252,11 @@ public class XMLSchedule {
             }
 
             return scheduleDocument;
-        } catch (Exception e) {
+        } catch (Exception ex) {
             // TODO: handle exception
-            e.printStackTrace();
-            throw new IllegalScheduleException(e.getMessage());
+            ex.printStackTrace();
+            LogOperator.WriteLogfortxt("XMLSchedule==>writeScheduleDocument:"+ex.getMessage());
+            throw new IllegalScheduleException(ex.getMessage());
         }
     }
 
@@ -341,33 +357,40 @@ public class XMLSchedule {
     private Element createDeviceCmdNode(Document document) {
         // TODO Auto-generated method stub
         try {
-            String shutDownTime=DALSettings.getInstance().getSettingByKey(InternalKeyWords.Config_ShutDownTime);
 
             Element deviceElement=document.createElement("Device");
-            if(shutDownTime==null||shutDownTime.isEmpty())
-                return deviceElement;
-
             Element powerElement=document.createElement("Power");
             deviceElement.appendChild(powerElement);
 
-            Element timelinElement=document.createElement("TimeLine");
-            timelinElement.setAttribute("RunTime", shutDownTime);
-            timelinElement.setAttribute("StartDate", DateConverter.convertCurrentDateToStr());
-            timelinElement.setAttribute("EndDate", "0001,01,01");
+            String shutDownTime=DALSettings.getInstance().getSettingByKey(InternalKeyWords.Config_ShutDownTime);
+            if(shutDownTime!=null&&!shutDownTime.isEmpty())
+                powerElement.appendChild(this.getDeviceCmdElement(document,"Shutdown",shutDownTime));
 
-            Element cmdElement=document.createElement("Command");
-            cmdElement.setAttribute("name", "Shutdown");
-            cmdElement.setAttribute("target", InternalKeyWords.PlayerOriginal);
-            timelinElement.appendChild(cmdElement);
-
-            powerElement.appendChild(timelinElement);
+            String wakeUpTime=DALSettings.getInstance().getSettingByKey(InternalKeyWords.Config_WakeUpTime);
+            if(wakeUpTime!=null&&!wakeUpTime.isEmpty())
+                powerElement.appendChild(this.getDeviceCmdElement(document,"WakeUp",wakeUpTime));
 
             return deviceElement;
         } catch (Exception e) {
+
             // TODO: handle exception
             e.printStackTrace();
         }
         return null;
+    }
+
+    private Element getDeviceCmdElement(Document document,String cmdType,String cmdValue){
+        Element timelineElement=document.createElement("TimeLine");
+        timelineElement.setAttribute("RunTime", cmdValue);
+        timelineElement.setAttribute("StartDate", DateConverter.convertCurrentDateToStr());
+        timelineElement.setAttribute("EndDate", "0001,01,01");
+
+        Element cmdElement=document.createElement("Command");
+        cmdElement.setAttribute("name", cmdType);
+        cmdElement.setAttribute("target", InternalKeyWords.PlayerOriginal);
+        timelineElement.appendChild(cmdElement);
+
+        return timelineElement;
     }
 
     private HashSet<String> getAllItemInSchedule(Document scheduleDocument){
@@ -381,17 +404,28 @@ public class XMLSchedule {
 
             itemSet.add(idlElement.getAttribute("Id"));
 
-            ArrayList<Element> pbuElementList = this.m_XMLHelper.getSubNodeList(scheduleDocument.getDocumentElement(),"PBU");
-            if(pbuElementList==null)
+            Element displayRunElement = this.m_XMLHelper.getSubNode(scheduleDocument.getDocumentElement(),"Run");
+            if(displayRunElement==null)
                 return null;
 
-            String itemName=null;
-            for (Element element : pbuElementList) {
-                itemName=element.getAttribute("Id");
-                if(!itemSet.contains(itemName))
-                    itemSet.add(itemName);
-            }
+            ArrayList<Element> blockElementList=this.m_XMLHelper.getSubNodeList(displayRunElement, "TimeLine");
+            if(blockElementList==null||blockElementList.size()==0)
+                return null;
 
+            Date currentDate=Calendar.getInstance().getTime(),endDate;
+            ArrayList<Element> blockItemElementList;
+            for (Element blockElement : blockElementList) {
+
+                endDate = DateConverter.convertStrToDate(blockElement.getAttribute("EndDate"));
+                blockItemElementList = this.m_XMLHelper.getSubNodeList(blockElement, "PBU");
+                for (Element item : blockItemElementList) {
+                    String templateId = item.getAttribute("Id");
+                    if (endDate != null && endDate.compareTo(currentDate) < 0 && !XMLTemplate.getInstance().existTemplateWithResult(templateId)) {
+                        continue;
+                    }
+                    itemSet.add(templateId);
+                }
+            }
             return itemSet;
         } catch (Exception e) {
             // TODO: handle exception
@@ -475,5 +509,52 @@ public class XMLSchedule {
             // TODO: handle exception
         }
         return null;
+    }
+
+    public Boolean refreshTemplateInSchedule(String oldTemplateName,String newTemplateName){
+        return refreshTemplateInSchedule(InternalKeyWords.DefaultScheduleXmlPath,InternalKeyWords.DefaultScheduleName,oldTemplateName,newTemplateName);
+    }
+
+    public Boolean refreshTemplateInSchedule(String XMLFolder,String scheduleName, String oldTemplateName,String newTemplateName){
+
+        File scheduleFile = new File(XMLFolder, scheduleName + ".xml");
+        if (!scheduleFile.exists())
+            return true;
+
+        Document scheduleDocument = this.m_XMLHelper.getXmlDocument(scheduleFile);
+        if (scheduleDocument == null)
+            return true;
+
+        try {
+            FileOperator.copyFile(scheduleFile.getPath(),InternalKeyWords.DefaultXmlTempPath+scheduleName + ".xml");
+
+            Element rootElement = scheduleDocument.getDocumentElement();
+
+            Element runElement = this.m_XMLHelper.getSubNode(rootElement, "Run");
+
+            Element idlElement = this.m_XMLHelper.getSubNode(runElement, "IdlePBU");
+            if (idlElement.getAttribute("Id").equals(oldTemplateName))
+                idlElement.setAttribute("Id", newTemplateName);
+
+            ArrayList<Element> blockElementList = this.m_XMLHelper.getSubNodeList(runElement, "TimeLine");
+            if (blockElementList == null)
+                return true;
+
+            ArrayList<Element> blockItemElementList = null;
+            for (Element blockElement : blockElementList) {
+                blockItemElementList = this.m_XMLHelper.getSubNodeList(blockElement, "PBU");
+                for (Element item : blockItemElementList) {
+                    if (item.getAttribute("Id").equals(oldTemplateName))
+                        item.setAttribute("Id", newTemplateName);
+                }
+            }
+
+            return this.m_XMLHelper.saveXmlDocument(scheduleDocument, scheduleFile.getPath());
+        }catch (Exception ex){
+            FileOperator.copyFile(InternalKeyWords.DefaultXmlTempPath+scheduleName + ".xml",scheduleFile.getPath());
+            ex.printStackTrace();
+            LogOperator.WriteLogfortxt("XMLSchedule==>refreshTemplateInSchedule:"+ex.getMessage());
+            return false;
+        }
     }
 }

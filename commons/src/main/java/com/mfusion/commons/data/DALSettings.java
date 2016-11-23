@@ -87,7 +87,17 @@ public class DALSettings {
     }
 
     public Boolean setWakeUpTime(String timeString){
-        return this.updateSetting(InternalKeyWords.Config_WakeUpTime,timeString);
+        String oldDatas=getWakeUpTime();
+        Boolean result =this.updateSetting(InternalKeyWords.Config_WakeUpTime,timeString);
+        if(result&&timeString!=null&&!timeString.equalsIgnoreCase(oldDatas)){
+            try {
+                XMLSchedule.getInstance().assignDeviceSchedule();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        return true;
     }
 
     public String getSettingByKey(String key) {
@@ -115,5 +125,22 @@ public class DALSettings {
         return false;
     }
 
+    public Boolean saveConfigParameters(int orientation,String password,String shutdowntime,String wakeuptime){
+        Boolean result=true;
+        String old_shutdown=this.getShutDownTime(),old_wakeup=this.getWakeUpTime();
+        result=result&&this.updateSetting(InternalKeyWords.Config_Orientation,String.valueOf(orientation));
+        result=result&&this.updateSetting(InternalKeyWords.Config_ExitPassword,password);
+        result=result&&this.updateSetting(InternalKeyWords.Config_ShutDownTime,shutdowntime);
+        result=result&&this.updateSetting(InternalKeyWords.Config_WakeUpTime,wakeuptime);
+        if((shutdowntime!=null&&!shutdowntime.equalsIgnoreCase(old_shutdown))||(wakeuptime!=null&&!wakeuptime.equalsIgnoreCase(old_wakeup))){
+            try {
+                XMLSchedule.getInstance().assignDeviceSchedule();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        return result;
+    }
 
 }

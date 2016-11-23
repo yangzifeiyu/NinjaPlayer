@@ -13,10 +13,10 @@
 	            android:id="@+id/textView1"
 	            android:layout_width="@dimen/propertyName"
 	            android:layout_height="match_parent"
-	            android:gravity="left|center"
-	            android:text="Font "
+				android:text="Font :"
 	            android:textAppearance="?android:attr/textAppearanceSmall"
-	            android:textSize="@dimen/textSize" />
+	            android:textSize="@dimen/textSize"
+				style="@style/property_name" />
 	
 	        <TextView
 	            android:id="@+id/comp_ticker_font"
@@ -31,11 +31,13 @@
 	
 	        <ImageButton
 	            android:id="@+id/comp_ticker_font_btn"
-	            android:layout_width="24dp"
-	            android:layout_height="24dp"
+	            android:layout_width="@dimen/propertyEditBtn"
+	            android:layout_height="@dimen/propertyEditBtn"
 	            android:layout_gravity="left|top|center"
 	            android:background="#00ffffff"
-	            android:src="@drawable/edit" />
+	            android:src="@drawable/mf_edit"
+				android:scaleType="fitCenter"
+				android:padding="@dimen/propertyEditBtnPadding" />
 	        
 	    </LinearLayout>
 	    
@@ -49,10 +51,10 @@
 	            android:id="@+id/textView2"
 	            android:layout_width="@dimen/propertyName"
 	            android:layout_height="match_parent"
-	            android:gravity="left|center"
-	            android:text="Font Color "
+				android:text="Font Color :"
 	            android:textAppearance="?android:attr/textAppearanceSmall"
-	            android:textSize="@dimen/textSize" />
+	            android:textSize="@dimen/textSize"
+				style="@style/property_name" />
 		
 			<Button
 			    android:id="@+id/comp_ticker_font_color_btn"
@@ -74,10 +76,10 @@
 	            android:layout_width="@dimen/propertyName"
 	            android:layout_height="match_parent"
 	            android:layout_gravity="left|center"
-	            android:gravity="center|left"
-	            android:text="Speed "
+				android:text="Speed :"
 	            android:textAppearance="?android:attr/textAppearanceSmall"
-	            android:textSize="@dimen/textSize" />
+	            android:textSize="@dimen/textSize"
+				style="@style/property_name" />
 		
 			<com.mfusion.commons.view.DropDownView
 			    android:id="@+id/comp_ticker_speed"
@@ -100,10 +102,10 @@
 	            android:id="@+id/textView3"
 	            android:layout_width="@dimen/propertyName"
 	            android:layout_height="match_parent"
-	            android:gravity="left|center"
-	            android:text="Content "
+				android:text="Content :"
 	            android:textAppearance="?android:attr/textAppearanceSmall"
-	            android:textSize="@dimen/textSize" />
+	            android:textSize="@dimen/textSize"
+				style="@style/property_name" />
 
 	        <EditText
 	            android:id="@+id/comp_ticker_content"

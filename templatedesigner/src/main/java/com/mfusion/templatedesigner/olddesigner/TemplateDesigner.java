@@ -124,6 +124,16 @@ public class TemplateDesigner extends AbstractTemplateDesigner {
 
     }
 
+    @Override
+    public String getTemplateName() {
+        return null;
+    }
+
+    @Override
+    public void renameTemplate(String newName) {
+
+    }
+
 
     @Override
     public void onWindowFocusChanged(boolean hasWindowFocus) {

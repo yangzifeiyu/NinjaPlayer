@@ -32,6 +32,8 @@ public class InternalKeyWords {
 
 	public static String DefaultXmlTempPath= Environment.getExternalStorageDirectory().getPath()+"/Temp/";
 
+	public static String VideoThumbPath= Environment.getExternalStorageDirectory().getPath()+"/Storage/Thumb/";
+
 	public static String TemplateResourceFolder="res"+ File.separator;
 
 	public static String DefaultScheduleName="default";
@@ -44,5 +46,9 @@ public class InternalKeyWords {
 
 	public static String PlayerOriginal="AF1";//AF1 Normal
 
-	public static String DefaultDisplayDateFormat="dd-MM-yyyy";
+	public static String DefaultDisplayDateFormat="dd/MM/yyyy";
+
+	public static int TemplateDefaultWidth=1920;
+
+	public static int TemplateDefaultHeight=1080;
 }

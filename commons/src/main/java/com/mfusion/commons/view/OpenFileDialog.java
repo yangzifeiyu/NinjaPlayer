@@ -6,9 +6,11 @@ import java.util.HashMap;
 import java.util.List;  
 import java.util.Map;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;  
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,7 +23,6 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.mfusion.commons.tools.FileOperator;
-import com.mfusion.commons.view.ImageTextView;
 import com.mfusion.commons.view.adapter.FileSelectAdapter;
 import com.mfusion.commons.tools.CallbackBundle;
 import com.mfusion.commontools.R;
@@ -38,26 +39,26 @@ public class OpenFileDialog {
         return createDialog(context,title,callback,suffix,false,selectButton,selectWithClose);
     }
     public static Dialog createDialog(Context context, String title, final CallbackBundle callback, String suffix, final boolean selectFolder, final boolean selectButton, final Boolean selectWithClose){
-        AlertDialog.Builder builder = new AlertDialog.Builder(context); 
-        
-        final Dialog dialog = new Dialog(context);//builder.create();
-        dialog.setCancelable(true);
-        dialog.setTitle(title);
-        //dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);  
-        
-        dialog.setContentView(R.layout.view_file_selecter);
 
-        LinearLayout dialogLayout=(LinearLayout)dialog.findViewById(R.id.file_select_layout);
+        LinearLayout dialogContent=(LinearLayout) ((Activity)context).getLayoutInflater().inflate(R.layout.view_file_selecter, null);
 
-        LinearLayout dialogContent=(LinearLayout)dialog.findViewById(R.id.file_item_list);
-        
+        LinearLayout dialogLayout=(LinearLayout)dialogContent.findViewById(R.id.file_select_layout);
+
+        LinearLayout fileListLayout=(LinearLayout)dialogContent.findViewById(R.id.file_item_list);
+
+        SystemInfoDialog.Builder builder =new  SystemInfoDialog.Builder(context)
+                .setTitle(title)
+                .setContentView(dialogContent);
+
+        final SystemInfoDialog dialog =builder.create();
+
         final FileSelectView fileSelectView=new FileSelectView(context, dialog, callback, suffix,selectFolder,selectButton);
-        
-        dialogContent.addView(fileSelectView);
 
-        ImageTextView addView=(ImageTextView)dialog.findViewById(R.id.file_select_btn);
+        fileListLayout.addView(fileSelectView);
+
+        ImageTextHorizontalView addView=(ImageTextHorizontalView)dialogContent.findViewById(R.id.file_select_btn);
         addView.setText("Select");
-        addView.setImage(R.drawable.mf_add);
+        //addView.setImage(R.drawable.mf_add);
 
         if(selectButton){
             addView.setOnClickListener(new OnClickListener() {
@@ -77,7 +78,7 @@ public class OpenFileDialog {
             addView.setVisibility(View.GONE);
 
         WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
-        params.width = context.getResources().getDisplayMetrics().widthPixels*2/5;
+        params.width = context.getResources().getDisplayMetrics().widthPixels>context.getResources().getDisplayMetrics().heightPixels? context.getResources().getDisplayMetrics().widthPixels*2/5:context.getResources().getDisplayMetrics().widthPixels*2/3;
         params.height= context.getResources().getDisplayMetrics().heightPixels*2/3;
         dialog.getWindow().setAttributes(params);
 
@@ -108,7 +109,7 @@ public class OpenFileDialog {
 
         private void init(Context context, Dialog dialog, CallbackBundle callback, String suffix,boolean selectButton) {
 
-            this.suffix = suffix==null?"":suffix;
+            this.suffix =suffix;
             this.callback = callback;
             this.dialog = dialog;
 
@@ -134,6 +135,7 @@ public class OpenFileDialog {
                             fileLists.add(map.get("path").toString());
                     }
                 }
+                this.adapter.cancelSelect();
 			}
 			
 			return fileLists;
@@ -210,7 +212,7 @@ public class OpenFileDialog {
         			type="...";
         	}else {
 				type= FileOperator.getMeidaType(name);
-				if(suffix != null&&suffix.length()>0&&suffix.contains(type)==false)
+				if(suffix == null||(suffix.length()>0&&suffix.contains(type)==false))
 					return null;
 			}
 

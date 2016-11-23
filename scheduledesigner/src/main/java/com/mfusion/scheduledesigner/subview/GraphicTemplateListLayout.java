@@ -5,7 +5,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -15,14 +17,15 @@ import com.mfusion.commons.data.XMLTemplate;
 import com.mfusion.commons.entity.exception.PathAccessException;
 import com.mfusion.commons.entity.template.VisualTemplate;
 import com.mfusion.commons.entity.values.FileSortType;
+import com.mfusion.commons.tools.ButtonHoverStyle;
 import com.mfusion.commons.tools.CallbackBundle;
 import com.mfusion.commons.tools.FileOperator;
 import com.mfusion.commons.tools.ImageHelper;
 import com.mfusion.commons.tools.LogOperator;
-import com.mfusion.commons.view.ImageTextView;
+import com.mfusion.commons.view.ImageTextHorizontalView;
+import com.mfusion.commons.view.ImageTextVerticalView;
 import com.mfusion.commons.view.adapter.TemplateInfoAdapter;
 import com.mfusion.scheduledesigner.R;
-import com.mfusion.commons.tools.ButtonHoverStyle;
 import com.mfusion.scheduledesigner.values.TemplateThumbAdapter;
 
 import java.util.ArrayList;
@@ -45,11 +48,15 @@ public class GraphicTemplateListLayout extends LinearLayout{
 
     private GridView template_grid;
 
-    private TemplateInfoAdapter template_adapter;
+    private ImageButton btn_scroll_up,btn_scroll_down;
+    
+    private int current_position;
+
+    private TemplateThumbAdapter template_adapter;
 
     private ImageView loading_imageview;
 
-    private ImageTextView btn_sort_name,btn_sort_time;
+    private ImageTextHorizontalView btn_sort_name,btn_sort_time;
 
     public GraphicTemplateListLayout(Context context) {
         super(context);
@@ -75,32 +82,62 @@ public class GraphicTemplateListLayout extends LinearLayout{
         template_grid=(GridView)templates_container.findViewById(R.id.sche_temp_gv);
         template_grid.setVisibility(GONE);
 
-        btn_sort_name=(ImageTextView)templates_container.findViewById(R.id.sche_temp_sort_name);
-        //btn_sort_name.setText("Name");
+        btn_sort_name=(ImageTextHorizontalView)templates_container.findViewById(R.id.sche_temp_sort_name);
         btn_sort_name.setImage(R.drawable.sort_name_asce);
         btn_sort_name.setTag(FileSortType.NameAsce);
         btn_sort_name.setOnClickListener(sortTypeListener);
-        btn_sort_time=(ImageTextView)templates_container.findViewById(R.id.sche_temp_sort_time);
-        //btn_sort_time.setText("Modify Time");
+        btn_sort_name.setVisibility(GONE);
+        btn_sort_time=(ImageTextHorizontalView)templates_container.findViewById(R.id.sche_temp_sort_time);
         btn_sort_time.setImage(R.drawable.sort_time_desc);
         btn_sort_time.setTag(FileSortType.TimeDesc);
         btn_sort_time.setOnClickListener(sortTypeListener);
+        btn_sort_time.setVisibility(GONE);
+
+        btn_scroll_up=(ImageButton)templates_container.findViewById(R.id.sche_temp_scroll_up);
+        btn_scroll_down=(ImageButton)templates_container.findViewById(R.id.sche_temp_scroll_down);
+        btn_scroll_up.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeScrollPosition(-1);
+            }
+        });
+        btn_scroll_down.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeScrollPosition(1);
+            }
+        });
+        ButtonHoverStyle.bindingHoverEffect(btn_scroll_up,context.getResources());
+        ButtonHoverStyle.bindingHoverEffect(btn_scroll_down,context.getResources());
     }
+
+    private void changeScrollPosition(int move){
+        if(template_list==null||template_list.size()==0)
+            return;
+
+        current_position = template_grid.getFirstVisiblePosition()+move;
+        if(current_position<0)
+            current_position=0;
+        if(current_position>=template_list.size())
+            current_position=template_list.size()-1;
+        template_grid.setSelection(current_position);
+    }
+
     OnClickListener sortTypeListener = new OnClickListener() {
         @Override
         public void onClick(View view) {
             FileSortType sortType = (FileSortType) view.getTag();
             if (sortType == FileSortType.NameAsce) {
-                ((ImageTextView) view).setImage(R.drawable.sort_name_desc);
+                ((ImageTextVerticalView) view).setImage(R.drawable.sort_name_desc);
                 sortType = FileSortType.NameDesc;
             } else if (sortType == FileSortType.NameDesc) {
-                ((ImageTextView) view).setImage(R.drawable.sort_name_asce);
+                ((ImageTextVerticalView) view).setImage(R.drawable.sort_name_asce);
                 sortType = FileSortType.NameAsce;
             } else if (sortType == FileSortType.TimeAsce) {
-                ((ImageTextView) view).setImage(R.drawable.sort_time_desc);
+                ((ImageTextVerticalView) view).setImage(R.drawable.sort_time_desc);
                 sortType = FileSortType.TimeDesc;
             } else if (sortType == FileSortType.TimeDesc) {
-                ((ImageTextView) view).setImage(R.drawable.sort_time_asce);
+                ((ImageTextVerticalView) view).setImage(R.drawable.sort_time_asce);
                 sortType = FileSortType.TimeAsce;
             }
 
@@ -180,7 +217,7 @@ public class GraphicTemplateListLayout extends LinearLayout{
                 if(template_adapter!=null)
                     template_adapter.clearImageResource();
 
-                template_adapter=new TemplateInfoAdapter(this.context,owner,template_list,true);
+                template_adapter=new TemplateThumbAdapter(this.context,owner,template_list);
                 gridView.setAdapter(template_adapter);
                 gridView.setVisibility(VISIBLE);
 

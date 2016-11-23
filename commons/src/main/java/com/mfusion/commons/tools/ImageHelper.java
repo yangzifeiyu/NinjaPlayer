@@ -27,10 +27,19 @@ import com.mfusion.commons.entity.template.TemplateEntity;
  */
 public class ImageHelper {
 
-	public static Bitmap getBitmap(String imagePath){
-		return  getBitmap(imagePath,ResourceSourceType.local,null);
+	public static Bitmap getBitmap(String imagePath) {
+		return getBitmap(imagePath, ResourceSourceType.local, null);
 	}
+
+	public static Bitmap getBitmap(String imagePath, int scale) {
+		return getBitmap(imagePath, ResourceSourceType.local, null,scale);
+	}
+
 	public static Bitmap getBitmap(String imagePath, ResourceSourceType sourceType, AssetManager assetManager){
+		return  getBitmap(imagePath,sourceType,assetManager,5);
+	}
+
+	public static Bitmap getBitmap(String imagePath, ResourceSourceType sourceType, AssetManager assetManager,int scale){
 
 		Bitmap bitmap=null;
 		InputStream imageStream=null;
@@ -41,7 +50,7 @@ public class ImageHelper {
 			opts.inPreferredConfig = Bitmap.Config.RGB_565;
 			opts.inPurgeable = false;
 			opts.inInputShareable = false;
-			opts.inSampleSize = 5;
+			opts.inSampleSize = scale;
 
 			if(sourceType==ResourceSourceType.http){
 				
@@ -99,7 +108,7 @@ public class ImageHelper {
 				saveFile.getParentFile().mkdirs();
 			
 			FileOutputStream out = new FileOutputStream(new File(savePath));
-			bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+			bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
 			out.flush();
 			out.close();
 			

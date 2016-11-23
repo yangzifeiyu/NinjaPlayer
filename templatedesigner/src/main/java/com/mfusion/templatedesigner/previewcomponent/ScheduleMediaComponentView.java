@@ -1,5 +1,6 @@
 package com.mfusion.templatedesigner.previewcomponent;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint.Style;
@@ -31,6 +33,9 @@ import com.mfusion.commons.entity.exception.IllegalTemplateException;
 import com.mfusion.commons.entity.template.ComponentEntity;
 import com.mfusion.commons.entity.template.TemplateEntity;
 import com.mfusion.commons.entity.values.ComponentType;
+import com.mfusion.commons.tools.FileOperator;
+import com.mfusion.commons.tools.ImageHelper;
+import com.mfusion.commons.tools.InternalKeyWords;
 import com.mfusion.templatedesigner.HandleTimer;
 import com.mfusion.templatedesigner.R;
 import com.mfusion.commons.view.DropDownView;
@@ -140,7 +145,7 @@ public class ScheduleMediaComponentView extends BasicComponentView {
 	@Override
 	public void render(){
 
-		//this.timer.start(5000);
+		this.timer.start(500);
 		
 	}
 
@@ -160,31 +165,9 @@ public class ScheduleMediaComponentView extends BasicComponentView {
 			}
 			
 			timer.stop();
-			
-			/*final VideoView videoView=new VideoView(m_context);
-			addView(videoView, new LayoutParams(getLayoutParams().width,getLayoutParams().height));
-			MediaController mediaController = new MediaController(m_context); 
-			videoView.setMediaController(mediaController); 
-			videoView.setOnInfoListener(new OnInfoListener() {
-				
-				@Override
-				public boolean onInfo(MediaPlayer arg0, int arg1, int arg2) {
-					// TODO Auto-generated method stub
-					return false;
-				}
-			});
-				videoView.setVideoPath("/sdcard/Storage/Video/0/android/TSL - Laos 30s HD.mp4");
-			videoView.setOnPreparedListener(new OnPreparedListener() {
-				
-				@Override
-				public void onPrepared(MediaPlayer arg0) {
-					// TODO Auto-generated method stub
-			
-			         videoView.start(); 
-				}
-			});*/
-	        
-			/*try {
+
+			int timer_interval=100;
+			try {
 				refreshCurrentIndex();
 				
 				ScheduleMediaEntity currentMedia=c_media_list.get(m_media_index);
@@ -192,36 +175,39 @@ public class ScheduleMediaComponentView extends BasicComponentView {
 					timer.start(10);
 					return;
 				}
-				
-				if(m_current_view!=null)
-					m_current_view.setVisibility(GONE);
-				
-				if(currentMedia.mediaType==ScheduleMediaType.Image){
+
+				if(currentMedia.mediaType==ScheduleMediaType.Image||currentMedia.mediaType==ScheduleMediaType.Video){
 					if(m_image_view==null){
 						m_image_view=new ImageView(m_context);
 						m_image_view.setVisibility(VISIBLE);
-						m_image_view.setScaleType(ScaleType.FIT_XY);
 						addView(m_image_view, new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 					}
-					m_image_view.setImageBitmap(ImageHelper.getBitmap(currentMedia.mediaPath));
+
+					String imagePath=currentMedia.mediaPath;
+					if(currentMedia.mediaType==ScheduleMediaType.Video) {
+						imagePath = InternalKeyWords.VideoThumbPath + currentMedia.mediaName + ".jpg";
+					}
+
+					if(!FileOperator.existFile(imagePath)) {
+						m_image_view.setScaleType(ImageView.ScaleType.CENTER);
+						m_image_view.setImageDrawable(m_context.getResources().getDrawable(currentMedia.mediaType==ScheduleMediaType.Image?R.drawable.filedialog_image:R.drawable.filedialog_wavfile));
+					}else{
+						m_image_view.setScaleType(ImageView.ScaleType.FIT_XY);
+						m_image_view.setImageBitmap(currentMedia.mediaType==ScheduleMediaType.Image?ImageHelper.getBitmap(imagePath):ImageHelper.getBitmap(imagePath,1));
+					}
+
 					m_current_view=m_image_view;
 				}
-				if(currentMedia.mediaType==ScheduleMediaType.Video){
-					if(m_video_surfaceview==null){
-						m_video_surfaceview=new CustomerVideoSurfaceView(m_context);
-						m_video_surfaceview.setVisibility(VISIBLE);
-						addView(m_video_surfaceview, new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
-					}
-					m_video_surfaceview.setVideo(currentMedia.mediaPath, true);
-					m_current_view=m_video_surfaceview;
-				}
-				
+
 				m_current_view.setVisibility(VISIBLE);
-				timer.start(currentMedia.duration*1000,currentMedia.duration*1000);
+				timer_interval=currentMedia.duration*1000;
 			} catch (Exception e) {
 				// TODO: handle exception
 				e.printStackTrace();
-			}*/
+			}
+			finally {
+				timer.start(timer_interval,timer_interval);
+			}
 		}
 	};
 	
@@ -232,9 +218,9 @@ public class ScheduleMediaComponentView extends BasicComponentView {
 		
 		if(canvas!=null)
 		{
-			//if(this.c_media_list.size()==0){
+			if(this.c_media_list.size()==0){
 				ViewGroup.LayoutParams layoutParams=this.getLayoutParams();
-				if(this.no_value_paint.measureText(this.c_type.toString())>layoutParams.width)
+				if(this.no_value_paint.measureText(this.c_name)>layoutParams.width)
 					text_paint_layout = new StaticLayout(this.c_name,this.no_value_paint,layoutParams.width,Alignment.ALIGN_NORMAL,1.0F,0.0F,true);
 				else
 					text_paint_layout = new StaticLayout(this.c_name,this.no_value_paint,layoutParams.width,Alignment.ALIGN_CENTER,1.0F,0.0F,true);
@@ -243,7 +229,7 @@ public class ScheduleMediaComponentView extends BasicComponentView {
 				canvas.translate(0,base_line_y); 
 				text_paint_layout.draw(canvas);
 				canvas.translate(0,-base_line_y); 
-			//}
+			}
 		}
     }
 
@@ -306,28 +292,13 @@ public class ScheduleMediaComponentView extends BasicComponentView {
 			
 			m_playamode_ddv=(DropDownView)propertyView.findViewById(R.id.comp_sm_playmode);
 			m_playamode_ddv.setSelectList(PropertyValues.getPlayModeList());
-			m_playamode_ddv.addTextChangedListener(new TextWatcher() {
-				
+			m_playamode_ddv.setOnChangeListener(new DropDownView.OnSelectTextChangedListener() {
 				@Override
-				public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-					// TODO Auto-generated method stub
-
-					if(c_play_mode.toString().equalsIgnoreCase(arg0.toString()))
+				public void onSelectTextChange(String selectText) {
+					if(c_play_mode.toString().equalsIgnoreCase(selectText))
 						return;
 					componentPropertyChanged();
-					c_play_mode=ScheduleMediaPlayMode.valueOf(arg0.toString());
-				}
-				
-				@Override
-				public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
-						int arg3) {
-					// TODO Auto-generated method stub
-					System.out.println();
-				}
-				
-				@Override
-				public void afterTextChanged(Editable arg0) {
-					// TODO Auto-generated method stub
+					c_play_mode=ScheduleMediaPlayMode.valueOf(selectText);
 				}
 			});
 

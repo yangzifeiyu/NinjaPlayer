@@ -22,6 +22,19 @@
         <item name="android:paddingTop">50dp</item>
         <item name="android:paddingBottom">20dp</item>
     </style>
+
+    <style name="property_format_Dialog">
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingRight">20dp</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">20dp</item>
+    </style>
+
+    <style name="property_name">
+        <item name="android:paddingRight">5dp</item>
+        <item name="android:gravity">center|right</item>
+    </style>
+
     <!--&lt;!&ndash; 全屏幕拉伸&ndash;&gt;
     <style name="layout_full">
         <item name="android:layout_width">fill_parent</item>

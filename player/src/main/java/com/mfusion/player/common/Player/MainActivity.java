@@ -8,6 +8,7 @@
  */
 package com.mfusion.player.common.Player;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +17,14 @@ import java.util.TimerTask;
 
 import org.w3c.dom.Element;
 
+import com.mfusion.commons.tools.AlertDialogHelper;
+import com.mfusion.commons.tools.FileOperator;
+import com.mfusion.commons.tools.InternalKeyWords;
+import com.mfusion.commons.tools.LogOperator;
+import com.mfusion.commons.tools.WindowsDecorHelper;
+import com.mfusion.commons.view.FreeTimeHintDialog;
 import com.mfusion.player.R;
+import com.mfusion.player.common.Helper.Helper;
 import com.mfusion.player.library.Callback.Caller;
 import com.mfusion.player.library.Callback.DialogCallBack;
 import com.mfusion.player.library.Callback.MyCallInterface;
@@ -35,6 +43,7 @@ import com.mfusion.player.IMFServiceInterface;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -69,6 +78,7 @@ import android.widget.Toast;
 public class MainActivity extends Activity implements MyCallInterface{
 
 	public static MainActivity Instance;//静态入口
+
 	private PackageManager pm ;
 	public HashMap<String,AppInfo> appInfos;
 	public RelativeLayout Screen;
@@ -92,12 +102,14 @@ public class MainActivity extends Activity implements MyCallInterface{
 	private Caller AppExit;
 	private Handler sHandler;  
 
+	private FreeTimeHintDialog FreeHintDialog;
+
 	public boolean connectState=true;
 
 
 	public ConnectionManagerService ConnectManagerService;
 
-	private ServiceConnection mConnection = new ServiceConnection(){
+	/*private ServiceConnection mConnection = new ServiceConnection(){
 		@Override
 		public void onServiceConnected(ComponentName className,
 				IBinder service){
@@ -108,7 +120,7 @@ public class MainActivity extends Activity implements MyCallInterface{
 		public void onServiceDisconnected(ComponentName className){
 			setmService(null);
 		}
-	};
+	};*/
 
 	public Handler mHandler = new Handler() {
 		@Override
@@ -116,14 +128,16 @@ public class MainActivity extends Activity implements MyCallInterface{
 
 			try 
 			{
-				LoggerHelper.WriteLogfortxt("Stop services");
+				LoggerHelper.WriteLogfortxt("Stopping services");
 				HouseKeeping.Stop();
 				ResourceCenter.Stop();
 				FileManager.Stop();
 				PBUDispatcher.Stop();
 				ScheduleLoader.Stop();
 
-				LoggerHelper.WriteLogfortxt("Start services");
+				//Helper.ControlManager.releaseControls();
+
+				LoggerHelper.WriteLogfortxt("Starting services");
 				ScheduleLoader.Restart();
 				PBUDispatcher.Restart();
 				FileManager.Restart(PBUDispatcher.m_pbu_idlist);// download
@@ -169,77 +183,44 @@ public class MainActivity extends Activity implements MyCallInterface{
 		}
 	};
 
-	Runnable mHideRunnable = new Runnable() {  
-		@SuppressLint("InlinedApi")
-		@Override  
-		public void run() {  
-			int flags;    
-			int curApiVersion = Build.VERSION.SDK_INT;
-			// This work only for android 4.4+  
-			if(curApiVersion >= Build.VERSION_CODES.KITKAT){  
-				// This work only for android 4.4+  
-				// hide navigation bar permanently in android activity  
-				// touch the screen, the navigation bar will not show  
-				flags = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION  
-						| View.SYSTEM_UI_FLAG_IMMERSIVE  
-						| View.SYSTEM_UI_FLAG_FULLSCREEN
-						| View.SYSTEM_UI_FLAG_LOW_PROFILE
-						;  
-
-			}else{  
-				// touch the screen, the navigation bar will show  
-				flags = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;  
-			}  
-
-			// must be executed in main thread :)  
-			getWindow().getDecorView().setSystemUiVisibility(flags);
-		}  
-	};    
 	@SuppressLint("InlinedApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
 		Log.i("Player", "Start");
-
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		View decorView=getWindow().getDecorView();
-		sHandler= new Handler();
-		sHandler.post(mHideRunnable); // hide the navigation bar  
-		decorView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener()  
-		{  
-			@Override  
-			public void onSystemUiVisibilityChange(int visibility)  
-			{  
-				sHandler.post(mHideRunnable); // hide the navigation bar  
-			}  
-		});          
-		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-		setContentView(R.layout.activity_main);
 
+		WindowsDecorHelper.hideBottomBar(this.getWindow());
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+		setContentView(R.layout.activity_main);
 		//隐藏底部状态栏
-		try
+		/*try
 		{  
 			String ProcID = "79";  
 			if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) ProcID = "42"; // ICS  
-			// 需要root 权限  
-			Process proc = Runtime.getRuntime().exec(new String[] { "su", "-c", "service call activity " + ProcID + " s16 com.android.systemui" }); // WAS  
+			// 需要root 权限
+			// "su", "-c",
+			Process proc = Runtime.getRuntime().exec(new String[] {"service call activity " + ProcID + " s16 com.android.systemui" }); // WAS
 			proc.waitFor();  
 		}  
 		catch (Exception ex)  
 		{  
 			Toast.makeText(getApplicationContext(), ex.getMessage(), Toast.LENGTH_LONG).show();
-		}
-		
+		}*/
+
 		this.Initalize();	
 
-		if(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE==this.PlayerSetting.ScreenOrientation)
+		/*if(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE==this.PlayerSetting.ScreenOrientation)
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		else
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-		LoggerHelper.WriteLogfortxt("Player Start==>");
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT);*/
+		LoggerHelper.WriteLogfortxt("Starting Player==>");
 		
 		
 	}
@@ -248,10 +229,10 @@ public class MainActivity extends Activity implements MyCallInterface{
 	public void setRequestedOrientation(int requestedOrientation) {  
 		try {
 			int current_screen=getRequestedOrientation();
-			if(current_screen==-1){
+			/*if(current_screen==-1){
 				this.PlayerSetting.ScreenOrientation=-1;
 				return;
-			}
+			}*/
 			if(current_screen==requestedOrientation)
 				return;
 		} catch (Exception e) {
@@ -259,7 +240,23 @@ public class MainActivity extends Activity implements MyCallInterface{
 			e.printStackTrace();
 		}
 		super.setRequestedOrientation(requestedOrientation);  
-	}  
+	}
+
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		Toast.makeText(this, "系统的屏幕方向发生改变", Toast.LENGTH_LONG).show();
+		switch (getRequestedOrientation()) {
+			case ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE:
+				Toast.makeText(this,"当前屏幕朝向为：LANDSCAPE",Toast.LENGTH_LONG);
+				break;
+			case ActivityInfo.SCREEN_ORIENTATION_PORTRAIT:
+				Toast.makeText(this,"当前屏幕朝向为：PORTRAIT",Toast.LENGTH_LONG);
+				break;
+			default:
+				break;
+		}
+		super.onConfigurationChanged(newConfig);
+	}
 
 	@Override  
 	public int getRequestedOrientation() {  
@@ -268,26 +265,9 @@ public class MainActivity extends Activity implements MyCallInterface{
 	} 
 
 	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-
-		super.onConfigurationChanged(newConfig);
-
-		Log.i("--Main--", "onConfigurationChanged");
-
-		if(newConfig.orientation==Configuration.ORIENTATION_LANDSCAPE){
-
-			//textView.setText("当前屏幕为横屏");
-
-		}else{
-
-			//textView.setText("当前屏幕为竖屏");
-
-		}
-
-	}  
-	@Override
 	protected void onDestroy()
 	{
+		this.stop();
 		// TODO Auto-generated method stub
 		super.onDestroy();
 	}
@@ -303,7 +283,7 @@ public class MainActivity extends Activity implements MyCallInterface{
 			Bundle args = new Bundle();
 			Intent intent = new Intent("com.example.androidservice.service");
 			intent.putExtras(args);
-			this.bindService(intent,mConnection,Context.BIND_AUTO_CREATE);
+			//this.bindService(intent,mConnection,Context.BIND_AUTO_CREATE);
 
 			this.InitScreen();
 
@@ -326,6 +306,8 @@ public class MainActivity extends Activity implements MyCallInterface{
 			this.Init = new InitializationService();
 			this.AppExit=new Caller();
 			this.AppExit.setI(this);
+
+			this.FreeHintDialog=new FreeTimeHintDialog(this);
 
 			this.InitSplash();
 
@@ -400,8 +382,6 @@ public class MainActivity extends Activity implements MyCallInterface{
 			this.Init.Restart();
 			//this.tcpClient.Restart();//开始通信尝试
 			this.TaskManager.Restart();
-
-
 
 		} 
 		catch (Exception ex) {
@@ -544,6 +524,7 @@ public class MainActivity extends Activity implements MyCallInterface{
 			@Override
 			public void onConfim(String content) {
 				startActivity(new Intent(MainActivity.this, ActivityViewpage.class));
+				finish();
 			}
 
 			@Override
@@ -611,14 +592,14 @@ public class MainActivity extends Activity implements MyCallInterface{
 
 	});
 
-	public IMFServiceInterface getmService() {
+	/*public IMFServiceInterface getmService() {
 		return mService;
 	}
 
 	public void setmService(IMFServiceInterface mService) {
 		this.mService = mService;
 	}
-
+*/
 	@Override
 	public Object fuc(Object paras) 
 	{
@@ -711,6 +692,7 @@ public class MainActivity extends Activity implements MyCallInterface{
 		// TODO Auto-generated method stub
 		changeMainActivity=true;
 		super.onPause();
+		this.FreeHintDialog.stopDisplay();
 	}
 
 	@Override
@@ -721,6 +703,7 @@ public class MainActivity extends Activity implements MyCallInterface{
 			this.mHandler.sendEmptyMessage(0);
 			changeMainActivity = false;
 		}
+		this.FreeHintDialog.startDisplay();
 		/*APPExitHelper.RegisterHomeKeyReceiver(this);
 		if(PlayerMenu.isModifyScreen||PlayerMenu.isModifySetting){
 			PlayerMenu.isModifyScreen=false;
@@ -739,4 +722,23 @@ public class MainActivity extends Activity implements MyCallInterface{
 		this.Screen.setVisibility(View.VISIBLE);
 
 	}
+
+	private void stop(){
+		try {
+			ConnectManagerService.Stop();
+			HouseKeeping.Stop();
+			ResourceCenter.Stop();
+			FileManager.Stop();
+			PBUDispatcher.Stop();
+			ScheduleLoader.Stop();
+
+			this.FreeHintDialog.stopDisplay();
+
+			//this.unbindService(mConnection);
+
+		}catch (Exception ex){
+			LogOperator.WriteLogfortxt("MainActivity==>stop:"+ex.getMessage());
+		}
+	}
+
 }

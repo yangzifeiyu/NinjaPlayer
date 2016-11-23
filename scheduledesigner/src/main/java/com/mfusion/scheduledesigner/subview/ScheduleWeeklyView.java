@@ -14,6 +14,7 @@ import android.text.format.DateFormat;
 import android.view.View;
 import android.view.View.OnLayoutChangeListener;
 
+import com.mfusion.commons.tools.DateConverter;
 import com.mfusion.commons.tools.InternalKeyWords;
 import com.mfusion.scheduledesigner.R;
 
@@ -50,10 +51,7 @@ public class ScheduleWeeklyView  extends View implements OnLayoutChangeListener{
         this.paint_expiry.setStyle(Style.FILL);
 
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
+        DateConverter.clearCalendarNoneHHmmss(calendar);
         this.current_date=calendar.getTime();
 
         this.addOnLayoutChangeListener(this);

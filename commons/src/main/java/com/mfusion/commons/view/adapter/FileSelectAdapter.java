@@ -1,5 +1,6 @@
 package com.mfusion.commons.view.adapter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -9,6 +10,7 @@ import android.nfc.cardemulation.OffHostApduService;
 import android.opengl.Visibility;
 import android.provider.ContactsContract.Contacts.Data;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -24,7 +26,9 @@ public class FileSelectAdapter extends BaseAdapter {
 	Context context =null;
 	
 	List<? extends Map<String, ?>> data=null;
-	
+
+	List<CheckBox> check_box_list;
+
 	int layout;
 	
 	String[] fromStrings;
@@ -44,18 +48,20 @@ public class FileSelectAdapter extends BaseAdapter {
 		this.toControlId=to;
 		
 		this.mutilSelect=mutilSelect;
+
+		this.check_box_list=new ArrayList<>();
 	}
 
 	@Override  
     public View getView(final int position, View convertView, ViewGroup parent) {  
         Map itemMap = (Map)this.getItem(position);  
-        convertView = LayoutInflater.from(context).inflate(layout, null);  
+        convertView = LayoutInflater.from(context).inflate(layout, null);
         
         for (int index=0;index<this.toControlId.length;index++) {
 			View controlView=convertView.findViewById(this.toControlId[index]);
 			if(controlView.getClass()==CheckBox.class){
-				CheckBox checkBox =((CheckBox)controlView);
-				
+				final CheckBox checkBox =((CheckBox)controlView);
+				check_box_list.add(checkBox);
 				if(mutilSelect==false){
 					checkBox.setVisibility(View.GONE);
 					continue;
@@ -80,6 +86,16 @@ public class FileSelectAdapter extends BaseAdapter {
 							// TODO: handle exception
 							e.printStackTrace();
 						}
+					}
+				});
+				convertView.setClickable(true);
+				convertView.setOnTouchListener(new View.OnTouchListener() {
+					@Override
+					public boolean onTouch(View v, MotionEvent event) {
+						if(event.getAction()==MotionEvent.ACTION_UP){
+							checkBox.setChecked(!checkBox.isChecked());
+						}
+						return true;
 					}
 				});
 			}else if(controlView.getClass()==TextView.class){
@@ -112,5 +128,10 @@ public class FileSelectAdapter extends BaseAdapter {
 	
 	public List<? extends Map<String, ?>> getSourceData() {
 		return this.data;
+	}
+
+	public void cancelSelect(){
+		for(CheckBox check : check_box_list)
+			check.setChecked(false);
 	}
 }

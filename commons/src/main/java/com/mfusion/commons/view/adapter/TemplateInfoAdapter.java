@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mfusion.commons.entity.template.VisualTemplate;
+import com.mfusion.commons.entity.values.FileSelectType;
 import com.mfusion.commons.tools.ButtonHoverStyle;
 import com.mfusion.commons.tools.CallbackBundle;
 import com.mfusion.commons.tools.ImageHelper;
@@ -44,17 +45,21 @@ public class TemplateInfoAdapter  extends BaseAdapter {
 
     List<CheckBox> checkBoxViewList;
 
+    CheckBox pre_checked_box,current_checked_box;
+
     CheckBox checkBox_select_all;
 
     View selected_view;
 
     Boolean canDrag=false;
 
-    Boolean canChecked=false;
+    FileSelectType item_select_type=FileSelectType.None;
 
     CallbackBundle openEventCall,deleteEventCall,exportEventCall,renameEventCall;
 
     ArrayList<VisualTemplate> selected_list;
+
+    OnSelectItemChangedListener selectItemChangedListener;
 
     int layout= R.layout.template_thumb_view;
 
@@ -69,9 +74,9 @@ public class TemplateInfoAdapter  extends BaseAdapter {
         this.initAdapter(context,parent,temp_list);
     }
 
-    public TemplateInfoAdapter(Context context, View parent, List<VisualTemplate> temp_list, CallbackBundle openCallback, CallbackBundle deleteCallback, CallbackBundle exportCallback, CallbackBundle renameCallback,Boolean canSelected) {
+    public TemplateInfoAdapter(Context context, View parent, List<VisualTemplate> temp_list, CallbackBundle openCallback, CallbackBundle deleteCallback, CallbackBundle exportCallback, CallbackBundle renameCallback,FileSelectType selectType) {
 
-        this.canChecked=canSelected;
+        this.item_select_type=selectType;
         this.openEventCall=openCallback;
         this.deleteEventCall=deleteCallback;
         this.exportEventCall=exportCallback;
@@ -79,15 +84,19 @@ public class TemplateInfoAdapter  extends BaseAdapter {
         this.initAdapter(context,parent,temp_list);
     }
 
-    public TemplateInfoAdapter(Context context, View parent, List<VisualTemplate> temp_list, CallbackBundle openCallback, CallbackBundle deleteCallback, CallbackBundle exportCallback, CallbackBundle renameCallback,Boolean canSelected,CheckBox select_all) {
+    public TemplateInfoAdapter(Context context, View parent, List<VisualTemplate> temp_list, CallbackBundle openCallback, CallbackBundle deleteCallback, CallbackBundle exportCallback, CallbackBundle renameCallback, FileSelectType selectType, CheckBox select_all) {
 
-        this.canChecked=canSelected;
+        this.item_select_type=selectType;
         this.checkBox_select_all=select_all;
         this.openEventCall=openCallback;
         this.deleteEventCall=deleteCallback;
         this.exportEventCall=exportCallback;
         this.renameEventCall=renameCallback;
         this.initAdapter(context,parent,temp_list);
+    }
+
+    public void setOnSelectItemChangedListener(OnSelectItemChangedListener listener){
+        this.selectItemChangedListener=listener;
     }
 
     private void initAdapter(Context context,View parent,List<VisualTemplate> temp_list){
@@ -124,10 +133,13 @@ public class TemplateInfoAdapter  extends BaseAdapter {
                 return false;
             }
         });
-        CheckBox selectBox=(CheckBox) convertView.findViewById(R.id.template_thumb_selecter);
+        final CheckBox selectBox=(CheckBox) convertView.findViewById(R.id.template_thumb_selecter);
         selectBox.setTag(temp_info.id);
         selectBox.setVisibility(View.GONE);
-        this.checkBoxViewList.add(selectBox);
+
+        final CheckBox single_selectBox=(CheckBox) convertView.findViewById(R.id.template_thumb_single_select);
+        single_selectBox.setTag(temp_info.id);
+        single_selectBox.setVisibility(View.GONE);
 
         ImageView imageView=(ImageView)convertView.findViewById(R.id.template_thumb_image);
         imageViewList.add(imageView);
@@ -183,7 +195,10 @@ public class TemplateInfoAdapter  extends BaseAdapter {
                         }
                         //return true;
                     case MotionEvent.ACTION_UP:
-
+                        if(selectBox.getVisibility()==View.VISIBLE)
+                            selectBox.setChecked(!selectBox.isChecked());
+                        if(single_selectBox.getVisibility()==View.VISIBLE)
+                            single_selectBox.setChecked(!single_selectBox.isChecked());
                         isPrepareDrag=false;
                         //return true;
                 }
@@ -191,9 +206,9 @@ public class TemplateInfoAdapter  extends BaseAdapter {
             }
         });
 
-        if(canChecked){
-            selectBox.setTag(temp_info.id);
+        if(item_select_type==FileSelectType.MultiSelect){
             selectBox.setVisibility(View.VISIBLE);
+            this.checkBoxViewList.add(selectBox);
             selectBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -212,6 +227,31 @@ public class TemplateInfoAdapter  extends BaseAdapter {
                             selected_list.remove(temp_info);
                         }
                     }
+                }
+            });
+        }
+        if(item_select_type==FileSelectType.SingleSelect){
+
+            this.checkBoxViewList.add(single_selectBox);
+            single_selectBox.setVisibility(View.VISIBLE);
+            single_selectBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    String temp_id=buttonView.getTag().toString();
+                    if(pre_checked_box!=buttonView||isChecked)
+                        selected_list.clear();
+                    if(isChecked){
+                        selected_list.add(temp_info);
+                        pre_checked_box=current_checked_box;
+                        current_checked_box=(CheckBox) buttonView;
+                        if(pre_checked_box!=null&&pre_checked_box!=current_checked_box)
+                            pre_checked_box.setChecked(false);
+                    }
+
+                    if(pre_checked_box!=current_checked_box&&pre_checked_box==buttonView)
+                        return;
+                    if(selectItemChangedListener!=null)
+                        selectItemChangedListener.onSelectItemChange(temp_id,isChecked);
                 }
             });
         }
@@ -256,9 +296,15 @@ public class TemplateInfoAdapter  extends BaseAdapter {
             });
         }
 
-        if(!canChecked&&this.deleteEventCall==null&&this.exportEventCall==null)
+        if(item_select_type!=FileSelectType.MultiSelect&&this.deleteEventCall==null&&this.exportEventCall==null)
             ((LinearLayout) convertView.findViewById(R.id.template_thumb_manager)).setVisibility(View.GONE);
 
+        int name_padding_left=0,name_padding_right=0;
+        /*if(item_select_type==FileSelectType.SingleSelect)
+            name_padding_right=(int)context.getResources().getDimension(R.dimen.thumb_item_operator_size);
+        if(openEventCall!=null)
+            name_padding_left=(int)context.getResources().getDimension(R.dimen.thumb_item_btn_width)*/;
+        nameView.setPadding(name_padding_left,0,name_padding_right,0);
         return convertView;
     }
 
@@ -321,4 +367,9 @@ public class TemplateInfoAdapter  extends BaseAdapter {
             checkBox.setChecked(selected);
         }
     }
+
+    public interface OnSelectItemChangedListener{
+        public void onSelectItemChange(String template,Boolean checked);
+    }
+
 }

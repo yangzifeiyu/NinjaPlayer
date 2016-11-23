@@ -1,5 +1,6 @@
 package com.mfusion.player.common.Entity.command;
 
+import com.panasonic.avc.vsbd.displaycontrollibrary.CallbackReceiveListener;
 import com.panasonic.avc.vsbd.displaycontrollibrary.DisplayControl;
 
 import com.mfusion.player.library.Helper.LoggerHelper;
@@ -23,7 +24,13 @@ public class ShutdownCommand extends Command {
 		{
 			if(this.target!=null&&this.target.equalsIgnoreCase("af1")){
 				LoggerHelper.WriteLogfortxt("Command shutdown==>af1");
-				DisplayControl control=new DisplayControl();
+				final DisplayControl control=new DisplayControl();
+				control.setCallbackListener(new CallbackReceiveListener() {
+					@Override
+					public void onCallbackReceive() {
+						LoggerHelper.WriteLogfortxt("Command shutdown==>"+control.getCallbackMsg());
+					}
+				});
 				control.setPowerOff(0);
 				return;
 			}

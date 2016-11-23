@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/propertyBar"
+		android:background="@drawable/mf_propertybar">
+
+		<TextView
+            android:id="@+id/temp_comp_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+			android:text="DataTime 1"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="@dimen/textSizeBig"
+			android:gravity="center"
+			android:layout_marginLeft="@dimen/global_margin"
+			android:layout_centerVertical="true"
+			android:layout_alignParentLeft="true" />
+
+		<ImageButton
+			android:layout_width="20dp"
+			android:layout_height="20dp"
+			android:id="@+id/temp_delete_btn"
+			android:src="@drawable/mf_delete"
+			android:background="#00ffffff"
+			android:scaleType="fitXY"
+			android:layout_gravity="right"
+			android:layout_centerVertical="true"
+			android:layout_alignParentRight="true"
+			android:layout_marginRight="@dimen/global_margin"
+			android:padding="2dp" />
+
+	</RelativeLayout>
+    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/propertyBar">
+
+		<TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Basic Properties :"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="@dimen/textSizeBig"
+			android:layout_centerVertical="true"
+			android:layout_alignParentStart="true"
+			android:layout_marginLeft="@dimen/global_margin" />
+
+		<ImageButton
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:id="@+id/temp_basic_expan_btn"
+			android:src="@drawable/mf_toggle"
+			android:background="#00ffffff"
+			android:layout_marginRight="@dimen/global_margin"
+			android:layout_alignTop="@+id/textView6"
+			android:layout_alignParentEnd="true" />
+
+    </RelativeLayout>
+
+	<LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_marginBottom="@dimen/global_margin_medium"
+		android:orientation="vertical"
+		android:id="@+id/temp_comp_basic_properties"
+		android:layout_marginLeft="@dimen/global_margin">
+
+		<LinearLayout
+			android:orientation="horizontal"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:layout_marginLeft="@dimen/global_margin"
+			android:layout_marginTop="@dimen/propertyHSpace">
+
+			<LinearLayout
+				android:id="@+id/temp_comp_bg_layout"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal">
+
+				<TextView
+					android:id="@+id/textView3"
+					android:layout_width="wrap_content"
+					android:layout_height="match_parent"
+					android:text="Back Color :"
+					android:textAppearance="?android:attr/textAppearanceSmall"
+					android:textSize="@dimen/textSize"
+					style="@style/property_name" />
+
+				<Button
+					android:id="@+id/temp_comp_color_btn"
+					android:layout_width="@dimen/colorEditBtn"
+					android:layout_height="@dimen/colorEditBtn"
+					android:layout_gravity="left|top"
+					android:background="#000000" />
+
+			</LinearLayout>
+
+			<LinearLayout
+				android:id="@+id/temp_comp_bgimage_layout"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal">
+
+				<TextView
+					android:id="@+id/textView7"
+					android:layout_width="wrap_content"
+					android:layout_height="match_parent"
+					android:text="Back Image :"
+					android:textAppearance="?android:attr/textAppearanceSmall"
+					android:textSize="@dimen/textSize"
+					style="@style/property_name" />
+
+				<ImageButton
+					android:id="@+id/temp_comp_bgimage_btn"
+					android:layout_width="@dimen/propertyEditBtn"
+					android:layout_height="@dimen/propertyEditBtn"
+					android:layout_gravity="left|top"
+					android:background="#00ffffff"
+					android:src="@drawable/mf_edit"
+					android:scaleType="fitCenter"
+					android:padding="@dimen/propertyEditBtnPadding" />
+
+			</LinearLayout>
+
+		</LinearLayout>
+
+		<LinearLayout
+			android:orientation="horizontal"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:layout_marginLeft="@dimen/global_margin"
+			android:layout_marginTop="@dimen/propertyHSpace">
+
+			<LinearLayout
+				android:id="@+id/temp_comp_size_layout"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal">
+
+				<TextView
+					android:id="@+id/textView1"
+					android:layout_width="wrap_content"
+					android:layout_height="match_parent"
+					android:text="Size :"
+					android:textAppearance="?android:attr/textAppearanceSmall"
+					android:textSize="@dimen/textSize"
+					style="@style/property_name" />
+
+				<TextView
+					android:id="@+id/temp_comp_size_text"
+					android:layout_width="wrap_content"
+					android:layout_height="match_parent"
+					android:gravity="center"
+					android:text="1280, 760"
+					android:textAppearance="?android:attr/textAppearanceSmall"
+					android:textSize="@dimen/textSize"
+					android:typeface="monospace" />
+
+				<ImageButton
+					android:id="@+id/temp_comp_size_btn"
+					android:layout_width="@dimen/propertyEditBtn"
+					android:layout_height="@dimen/propertyEditBtn"
+					android:layout_gravity="left|top"
+					android:background="#00ffffff"
+					android:src="@drawable/mf_edit"
+					android:scaleType="fitCenter"
+					android:padding="@dimen/propertyEditBtnPadding" />
+
+			</LinearLayout>
+
+			<LinearLayout
+				android:id="@+id/temp_comp_location_layout"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal">
+
+				<TextView
+					android:id="@+id/textView2"
+					android:layout_width="wrap_content"
+					android:layout_height="match_parent"
+					android:text="Location :"
+					android:textAppearance="?android:attr/textAppearanceSmall"
+					android:textSize="@dimen/textSize"
+					style="@style/property_name" />
+
+				<TextView
+					android:id="@+id/temp_comp_location_text"
+					android:layout_width="wrap_content"
+					android:layout_height="match_parent"
+					android:gravity="center"
+					android:text="0, 0"
+					android:textAppearance="?android:attr/textAppearanceSmall"
+					android:textSize="@dimen/textSize" />
+
+				<ImageButton
+					android:id="@+id/temp_comp_location_btn"
+					android:layout_width="@dimen/propertyEditBtn"
+					android:layout_height="@dimen/propertyEditBtn"
+					android:layout_gravity="left|top"
+					android:background="#00ffffff"
+					android:src="@drawable/mf_edit"
+					android:scaleType="fitCenter"
+					android:padding="@dimen/propertyEditBtnPadding" />
+
+			</LinearLayout>
+
+			<LinearLayout
+				android:id="@+id/temp_comp_zindex_layout"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal">
+
+				<TextView
+					android:id="@+id/textView4"
+					android:layout_width="wrap_content"
+					android:layout_height="match_parent"
+					android:text="Layer :"
+					android:textAppearance="?android:attr/textAppearanceSmall"
+					android:textSize="@dimen/textSize"
+					style="@style/property_name" />
+
+				<ImageButton
+					android:id="@+id/temp_comp_moveup_btn"
+					android:layout_width="@dimen/propertyEditBtn"
+					android:layout_height="@dimen/propertyEditBtn"
+					android:layout_gravity="left|top"
+					android:background="#00ffffff"
+					android:src="@drawable/move_forward"
+					android:tag="1"
+					android:layout_marginRight="5dp" />
+
+				<ImageButton
+					android:id="@+id/temp_comp_movedown_btn"
+					android:layout_width="@dimen/propertyEditBtn"
+					android:layout_height="@dimen/propertyEditBtn"
+					android:layout_gravity="left|top"
+					android:background="#00ffffff"
+					android:src="@drawable/move_backward"
+					android:tag="-1"
+					android:layout_marginLeft="5dp" />
+
+			</LinearLayout>
+
+		</LinearLayout>
+
+	</LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/propertyBar">
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Other Properties :"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="@dimen/textSizeBig"
+			android:layout_centerVertical="true"
+			android:layout_alignParentStart="true"
+			android:layout_marginLeft="@dimen/global_margin" />
+
+		<ImageButton
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:id="@+id/temp_other_expan_btn"
+			android:layout_alignParentRight="true"
+			android:src="@drawable/mf_toggle_expand"
+			android:background="#00ffffff"
+			android:layout_marginRight="10dp"
+			android:layout_centerVertical="true"
+			android:layout_alignParentEnd="true"/>
+
+    </RelativeLayout>
+
+	<LinearLayout
+	    android:id="@+id/temp_comp_other_properties"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_marginBottom="@dimen/global_margin_medium"
+		android:layout_marginTop="@dimen/global_margin_medium"
+	    android:orientation="vertical"
+		android:layout_marginLeft="@dimen/global_margin">
+	    
+    </LinearLayout>
+</LinearLayout>

@@ -93,8 +93,6 @@ public class WeekSelectView extends RelativeLayout {
                 }
             });
 
-            ButtonHoverStyle.bindingHoverEffectWithBorder(this.select_view,getResources());
-
             ButtonHoverStyle.bindingHoverEffect(this.pre_view,getResources());
 
             ButtonHoverStyle.bindingHoverEffect(this.next_view,getResources());

@@ -1,23 +1,22 @@
 package com.mfusion.commons.view;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.mfusion.commons.tools.ButtonHoverStyle;
 import com.mfusion.commontools.R;
 
 /**
- * Created by Guoyu on 2016/8/18.
+ * Created by ThinkPad on 2016/9/6.
  */
-public class ImageTextView extends LinearLayout{
-
+public class ImageTextHorizontalView extends LinearLayout{
     private Context m_context;
 
     private LinearLayout m_view_layout;
@@ -26,16 +25,16 @@ public class ImageTextView extends LinearLayout{
 
     private TextView m_text_view;
 
-    public ImageTextView(Context context) {
+    public ImageTextHorizontalView(Context context) {
         super(context);
         initView(context);
     }
 
-    public ImageTextView(Context context, AttributeSet attrs) {
+    public ImageTextHorizontalView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initView(context);
     }
-    public ImageTextView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ImageTextHorizontalView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initView(context);
     }
@@ -43,18 +42,19 @@ public class ImageTextView extends LinearLayout{
     private void initView(Context context){
         this.m_context=context;
 
-        m_view_layout =(LinearLayout) LayoutInflater.from(this.getContext()).inflate(R.layout.view_imagetext, this,true);
+        m_view_layout =(LinearLayout) LayoutInflater.from(this.getContext()).inflate(R.layout.view_imagetext_horizontal, this,true);
 
         m_view_layout.setBackground(m_context.getResources().getDrawable(R.drawable.button_style));
 
-        m_image_view=(ImageView)m_view_layout.findViewById(R.id.customer_img);
+        m_image_view=(ImageView)m_view_layout.findViewById(R.id.view_imagetext_horizontal_img);
+        m_image_view.setVisibility(GONE);
 
-        m_text_view=(TextView)m_view_layout.findViewById(R.id.customer_text);
+        m_text_view=(TextView)m_view_layout.findViewById(R.id.view_imagetext_horizontal_text);
         m_text_view.setText("");
         m_text_view.setVisibility(GONE);
         m_text_view.setTag(m_text_view.getCurrentTextColor());
 
-        ButtonHoverStyle.bindingHoverEffectWithBorder(m_view_layout,m_context.getResources());
+        ButtonHoverStyle.bindingHoverEffect(m_view_layout,m_context.getResources());
     }
 
     public void setText(String text){
@@ -64,23 +64,29 @@ public class ImageTextView extends LinearLayout{
 
     public void setImage(Bitmap image){
         m_image_view.setImageBitmap(image);
+        m_image_view.setVisibility(VISIBLE);
     }
 
     public void setImage(int drawableId){
         m_image_view.setImageDrawable(m_context.getResources().getDrawable(drawableId));
+        m_image_view.setVisibility(VISIBLE);
     }
 
     @Override
     public void setSelected(boolean selected){
         super.setSelected(selected);
-        ButtonHoverStyle.bindingHoverEffectWithBorder(m_view_layout,selected,m_context.getResources());
+        ButtonHoverStyle.bindingHoverEffect(m_view_layout,selected,m_context.getResources());
     }
     @Override
     public void setEnabled(boolean enabled){
         super.setEnabled(enabled);
-        if(enabled)
+        if(enabled){
             m_text_view.setTextColor((int)m_text_view.getTag());
-        else
+            m_image_view.setAlpha(1.0f);
+        }
+        else {
             m_text_view.setTextColor(Color.GRAY);
+            m_image_view.setAlpha(0.7f);
+        }
     }
 }

@@ -19,7 +19,7 @@ public class ConnectLocalService  implements BasicServiceInterface{
 	Caller connectCaller;
 	
 	ScheduleXmlListener scheduleXmlListener;
-	
+
 	public void setConnectCaller(Caller connectCaller){
 		this.connectCaller=connectCaller;
 		
@@ -43,7 +43,7 @@ public class ConnectLocalService  implements BasicServiceInterface{
 				this.connectCaller.call(args);
 			}
 			
-			this.scheduleXmlListener.startWatching();
+			//this.scheduleXmlListener.startWatching();
 			
 		} catch (Exception e) {
 			// TODO: handle exception

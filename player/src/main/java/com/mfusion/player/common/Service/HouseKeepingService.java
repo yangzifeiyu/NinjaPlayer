@@ -9,7 +9,6 @@
 package com.mfusion.player.common.Service;
 
 import java.util.Date;
-import java.util.Hashtable;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 
@@ -18,7 +17,7 @@ import com.mfusion.player.common.Player.MainActivity;
 import com.mfusion.player.common.Setting.Player.PlayerStoragePath;
 import com.mfusion.player.common.Storage.MediaStorageHelper;
 
-import com.mfusion.player.library.Controller.HandleTimer;
+import com.mfusion.commons.tools.HandleTimer;
 import com.mfusion.player.library.Helper.DateTimeHelper;
 import com.mfusion.player.library.Helper.FileHelper;
 import com.mfusion.player.library.Helper.LoggerHelper;
@@ -45,7 +44,7 @@ public class HouseKeepingService implements BasicServiceInterface{
 	@Override
 	public void Restart()
 	{
-		LoggerHelper.WriteLogfortxt("HouseKeeping Start==>");
+		//LoggerHelper.WriteLogfortxt("HouseKeeping Start==>");
 		// TODO Auto-generated method stub
 		deleteDay = DateTimeHelper.GetAddedDate(MainActivity.Instance.Clock.Now,-houseKeepingDay*24*60*60,MainActivity.Instance.PlayerSetting.Timezone);//ɾ����һʱ��֮ǰ��media�ļ�
 		mTimer.start(interval,interval);

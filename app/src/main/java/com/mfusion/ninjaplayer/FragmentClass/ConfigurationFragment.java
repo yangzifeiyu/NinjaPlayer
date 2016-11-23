@@ -5,15 +5,13 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -23,36 +21,34 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 
 import com.mfusion.commons.controllers.AbstractFragment;
 import com.mfusion.commons.data.DALSettings;
-import com.mfusion.commons.tools.CallbackBundle;
 import com.mfusion.commons.tools.DateConverter;
-import com.mfusion.commons.tools.InternalKeyWords;
 import com.mfusion.commons.tools.LogOperator;
 import com.mfusion.commons.tools.OperateCallbackBundle;
-import com.mfusion.commons.view.ImageTextView;
+import com.mfusion.commons.view.CheckSwitchButton;
+import com.mfusion.commons.view.ImageTextHorizontalView;
+import com.mfusion.commons.view.ImageTextVerticalView;
+import com.mfusion.commons.view.TimePickerView;
 import com.mfusion.ninjaplayer.R;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 public class ConfigurationFragment extends AbstractFragment {
 
-    ImageTextView Save, Check;
-    ImageButton shut, wake;
+    ImageTextHorizontalView Save, Check;
     EditText pass, passagain;
     TextView status;
-    EditText tvtime, tvwtime;
     RadioGroup radioGroup;
     RadioButton Landscape, Portrait;
     TimePickerDialog timePickerDialog;
-    CheckBox ckpass, ckwake, ckshut;
+
+    TimePickerView shutdown_time_picker,wakeup_time_picker;
+
+    CheckSwitchButton pass_switch_btn,shutdown_switch_btn,wakeup_switch_btn;
 
     TextView m_warning_view;
 
@@ -71,35 +67,15 @@ public class ConfigurationFragment extends AbstractFragment {
 
         radioGroup = (RadioGroup) rootView.findViewById(R.id.myRadioGroup);
         Portrait = (RadioButton) rootView.findViewById(R.id.portrait);// portrait orientation
-        Drawable drawable_portrait = getResources().getDrawable(R.drawable.logo_portrait);
-        drawable_portrait.setBounds(0, 0, radioGroup.getLayoutParams().height, radioGroup.getLayoutParams().height);
-        Portrait.setCompoundDrawables(drawable_portrait,null,null,null);
         Landscape = (RadioButton) rootView.findViewById(R.id.landscape);//landscape orientation
-        Drawable drawable_landscape = getResources().getDrawable(R.drawable.logo_landscape);
-        drawable_landscape.setBounds(0, 0, radioGroup.getLayoutParams().height, radioGroup.getLayoutParams().height);
-        Landscape.setCompoundDrawables(drawable_landscape,null,null,null);
 
-        ckshut = (CheckBox) rootView.findViewById(R.id.chshut3);//shutdown time checkbox
-        shut = (ImageButton) rootView.findViewById(R.id.btnImgShut);//wake up image button
-        shut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                settimeDialog(tvtime,"Set Shutdown Time");
-            }
-        });
-        tvtime = (EditText) rootView.findViewById(R.id.edTvtime);//text view for shutdown time
+        shutdown_switch_btn = (CheckSwitchButton) rootView.findViewById(R.id.switch_shutdown);//shutdown time checkbox
+        shutdown_time_picker=(TimePickerView) rootView.findViewById(R.id.time_shutdown);
 
-        ckwake = (CheckBox) rootView.findViewById(R.id.chwake3);//wake up time checkboc
-        wake = (ImageButton) rootView.findViewById(R.id.btnImgWake);//wake up time image button
-        wake.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                settimeDialog(tvwtime,"Set Wakeup Time");
-            }
-        });
-        tvwtime = (EditText) rootView.findViewById(R.id.edTvwtime);//text view for shutdown time
+        wakeup_switch_btn = (CheckSwitchButton) rootView.findViewById(R.id.switch_wakeup);//wake up time checkboc
+        wakeup_time_picker=(TimePickerView) rootView.findViewById(R.id.time_wakeup);
 
-        ckpass = (CheckBox) rootView.findViewById(R.id.chPassword2);//password checkbox
+        pass_switch_btn=(CheckSwitchButton) rootView.findViewById(R.id.switch_pass);
         pass = (EditText) rootView.findViewById(R.id.etPassword);//password
         pass.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,8 +97,9 @@ public class ConfigurationFragment extends AbstractFragment {
             }
         });
         status = (TextView) rootView.findViewById(R.id.txtStatusPa);//password validation text view
+        status.setTag(status.getCurrentTextColor());
 
-        Save = (ImageTextView) rootView.findViewById(R.id.btnContinue);//save setting button
+        Save = (ImageTextHorizontalView) rootView.findViewById(R.id.btnContinue);//save setting button
         Save.setText("Apply");
         Save.setImage(R.drawable.mf_save);
         Save.setOnClickListener(new View.OnClickListener() {
@@ -140,67 +117,85 @@ public class ConfigurationFragment extends AbstractFragment {
 
     TextWatcher passwordWatcher= new TextWatcher() {
 
+        String oldText;
         @Override
         public void afterTextChanged(Editable s) {
             // TODO Auto-generated method stub
-            if(ckpass.isChecked())
-                isEditing=true;
         }
 
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             // TODO Auto-generated method stub
-
+            oldText=s.toString();
         }
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if(!ckpass.isChecked())
+            if(!pass_switch_btn.isChecked())
                 return;
 
             String strPass1 = pass.getText().toString().trim();
+            if(strPass1.length()>12){
+                pass.setText(oldText);
+                pass.setSelection(oldText.length()-1);
+                return;
+            }
+            if(strPass1.isEmpty()){
+                status.setText(R.string.password_limit);//display when password is valid
+                status.setTextColor((int)status.getTag());
+                return;
+            }
             if (isValidPassword(strPass1)) {
-                status.setText(R.string.password_match);//display when password is valid
+                status.setText(R.string.password_accept);//display when password is valid
+                status.setTextColor(getResources().getColor(R.color.config_match));
             } else {
-                status.setText(R.string.password_limit);//display when password is not valid
+                status.setText(R.string.password_unaccept);//display when password is not valid
+                status.setTextColor(getResources().getColor(R.color.config_unmatch));
             }
         }
     };
 
     TextWatcher passwordAgainWatcher= new TextWatcher() {
+        String oldText;
         public void afterTextChanged(Editable s) {
-            if(ckpass.isChecked())
-                isEditing=true;
+
         }
 
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            oldText=s.toString();
         }
 
         public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-            if(!ckpass.isChecked())
+            if(!pass_switch_btn.isChecked())
                 return;
             String strPass1 = pass.getText().toString();
             String strPass2 = passagain.getText().toString();
+            if(strPass2.length()>12){
+                passagain.setText(oldText);
+                passagain.setSelection(oldText.length()-1);
+                return;
+            }
             if (isValidPassword(strPass1) && strPass1.equals(strPass2)) {
                 status.setText(R.string.password_match);//display when passwords match
+                status.setTextColor(getResources().getColor(R.color.config_match));
             } else {
                 status.setText(R.string.password_notmatch);//display when passwords do not match
+                status.setTextColor(getResources().getColor(R.color.config_unmatch));
             }
         }
     };
 
-    CompoundButton.OnCheckedChangeListener checkedPasswordListener = new CompoundButton.OnCheckedChangeListener() {
-
+    CheckSwitchButton.OnSwitchChangedListener checkedPasswordListener = new CheckSwitchButton.OnSwitchChangedListener() {
         @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        public void onSwitchChange(CheckSwitchButton switchView, boolean isChecked) {
         //do stuff
-            isEditing=true;
             int textColor=Color.LTGRAY;
             if (isChecked) {
                 textColor=getResources().getColor(R.color.config_text);
             } else {
                 status.setText("");
+                status.setTextColor((int)status.getTag());
             }
 
             pass.setTextColor(textColor);
@@ -217,52 +212,35 @@ public class ConfigurationFragment extends AbstractFragment {
         }
     };
 
-    CompoundButton.OnCheckedChangeListener checkedShutdownListener = new CompoundButton.OnCheckedChangeListener() {
-
+    CheckSwitchButton.OnSwitchChangedListener checkedShutdownListener = new CheckSwitchButton.OnSwitchChangedListener() {
         @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        public void onSwitchChange(CheckSwitchButton switchView, boolean isChecked) {
             //do stuff
-            isEditing=true;
-            if (isChecked) {
-                tvtime.setTextColor(getResources().getColor(R.color.config_text));
-            } else {
-                tvtime.setText("00:00:00");
-                tvtime.setTextColor(Color.LTGRAY);
-            }
-
-            shut.setFocusable(isChecked);
-            shut.setClickable(isChecked);
+            shutdown_time_picker.setEnabled(isChecked);
         }
     };
 
-    CompoundButton.OnCheckedChangeListener checkedWakeupListener = new CompoundButton.OnCheckedChangeListener() {
-
+    CheckSwitchButton.OnSwitchChangedListener checkedWakeupListener = new CheckSwitchButton.OnSwitchChangedListener() {
         @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        public void onSwitchChange(CheckSwitchButton switchView, boolean isChecked) {
             //do stuff
-            isEditing=true;
-            if (isChecked) {
-                tvwtime.setTextColor(getResources().getColor(R.color.config_text));
-            } else {
-                tvwtime.setText("00:00:00");
-                tvwtime.setTextColor(Color.LTGRAY);
-            }
-            wake.setFocusable(isChecked);
-            wake.setClickable(isChecked);
+            wakeup_time_picker.setEnabled(isChecked);
         }
     };
 
     private void bindingConfiguration(){
 
+        radioGroup.setOnCheckedChangeListener(null);
+
         pass.removeTextChangedListener(passwordWatcher);//check password
 
         passagain.removeTextChangedListener(passwordAgainWatcher);//confirm password validation
 
-        ckpass.setOnCheckedChangeListener(null);//password checkbox
+        pass_switch_btn.setOnChangeListener(null);//password checkbox
 
-        ckshut.setOnCheckedChangeListener(null);//shutdown time check box
+        shutdown_switch_btn.setOnChangeListener(null);//shutdown time check box
 
-        ckwake.setOnCheckedChangeListener(null);//wake up time checkbox
+        wakeup_switch_btn.setOnChangeListener(null);//wake up time checkbox
 
         int orientation=DALSettings.getInstance().getOrientation();
         if(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE==orientation)
@@ -277,7 +255,9 @@ public class ConfigurationFragment extends AbstractFragment {
             enabled=true;
             textColor=getResources().getColor(R.color.config_text);
         }
-        ckpass.setChecked(enabled);
+        pass_switch_btn.setTag(enabled);
+        pass_switch_btn.setChecked(enabled);
+        pass.setTag(passwordStr);
         pass.setText(passwordStr);
         passagain.setText(passwordStr);
 
@@ -287,59 +267,53 @@ public class ConfigurationFragment extends AbstractFragment {
         passagain.setHintTextColor(textColor);
 
         pass.setClickable(enabled);
+        pass.setFocusable(enabled);
         passagain.setClickable(enabled);
+        passagain.setFocusable(enabled);
         status.setText(R.string.password_limit);
+        status.setTextColor((int)status.getTag());
 
         enabled=false;
         textColor=Color.LTGRAY;
         String shutdowndStr=DALSettings.getInstance().getShutDownTime();
+        shutdown_time_picker.setTag(shutdowndStr);
         if(shutdowndStr!=null&&!shutdowndStr.isEmpty()){
             enabled=true;
             textColor=getResources().getColor(R.color.config_text);
         }else
             shutdowndStr="00:00:00";
 
-        ckshut.setChecked(enabled);
-        tvtime.setText(shutdowndStr);
-        tvtime.setTextColor(textColor);
-
-        shut.setFocusable(enabled);
-        shut.setClickable(enabled);
-
-        tvtime.setFocusable(false);
-        tvtime.setClickable(false);
+        shutdown_switch_btn.setChecked(enabled);
+        shutdown_switch_btn.setTag(enabled);
+        shutdown_time_picker.setTime(shutdowndStr,false);
+        shutdown_time_picker.setEnabled(enabled);
 
         enabled=false;
         textColor=Color.LTGRAY;
         String wakeupdStr=DALSettings.getInstance().getWakeUpTime();
+        wakeup_time_picker.setTag(wakeupdStr);
         if(wakeupdStr!=null&&!wakeupdStr.isEmpty()){
             enabled=true;
             textColor=getResources().getColor(R.color.config_text);
         }else
             wakeupdStr="00:00:00";
 
-        ckwake.setChecked(enabled);
-        tvwtime.setText(wakeupdStr);
-        tvwtime.setTextColor(textColor);
-
-        wake.setFocusable(enabled);
-        wake.setClickable(enabled);
-
-        tvwtime.setFocusable(false);
-        tvwtime.setClickable(false);
+        wakeup_switch_btn.setChecked(enabled);
+        wakeup_switch_btn.setTag(enabled);
+        wakeup_time_picker.setTime(wakeupdStr,false);
+        wakeup_time_picker.setEnabled(enabled);
 
         pass.addTextChangedListener(passwordWatcher);//check password
 
         passagain.addTextChangedListener(passwordAgainWatcher);//confirm password validation
 
-        ckpass.setOnCheckedChangeListener(checkedPasswordListener);//password checkbox
+        pass_switch_btn.setOnChangeListener(checkedPasswordListener);//password checkbox
 
-        ckshut.setOnCheckedChangeListener(checkedShutdownListener);//shutdown time check box
+        shutdown_switch_btn.setOnChangeListener(checkedShutdownListener);//shutdown time check box
 
-        ckwake.setOnCheckedChangeListener(checkedWakeupListener);//wake up time checkbox
+        wakeup_switch_btn.setOnChangeListener(checkedWakeupListener);//wake up time checkbox
 
         m_warning_view.setText("");
-        isEditing=false;
     }
 
     private void settimeDialog(final TextView timeText,String title) {
@@ -398,12 +372,10 @@ public class ConfigurationFragment extends AbstractFragment {
     public void saveModification(OperateCallbackBundle callbackBundle) {
 
         try {
-            int orientation=ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
-            if(Portrait.isChecked())
-                orientation=ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+            int orientation=Portrait.isChecked()?ActivityInfo.SCREEN_ORIENTATION_PORTRAIT:ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
 
             String password="";
-            if (ckpass.isChecked()) {
+            if (pass_switch_btn.isChecked()) {
                 String inputPassword=pass.getText().toString().trim();
                 Boolean checkResult=isValidPassword(inputPassword);
                 if(!checkResult){
@@ -421,23 +393,19 @@ public class ConfigurationFragment extends AbstractFragment {
                 password=inputPassword;
             }
 
-            DALSettings.getInstance().setOrientation(orientation);
-            DALSettings.getInstance().setExitPassword(password);
+            String shutdownValue=shutdown_switch_btn.isChecked()?shutdown_time_picker.getTime():"";
+            String wakeupValue=wakeup_switch_btn.isChecked()?wakeup_time_picker.getTime():"";
 
-            String shutdownValue="";
-            if(ckshut.isChecked()){
-                shutdownValue=tvtime.getText().toString();
-            }
-            DALSettings.getInstance().setShutDownTime(shutdownValue);
-
-            String wakeupValue="";
-            if(ckwake.isChecked()){
-                wakeupValue=tvwtime.getText().toString();
-            }
-            DALSettings.getInstance().setWakeUpTime(wakeupValue);
+            DALSettings.getInstance().saveConfigParameters(orientation,password,shutdownValue,wakeupValue);
+            pass_switch_btn.setTag(pass_switch_btn.isChecked());
+            pass.setTag(password);
+            shutdown_switch_btn.setTag(shutdown_switch_btn.isChecked());
+            shutdown_time_picker.setTag(shutdownValue);
+            wakeup_switch_btn.setTag(wakeup_switch_btn.isChecked());
+            wakeup_time_picker.setTag(wakeupValue);
 
             m_warning_view.setText("Save Successfully");
-            isEditing=false;
+
             if(callbackBundle!=null)
                 callbackBundle.onConfim("");
             return;
@@ -453,19 +421,40 @@ public class ConfigurationFragment extends AbstractFragment {
 
     @Override
     public void cancelSaveModification() {
-        bindingConfiguration();
+        //bindingConfiguration();
     }
 
     @Override
     public void showFragment() {
         if(isCreated){
-            bindingConfiguration();
+            handler.sendEmptyMessage(0);
         }
     }
+
+    Handler handler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            bindingConfiguration();
+        }
+    };
 
     @Override
     public void hideFragment() {
 
     }
+
+    @Override
+    public Boolean getIsEditing(){
+        if(pass_switch_btn.isChecked()!=(Boolean)pass_switch_btn.getTag()||(pass_switch_btn.isChecked()&&!pass.getText().toString().equals(pass.getTag())))
+            return true;
+        if(shutdown_switch_btn.isChecked()!=(Boolean)shutdown_switch_btn.getTag()||(shutdown_switch_btn.isChecked()&&!shutdown_time_picker.getTime().equals(shutdown_time_picker.getTag())))
+            return true;
+        if(wakeup_switch_btn.isChecked()!=(Boolean)wakeup_switch_btn.getTag()||(wakeup_switch_btn.isChecked()&&!wakeup_time_picker.getTime().equals(wakeup_time_picker.getTag())))
+            return true;
+
+           return false;
+    }
+
 }//clase
 

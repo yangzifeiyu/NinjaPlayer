@@ -8,14 +8,29 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/manager_title">
 
-        <com.mfusion.commons.view.ImageTextView
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/manager_btn_height"
-            android:text="Back"
-            android:id="@+id/template_sample_view_btn_back"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="5dp"
-            android:layout_centerVertical="true" />
+            android:layout_centerVertical="true">
+
+            <com.mfusion.commons.view.ImageTextVerticalView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Edit"
+                android:id="@+id/template_sample_view_btn_edit"
+                android:layout_marginRight="@dimen/global_big_btn_margin"
+                android:layout_centerVertical="true" />
+
+            <com.mfusion.commons.view.ImageTextVerticalView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Back"
+                android:id="@+id/template_sample_view_btn_back"
+                android:layout_marginRight="@dimen/global_big_btn_margin"
+                android:layout_centerVertical="true" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"

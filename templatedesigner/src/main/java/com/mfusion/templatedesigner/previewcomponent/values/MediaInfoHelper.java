@@ -1,9 +1,14 @@
 package com.mfusion.templatedesigner.previewcomponent.values;
 
+import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 
 import com.mfusion.commons.tools.FileOperator;
+import com.mfusion.commons.tools.ImageHelper;
+import com.mfusion.commons.tools.InternalKeyWords;
 import com.mfusion.templatedesigner.previewcomponent.entity.ScheduleMediaEntity;
+
+import java.io.File;
 
 public class MediaInfoHelper {
 	public static ScheduleMediaEntity getMediaInfo(String mediaPath){
@@ -12,9 +17,9 @@ public class MediaInfoHelper {
 			mediaItem=new ScheduleMediaEntity();
 			mediaItem.mediaPath=mediaPath;
 			mediaItem.mediaName=mediaPath.substring(mediaPath.lastIndexOf("/")+1);
-			mediaItem.mediaType=getMeidaType(mediaPath);
+			mediaItem.mediaType=getMediaType(mediaPath);
 			if(mediaItem.mediaType==ScheduleMediaType.Video||mediaItem.mediaType==ScheduleMediaType.Sound)
-				mediaItem.setIntDuration(getMeidaDuration(mediaPath));
+				mediaItem.setIntDuration(getMediaDuration(mediaPath));
 			else
 				mediaItem.setIntDuration(5);
 		} catch (Exception e) {
@@ -24,7 +29,7 @@ public class MediaInfoHelper {
 		return mediaItem;
 	}
 	
-	public static ScheduleMediaType getMeidaType(String mediaPath){
+	public static ScheduleMediaType getMediaType(String mediaPath){
 		int splitIndex=mediaPath.lastIndexOf(".");
 		if(splitIndex<0){
 			return ScheduleMediaType.Unknow;
@@ -48,13 +53,11 @@ public class MediaInfoHelper {
 	}
 
 	static MediaMetadataRetriever retriever = new MediaMetadataRetriever(); 
-	public static Integer getMeidaDuration(String mediaPath){
+	public static Integer getMediaDuration(String mediaPath){
 		try {
 			
-			retriever.setDataSource(mediaPath); 
-			// ȡ����Ƶ�ĳ���(��λΪ����) 
-			String time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION); 
-			// ȡ����Ƶ�ĳ���(��λΪ��)  
+			retriever.setDataSource(mediaPath);
+			String time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
 			return Integer.valueOf(time) / 1000; 
 			
 		} catch (Exception e) {

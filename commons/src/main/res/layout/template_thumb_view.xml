@@ -52,70 +52,62 @@
         </LinearLayout>
 
         <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/thumb_image_height">
+
+        <ImageView
+            android:id="@+id/template_thumb_image"
             android:layout_width="fill_parent"
-            android:layout_height="@dimen/thumb_image_height">
+            android:layout_height="fill_parent"
+            android:padding="4dp"
+            android:src="@android:drawable/ic_menu_gallery" />
 
-            <ImageView
-                android:id="@+id/template_thumb_image"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:padding="4dp"
-                android:src="@android:drawable/ic_menu_gallery" />
+    </RelativeLayout>
 
-        </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_horizontal">
-
-            <TextView
-                android:id="@+id/template_thumb_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Temp_1"
-                android:textSize="@dimen/textSize"
-                android:singleLine="false"
-                style="@style/myTextStyle"
-                android:layout_gravity="center"
-                android:paddingLeft="@dimen/thumb_item_btn_width" />
-
-            <ImageButton
-                android:layout_width="@dimen/thumb_item_btn_width"
-                android:layout_height="20dp"
-                android:id="@+id/template_thumb_open"
-                android:scaleType="fitCenter"
-                android:background="#00ffffff"
-                android:src="@drawable/mf_open"
-                android:layout_marginRight="@dimen/thumb_item_btn_width" />
-
-        </LinearLayout>
-        <!--<RelativeLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/template_thumb_name"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Temp_1"
-                android:textSize="@dimen/textSize"
-                android:layout_gravity="center_horizontal"
-                android:singleLine="false"
-                style="@style/myTextStyle"
-                android:gravity="center"
-                android:layout_centerInParent="true" />
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
 
-            <ImageButton
-                android:layout_width="@dimen/thumb_item_btn_width"
-                android:layout_height="20dp"
-                android:id="@+id/template_thumb_open"
-                android:scaleType="fitCenter"
-                android:background="#00ffffff"
-                android:src="@drawable/mf_open"
+                <TextView
+                    android:id="@+id/template_thumb_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Temp_1"
+                    android:textSize="@dimen/textSize"
+                    android:singleLine="false"
+                    style="@style/myTextStyle"
+                    android:layout_gravity="center"
+                    android:paddingLeft="@dimen/thumb_item_btn_width"
+                    android:paddingRight="@dimen/thumb_item_operator_size"/>
+
+                <ImageButton
+                    android:layout_width="@dimen/thumb_item_btn_width"
+                    android:layout_height="20dp"
+                    android:id="@+id/template_thumb_open"
+                    android:scaleType="fitCenter"
+                    android:background="#00ffffff"
+                    android:src="@drawable/mf_open"
+                    android:layout_marginRight="@dimen/thumb_item_btn_width" />
+
+            </LinearLayout>
+
+            <CheckBox
+                android:layout_width="@dimen/thumb_item_operator_size"
+                android:layout_height="@dimen/thumb_item_operator_size"
+                android:id="@+id/template_thumb_single_select"
+                android:background="@drawable/check_style"
+                android:button="@null"
                 android:layout_alignParentRight="true" />
 
-        </RelativeLayout>-->
+
+        </RelativeLayout>
+
 
     </LinearLayout>
 

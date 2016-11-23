@@ -10,7 +10,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".New.MainActivity">
 
-    <com.mfusion.commons.view.ImageTextView
+    <com.mfusion.commons.view.ImageTextVerticalView
 
         style="?android:attr/buttonStyleSmall"
         android:background="@drawable/mybutton"
@@ -39,7 +39,7 @@
         android:scrollbars = "vertical"
         android:gravity="top"/>
 
-    <com.mfusion.commons.view.ImageTextView
+    <com.mfusion.commons.view.ImageTextVerticalView
         android:background="@drawable/mybutton"
         android:textColor="#ffffff"
         style="?android:attr/buttonStyleSmall"

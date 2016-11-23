@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 
 import com.mfusion.commons.entity.values.ResourceSourceType;
+import com.mfusion.commons.tools.InternalKeyWords;
 
 import java.util.ArrayList;
 
@@ -28,9 +29,9 @@ public class TemplateEntity {
 
     public Bitmap backImageBitmap;
 
-    public int width=0;
+    public int width= InternalKeyWords.TemplateDefaultWidth;
 
-    public int height=0;
+    public int height=InternalKeyWords.TemplateDefaultHeight;
 
     public ArrayList<ComponentEntity> compList=new ArrayList<ComponentEntity>();
 }

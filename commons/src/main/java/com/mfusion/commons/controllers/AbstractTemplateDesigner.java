@@ -15,6 +15,7 @@ public abstract class AbstractTemplateDesigner extends LinearLayout {
 
     private ProgressDialog loadingDialog;
 
+    protected TemplateNameChangingListener templateNameChangingListener;
     //private TemplateEntity m_template;
     public AbstractTemplateDesigner(Context context) {
         super(context);
@@ -23,6 +24,10 @@ public abstract class AbstractTemplateDesigner extends LinearLayout {
 
     public AbstractTemplateDesigner(Context context, AttributeSet attrs) {
         super(context, attrs);
+    }
+
+    public void setOnTemplateNameChangingListener(TemplateNameChangingListener templateNameChangingListener){
+        this.templateNameChangingListener=templateNameChangingListener;
     }
 
     public void showLoadingPage(){
@@ -49,5 +54,13 @@ public abstract class AbstractTemplateDesigner extends LinearLayout {
 
     public abstract void saveTemplateResult(TemplateEntity templateEntity);
 
+    public  abstract String getTemplateName();
+
+    public  abstract void renameTemplate(String newName);
+
     public abstract void closeTemplate();
+
+    public interface TemplateNameChangingListener{
+        void templateNameChanging(String templateName);
+    }
 }

@@ -1,0 +1,20 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <!--<dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="textSizeBig">13sp</dimen>
+    <dimen name="textSize">12sp</dimen>
+    <dimen name="textSizeSmall">11sp</dimen>-->
+    <dimen name="propertyEditBtn">24dp</dimen>
+    <dimen name="propertyEditBtnPadding">2dp</dimen>
+    <dimen name="propertyBar">25dp</dimen>
+    <dimen name="propertyName">80dp</dimen>
+    <dimen name="propertyHSpace">3dp</dimen>
+    <dimen name="colorEditBtn">22dp</dimen>
+    <dimen name="compIcon">45dp</dimen>
+    <dimen name="compIconMarginH">0dp</dimen>
+    <dimen name="compIconMarginV">25dp</dimen>
+
+    <dimen name="propertyDialog">360dp</dimen>
+</resources>

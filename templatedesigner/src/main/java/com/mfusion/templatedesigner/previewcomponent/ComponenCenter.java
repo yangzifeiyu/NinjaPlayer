@@ -6,6 +6,7 @@ import android.content.Context;
 
 import com.mfusion.commons.entity.template.ComponentEntity;
 import com.mfusion.commons.entity.values.ComponentType;
+import com.mfusion.templatedesigner.R;
 
 public class ComponenCenter {
 
@@ -21,22 +22,23 @@ public class ComponenCenter {
 	
 	public BasicComponentView CreateComponent(Context context, String type){
 		BasicComponentView componentView=null;
-		if(type.equals("DateTime")){
+
+		if(type.equals(context.getResources().getString(R.string.comp_type_datetime))){
 			componentView=new DateTimeComponentView(context);
 		}
-		else if(type.equals("TickerText")){
+		else if(type.equals(context.getResources().getString(R.string.comp_type_ticker))){
 			componentView=new TickerTextComponentView(context);
 		}
-		else if(type.equals("ScheduleMedia")){
+		else if(type.equals(context.getResources().getString(R.string.comp_type_schedulemedia))){
 			componentView=new ScheduleMediaComponentView(context);
 		}
-		else if(type.equals("InteractiveComponent")){
+		else if(type.equals(context.getResources().getString(R.string.comp_type_web))){
 			componentView=new InteractiveComponentView(context);
 		}
-		else if(type.equals("RSSComponent")){
+		else if(type.equals(context.getResources().getString(R.string.comp_type_rss))){
 			componentView=new RSSComponentView(context);
 		}
-		else if(type.equals("AudioComponent")){
+		else if(type.equals(context.getResources().getString(R.string.comp_type_audio))){
 			componentView=new AudioComponentView(context);
 		}
 
@@ -49,6 +51,7 @@ public class ComponenCenter {
 			comp_index++;
 		}
 		this.m_comp_index_datas.put(componentView.c_type.toString(),comp_index);
+		componentView.c_index=comp_index;
 		componentView.c_name=componentView.c_type.toString()+" "+comp_index;
 		return componentView;
 	}
@@ -65,7 +68,7 @@ public class ComponenCenter {
 			else if(entity.type==ComponentType.ScheduleMedia){
 				componentView=new ScheduleMediaComponentView(context, entity);
 			}
-			else if(entity.type==ComponentType.Interactive){
+			else if(entity.type==ComponentType.WebPage){
 				componentView=new InteractiveComponentView(context, entity);
 			}
 			else if(entity.type==ComponentType.RSSComponent){
@@ -84,8 +87,9 @@ public class ComponenCenter {
 				if(index>=0){
 					comp_index=Integer.parseInt(entity.componentName.substring(index+1));
 					if(this.m_comp_index_datas.containsKey(componentView.c_type.toString())){
-						if(comp_index<=this.m_comp_index_datas.get(componentView.c_type.toString()))
+						if(comp_index<=this.m_comp_index_datas.get(componentView.c_type.toString())) {
 							return componentView;
+						}
 					}
 				}
 			}
@@ -95,6 +99,7 @@ public class ComponenCenter {
 				comp_index++;
 			}
 			componentView.c_name=componentView.c_type.toString()+" "+comp_index;
+			componentView.c_index=comp_index;
 			this.m_comp_index_datas.put(componentView.c_type.toString(),comp_index);
 
 		} catch (Exception e) {

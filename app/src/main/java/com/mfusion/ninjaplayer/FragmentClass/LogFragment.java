@@ -6,45 +6,34 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.mfusion.commons.controllers.AbstractFragment;
-import com.mfusion.commons.tools.CallbackBundle;
 import com.mfusion.commons.tools.InternalKeyWords;
 import com.mfusion.commons.tools.OperateCallbackBundle;
-import com.mfusion.commons.view.ImageTextView;
+import com.mfusion.commons.view.ImageTextVerticalView;
 import com.mfusion.ninjaplayer.R;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Stack;
 
 public class LogFragment extends AbstractFragment {
 
     EditText logcat;
-    ImageTextView load, clear;
+    ImageTextVerticalView load, clear;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         final View rootView = inflater.inflate(R.layout.fragment_log, container, false);
-        load = (ImageTextView) rootView.findViewById(R.id.btnReload);//load log
+        load = (ImageTextVerticalView) rootView.findViewById(R.id.btnReload);//load log
         load.setText("Load Log");
         load.setImage(R.drawable.mf_log);
-        clear = (ImageTextView) rootView.findViewById(R.id.btnClear);//clear log information
+        clear = (ImageTextVerticalView) rootView.findViewById(R.id.btnClear);//clear log information
         clear.setText("Clear Log");
         clear.setImage(R.drawable.mf_clear);
         logcat = (EditText) rootView.findViewById(R.id.etLog);//log info
@@ -56,6 +45,7 @@ public class LogFragment extends AbstractFragment {
             public void onClick(View arg0) {
                 // TODO Auto-generated method stub
                 load.setText("Loading ...");
+                logcat.setText("");
                 Thread m_loading_thread=new Thread(log_runnable);
                 m_loading_thread.start();
             }

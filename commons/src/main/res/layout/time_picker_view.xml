@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="26dp"
+    android:gravity="center"
+    android:background="@drawable/time_picker_style">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:gravity="center_vertical"
+        android:paddingTop="2dp"
+        android:paddingBottom="0dp">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="@dimen/time_item_width"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:id="@+id/time_picker_hour"
+                android:layout_gravity="center_vertical"
+                android:autoText="false"
+                android:background="@drawable/editview_style"
+                android:focusableInTouchMode="false"
+                android:textSize="@dimen/textSize"
+                android:text="HH" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text=":"
+            android:id="@+id/time_picker_split_hm"
+            android:gravity="center"
+            android:padding="0dp"
+            android:layout_marginTop="-4dp" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="@dimen/time_item_width"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:id="@+id/time_picker_min"
+                android:layout_gravity="center_vertical"
+                android:autoText="false"
+                android:text="HH"
+                android:textSize="@dimen/textSize"
+                android:layout_marginBottom="0dp"
+                android:background="@drawable/editview_style"
+                android:focusableInTouchMode="false"/>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text=":"
+            android:id="@+id/time_picker_split_ms"
+            android:textAlignment="center"
+            android:layout_marginTop="-4dp"
+            android:gravity="center" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="@dimen/time_item_width"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:id="@+id/time_picker_second"
+                android:layout_gravity="center_vertical"
+                android:autoText="false"
+                android:text="HH"
+                android:textSize="@dimen/textSize"
+                android:background="@drawable/editview_style"
+                android:focusableInTouchMode="false"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="24dp"
+        android:layout_height="match_parent">
+
+        <ImageButton
+            android:id="@+id/time_picker_decrease"
+            android:layout_gravity="center_vertical"
+            style="@style/layout_vertical"
+            android:layout_weight="1"
+            android:background="#26757171"
+            android:src="@drawable/mf_time_decrease_1"
+            android:scaleType="fitCenter"
+            android:layout_margin="1dp" />
+
+        <ImageButton
+            android:id="@+id/time_picker_increase"
+            android:layout_gravity="center_vertical"
+            style="@style/layout_vertical"
+            android:layout_weight="1"
+            android:src="@drawable/mf_time_increase_1"
+            android:scaleType="fitCenter"
+            android:layout_width="wrap_content"
+            android:background="#26757171"
+            android:layout_margin="1dp" />
+    </LinearLayout>
+
+</LinearLayout>

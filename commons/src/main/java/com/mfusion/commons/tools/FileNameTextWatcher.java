@@ -15,9 +15,9 @@ public class FileNameTextWatcher implements TextWatcher{
 
     String old_value;
 
-    int max_length=100;
+    int max_length=20;
 
-    String special_chars="<\">?/\\|";
+    String special_chars="<\">?/\\|*";
 
     public FileNameTextWatcher(EditText editText){
         this.editText=editText;

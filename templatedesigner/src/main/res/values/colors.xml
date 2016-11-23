@@ -6,4 +6,6 @@
     <color name="selected">#e0e0e0</color>
     <color name="colorBlockTitle">#9df9f916</color>
     <color name="colorBlockItem">#9d313ffa</color>-->
+    <color name="template_bar">#9d00ac03</color>
+    <color name="template_bar_expand">#9d39f43c</color>
 </resources>

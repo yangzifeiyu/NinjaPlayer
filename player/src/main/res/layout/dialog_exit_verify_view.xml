@@ -24,7 +24,8 @@
 		        android:layout_height="32dp"
 		        android:ems="9"
 		        android:inputType="textPassword"
-		        android:textSize="14sp" >
+		        android:textSize="14sp">
+				<!--android:focusableInTouchMode="false"-->
 		    </EditText>
 
 		     <TextView

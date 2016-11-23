@@ -218,10 +218,13 @@ public class RSSMarqueeTextSurfaceView extends SurfaceView implements SurfaceHol
 					} 
 					finally 
 					{
-						if (c != null) 
-						{
-							holder.unlockCanvasAndPost(c);//������ͼ�����ύ�ı䡣
-						}
+						try {
+							if (c != null&&holder.getSurface().isValid())
+							{
+								holder.unlockCanvasAndPost(c);//������ͼ�����ύ�ı䡣
+							}
+
+						}catch (Exception ex){}
 
 						xOffset-= setting.Speed/100;
 

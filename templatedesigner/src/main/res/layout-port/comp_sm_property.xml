@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+	android:paddingLeft="@dimen/global_margin">
+
+	<LinearLayout
+		android:orientation="horizontal"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/propertyHSpace"
+            android:orientation="horizontal"
+			android:gravity="center_vertical">
+
+            <CheckBox
+                android:id="@+id/comp_sm_mute"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+				android:textSize="@dimen/textSize"
+				android:background="@drawable/check_style"
+				android:button="@null" />
+
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textAppearance="?android:attr/textAppearanceSmall"
+				android:text="Mute"
+				android:textSize="@dimen/textSize"
+				android:id="@+id/textView8"
+				android:layout_marginRight="@dimen/global_margin" />
+
+			<LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+				android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="left|center"
+                    android:text="PlayMode :"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textSize="@dimen/textSize"
+                    style="@style/property_name" />
+
+                <com.mfusion.commons.view.DropDownView
+                    android:id="@+id/comp_sm_playmode"
+                    style="?android:attr/buttonStyleSmall"
+                    android:layout_width="70dp"
+                    android:layout_height="24dp"
+                    android:background="@drawable/button_style"
+                    android:text="Suquence"
+                    android:textSize="@dimen/textSize" />
+
+            </LinearLayout>
+
+		</LinearLayout>
+	</LinearLayout>
+
+	<LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+		android:layout_marginTop="@dimen/propertyHSpace">
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+			android:text="MediaList :"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="@dimen/textSize"
+			style="@style/property_name" />
+
+        <TextView
+            android:id="@+id/comp_sm_mediainfo"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:text="1 (00:00:50)"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="@dimen/textSize" />
+
+        <ImageButton
+            android:id="@+id/comp_sm_mediaedit"
+            android:layout_width="@dimen/propertyEditBtn"
+            android:layout_height="@dimen/propertyEditBtn"
+            android:layout_gravity="left|top"
+            android:background="#00ffffff"
+            android:src="@drawable/mf_edit"
+			android:scaleType="fitCenter"
+			android:padding="@dimen/propertyEditBtnPadding" />
+
+    </LinearLayout>
+</LinearLayout>

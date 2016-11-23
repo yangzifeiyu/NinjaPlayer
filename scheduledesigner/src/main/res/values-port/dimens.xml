@@ -1,0 +1,13 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <!--<dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="textSizeBig">13sp</dimen>
+    <dimen name="textSize">12sp</dimen>
+    <dimen name="textSizeSmall">11sp</dimen>-->
+    <dimen name="block_property_checkbox_margin">35dp</dimen>
+    <dimen name="sche_temp_thumb_height">40dp</dimen>
+    <dimen name="sche_temp_thumb_margin">5dp</dimen>
+    <dimen name="sche_temp_thumb_icon_padding">0dp</dimen>
+</resources>

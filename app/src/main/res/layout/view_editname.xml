@@ -7,8 +7,9 @@
     android:paddingTop="10dp" >
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" android:orientation="vertical">
+        android:layout_width="400dp"
+        android:layout_height="wrap_content" android:orientation="vertical"
+        android:layout_marginTop="20dp">
 
         <EditText
             android:id="@+id/view_edit_name"
@@ -16,7 +17,9 @@
             android:layout_height="32dp"
             android:ems="9"
             android:inputType="textMultiLine|textFilter"
-            android:textSize="14sp" >
+            android:textSize="14sp"
+            android:layout_gravity="right">
+            <!--android:focusableInTouchMode="false"-->
         </EditText>
 
         <TextView
@@ -24,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
-            android:text="Max length 100, &quot;&lt; > ? &quot; / \\ |&quot; are not allowed"
+            android:text="Max length 20, &quot;&lt; > ? &quot; / \\ |&quot; * are not allowed"
             android:textColor="#ffff0000"
             android:layout_gravity="right" />
 

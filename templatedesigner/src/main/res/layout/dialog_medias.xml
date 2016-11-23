@@ -8,27 +8,60 @@
      <RelativeLayout
          android:id="@+id/comp_sche_control"
          android:layout_width="match_parent"
-         android:layout_height="wrap_content" >
-        
-	    <com.mfusion.commons.view.ImageTextView
+         android:layout_height="26dp"
+		 android:paddingLeft="4dp">
+
+		 <LinearLayout
+			 android:orientation="horizontal"
+			 android:layout_width="match_parent"
+			 android:layout_height="match_parent"
+			 android:gravity="center_vertical">
+
+			 <CheckBox
+                 android:id="@+id/comp_media_select"
+                 android:layout_width="20dp"
+                 android:layout_height="20dp"
+                 android:background="@drawable/check_style"
+                 android:button="@null" />
+
+
+			 <com.mfusion.commons.view.ImageTextHorizontalView
+				 android:id="@+id/comp_media_delete"
+				 android:layout_width="wrap_content"
+				 android:layout_height="match_parent"/>
+
+			 <com.mfusion.commons.view.ImageTextHorizontalView
+				 android:id="@+id/comp_media_move_top"
+				 android:layout_width="wrap_content"
+				 android:layout_height="match_parent"/>
+
+			 <com.mfusion.commons.view.ImageTextHorizontalView
+				 android:id="@+id/comp_media_move_up"
+				 android:layout_width="wrap_content"
+				 android:layout_height="match_parent" />
+
+			 <com.mfusion.commons.view.ImageTextHorizontalView
+				 android:id="@+id/comp_media_move_down"
+				 android:layout_width="wrap_content"
+				 android:layout_height="match_parent" />
+
+			 <com.mfusion.commons.view.ImageTextHorizontalView
+				 android:id="@+id/comp_media_move_bottom"
+				 android:layout_width="wrap_content"
+				 android:layout_height="match_parent"/>
+
+		 </LinearLayout>
+
+		 <com.mfusion.commons.view.ImageTextHorizontalView
 	        android:id="@+id/comp_media_add"
 	        android:layout_width="wrap_content"
-	        android:layout_height="26dp"
+	        android:layout_height="match_parent"
 	        android:layout_alignParentRight="true"
 	        android:layout_alignParentTop="true"
 			android:layout_marginRight="5dp" />
 
 
-	    <CheckBox
-	        android:id="@+id/comp_media_mute"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_alignLeft="@+id/comp_sche_name"
-	        android:layout_alignParentTop="true"
-	        android:text="Mute"
-			android:visibility="gone" />
-
-    </RelativeLayout>
+	 </RelativeLayout>
 
     <ListView
         android:id="@+id/comp_comp_medias"

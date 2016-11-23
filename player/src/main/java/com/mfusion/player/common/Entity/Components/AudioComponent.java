@@ -11,7 +11,7 @@ package com.mfusion.player.common.Entity.Components;
 import java.util.Random;
 import com.mfusion.player.library.Callback.Caller;
 import com.mfusion.player.library.Callback.MyCallInterface;
-import com.mfusion.player.library.Controller.HandleTimer;
+import com.mfusion.commons.tools.HandleTimer;
 import com.mfusion.player.library.Helper.FileHelper;
 import com.mfusion.player.library.Helper.LoggerHelper;
 import com.mfusion.player.common.Entity.MediaFile;
@@ -29,7 +29,6 @@ import com.mfusion.player.common.Setting.Player.PlayerStoragePath;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
-import android.view.ViewGroup;
 
 public class AudioComponent extends BasicComponent implements MyCallInterface{
 

@@ -61,7 +61,7 @@ public class TemplateFragment extends AbstractFragment {
 
     @Override
     public void cancelSaveModification() {
-
+        isEditing=false;
     }
 
     @Override

@@ -143,7 +143,7 @@ public class AudioComponentView extends BasicComponentView {
 		{
 			//if(this.c_media_list.size()==0){
 				ViewGroup.LayoutParams layoutParams=this.getLayoutParams();
-				if(this.no_value_paint.measureText(this.c_type.toString())>layoutParams.width)
+				if(this.no_value_paint.measureText(this.c_name)>layoutParams.width)
 					text_paint_layout = new StaticLayout(this.c_name,this.no_value_paint,layoutParams.width,Alignment.ALIGN_NORMAL,1.0F,0.0F,true);
 				else
 					text_paint_layout = new StaticLayout(this.c_name,this.no_value_paint,layoutParams.width,Alignment.ALIGN_CENTER,1.0F,0.0F,true);
@@ -200,28 +200,13 @@ public class AudioComponentView extends BasicComponentView {
 
 			m_playamode_ddv=(DropDownView)propertyView.findViewById(R.id.comp_audio_playmode);
 			m_playamode_ddv.setSelectList(PropertyValues.getPlayModeList());
-			m_playamode_ddv.addTextChangedListener(new TextWatcher() {
-				
+			m_playamode_ddv.setOnChangeListener(new DropDownView.OnSelectTextChangedListener() {
 				@Override
-				public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-					// TODO Auto-generated method stub
-
-					if(c_play_mode.toString().equalsIgnoreCase(arg0.toString()))
+				public void onSelectTextChange(String selectText) {
+					if(c_play_mode.toString().equalsIgnoreCase(selectText))
 						return;
 					componentPropertyChanged();
-					c_play_mode=ScheduleMediaPlayMode.valueOf(arg0.toString());
-				}
-				
-				@Override
-				public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
-						int arg3) {
-					// TODO Auto-generated method stub
-					System.out.println();
-				}
-				
-				@Override
-				public void afterTextChanged(Editable arg0) {
-					// TODO Auto-generated method stub
+					c_play_mode=ScheduleMediaPlayMode.valueOf(selectText);
 				}
 			});
 

@@ -1,3 +1,67 @@
 <resources>
     <string name="app_name">Template Designer</string>
+    <string name="comps_title_name">DISPLAY\nCOMPONENTS</string>
+
+    <string name="comp_type_datetime">DATE TIME</string>
+    <string name="comp_type_schedulemedia">MEDIA</string>
+    <string name="comp_type_ticker">TICKER TEXT</string>
+    <string name="comp_type_rss">RSS FEED</string>
+    <string name="comp_type_web">WEB PAGE</string>
+    <string name="comp_type_audio">AUDIO</string>
+    <string name="comp_type_weather">WEATHER</string>
+
+    <string-array name="time_format">
+        <item>yy</item>
+        <item>y/yyy/yyyy</item>
+        <item>M	</item>
+        <item>MMM</item>
+        <item>MMMM</item>
+        <item>MMMMM</item>
+        <item>E/EE/EEE</item>
+        <item>EEEE</item>
+        <item>EEEEE</item>
+        <item>d	</item>
+        <item>H	</item>
+        <item>h</item>
+        <item>a	</item>
+        <item>m</item>
+        <item>s</item>
+        <item>S</item>
+    </string-array>
+    <string-array name="time_format_description">
+        <item>Year</item>
+        <item>Year</item>
+        <item>Month</item>
+        <item>Month</item>
+        <item>Month</item>
+        <item>Month	</item>
+        <item>Week</item>
+        <item>Week</item>
+        <item>Week</item>
+        <item>Day</item>
+        <item>Hour</item>
+        <item>Hour</item>
+        <item>AM or PM</item>
+        <item>Minute</item>
+        <item>Second</item>
+        <item>MilliSecond</item>
+    </string-array>
+    <string-array name="time_format_sample">
+        <item>16</item>
+        <item>2016</item>
+        <item>1</item>
+        <item>Jan</item>
+        <item>January</item>
+        <item>J</item>
+        <item>Tue</item>
+        <item>Tuesday</item>
+        <item>T</item>
+        <item>10</item>
+        <item>0~11</item>
+        <item>0~23</item>
+        <item>PM</item>
+        <item>0~59</item>
+        <item>0~59</item>
+        <item>0~59</item>
+    </string-array>
 </resources>

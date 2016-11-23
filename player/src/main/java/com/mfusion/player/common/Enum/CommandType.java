@@ -6,6 +6,7 @@ import java.util.Map;
 public enum CommandType {
 
 	Shutdown("Shutdown"),
+	WakeUp("WakeUp"),
 	Restart("Reboot"),
 	Volume("Volume"),
 	Unkown("");

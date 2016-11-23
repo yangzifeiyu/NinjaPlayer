@@ -225,7 +225,7 @@ public class FileOperator {
 			final String prefixFilter=prefix.toLowerCase();
 			File folderFile=new File(rootPath);
 			if(!folderFile.exists()||!folderFile.isDirectory())
-				throw new PathAccessException(rootPath);
+				return null;
 
 			return folderFile.listFiles(new FileFilter() {
 				
@@ -246,6 +246,8 @@ public class FileOperator {
 	}
 	
 	public static String CheckFileName(String rootPath,String name) throws Exception{
+		name=name.replace("\n","");
+		name=name.replace("\r","");
 		File[] sameNameFiles=FileOperator.getAllSubFolder(rootPath, name);
 		if(sameNameFiles==null||sameNameFiles.length==0)
 			return name;

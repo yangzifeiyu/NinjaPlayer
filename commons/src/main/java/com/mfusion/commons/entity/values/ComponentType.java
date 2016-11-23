@@ -9,7 +9,7 @@ public enum ComponentType {
 	DateTime("DateTime"),
 	TickerText("TickerText"),
 	ScheduleMedia("ScheduleMedia"),
-	Interactive("Interactive"),
+	WebPage("Interactive"),
 	RSSComponent("RSSText"),
 	AudioComponent("AudioComponent"),
 	WeatherComponent("WeatherComponent"),

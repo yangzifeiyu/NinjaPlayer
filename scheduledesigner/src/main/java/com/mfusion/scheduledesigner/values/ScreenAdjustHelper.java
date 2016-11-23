@@ -15,7 +15,7 @@ public class ScreenAdjustHelper {
 
     public static float TemplateLayoutScale=0.115f;
 
-    public static float BlockPropertyLayoutScale=0.2f;
+    public static float BlockPropertyLayoutScale=0.125f;
 
     public static float getScaleValusByHeight(int originalHeight,int currentHeight,ViewGroup parentView){
         try{

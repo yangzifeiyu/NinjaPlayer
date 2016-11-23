@@ -43,6 +43,10 @@ public class DateConverter {
 		return date_format.format(Calendar.getInstance().getTime());
 	}
 
+	public static String convertCurrentTimeToStr(){
+		return short_time_format.format(Calendar.getInstance().getTime());
+	}
+
 	public static String convertCurrentDateToStr(String format){
 		return (new SimpleDateFormat(format)).format(Calendar.getInstance().getTime());
 	}
@@ -92,5 +96,19 @@ public class DateConverter {
 			// TODO: handle exception
 		}
 		return null;
+	}
+
+	public static Calendar clearCalendarNoneHHmmss(Calendar fullTimeCalendar){
+		fullTimeCalendar.set(Calendar.HOUR_OF_DAY, 0);
+		fullTimeCalendar.set(Calendar.MINUTE, 0);
+		fullTimeCalendar.set(Calendar.SECOND, 0);
+		fullTimeCalendar.set(Calendar.MILLISECOND, 0);
+		return fullTimeCalendar;
+	}
+
+	public static Date getCurrentDate(){
+		Calendar fullTimeCalendar=Calendar.getInstance();
+		clearCalendarNoneHHmmss(fullTimeCalendar);
+		return fullTimeCalendar.getTime();
 	}
 }

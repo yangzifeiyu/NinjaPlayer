@@ -9,21 +9,77 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="26dp"
+        android:layout_height="@dimen/manager_title"
         android:id="@+id/temp_title_layout">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            style="@style/layout_horizontal"
+            android:layout_weight="4"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text=""
-            android:id="@+id/temp_title_view"
-            android:textSize="@dimen/textSize"
-            android:gravity="center"
-            android:layout_centerHorizontal="true" />
-    </RelativeLayout>
+            android:text="@string/comps_title_name"
+            android:id="@+id/textView"
+            android:gravity="center|left"
+            android:textSize="@dimen/textSizeBig"
+            android:paddingLeft="@dimen/compIconMarginH" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            style="@style/layout_horizontal"
+            android:layout_weight="27"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Template Name:"
+                android:id="@+id/textView2"
+                android:textSize="@dimen/textSizeBig"
+                android:gravity="center|left"
+                android:layout_marginRight="@dimen/global_margin" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="N/A"
+                android:id="@+id/temp_title_view"
+                android:textSize="@dimen/textSizeBig"
+                android:gravity="center|left"
+                android:singleLine="true"
+                android:textColor="#ff0000" />
+            <com.mfusion.commons.view.ImageTextHorizontalView
+                android:layout_width="wrap_content"
+                android:layout_height="26dp"
+                android:id="@+id/temp_name_editer"
+                android:visibility="gone" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Display Size:"
+                android:id="@+id/textView3"
+                android:textSize="@dimen/textSizeBig"
+                android:gravity="center|left"
+                android:layout_marginRight="@dimen/global_margin"
+                android:layout_marginLeft="@dimen/global_margin" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="N/A"
+                android:id="@+id/temp_size_view"
+                android:textSize="@dimen/textSizeBig"
+                android:gravity="center|left"
+                android:singleLine="true"
+                android:textColor="#ff0000" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 
     <LinearLayout
         android:orientation="horizontal"
@@ -34,40 +90,50 @@
         <LinearLayout
             android:id="@+id/temp_comp"
             style="@style/layout_horizontal"
-            android:layout_weight="4"
+            android:layout_weight="1"
             android:background="#ffffff"
             android:orientation="vertical" >
 
             <ListView
                 android:id="@+id/comp_list"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content">
             </ListView>
 
         </LinearLayout>
 
-        <RelativeLayout
-            android:id="@+id/temp_container"
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_weight="7"
             style="@style/layout_horizontal"
-            android:layout_weight="22"
-            android:background="@drawable/button_style">
+            android:id="@+id/temp_designer">
 
             <RelativeLayout
-                android:id="@+id/temp_workspace"
-                android:layout_width="fill_parent"
-                android:layout_height="200dp">
+                android:id="@+id/temp_container"
+                style="@style/layout_horizontal"
+                android:layout_weight="22"
+                android:background="@drawable/button_style">
 
+                <RelativeLayout
+                    android:id="@+id/temp_workspace"
+                    android:layout_width="fill_parent"
+                    android:layout_height="200dp">
+
+                </RelativeLayout>
             </RelativeLayout>
-        </RelativeLayout>
 
-        <LinearLayout
-            android:id="@+id/temp_comp_property"
-            style="@style/layout_horizontal"
-            android:layout_weight="5"
-            android:background="#ffffff"
-            android:orientation="horizontal" >
+            <LinearLayout
+                android:id="@+id/temp_comp_property"
+                style="@style/layout_horizontal"
+                android:layout_weight="6"
+                android:background="#ffffff"
+                android:orientation="horizontal" >
+
+            </LinearLayout>
 
         </LinearLayout>
+
+
     </LinearLayout>
 
 </LinearLayout>

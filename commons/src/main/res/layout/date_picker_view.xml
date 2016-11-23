@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/date_picker_selector"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/mf_calendar"
+        android:scaleType="fitCenter"
+        android:background="#00ffffff" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="yyyy-MM-dd"
+        android:id="@+id/date_picker_content"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_toLeftOf="@+id/date_picker_selector"
+        android:layout_toStartOf="@+id/date_picker_selector"
+        android:layout_centerVertical="true"
+        android:textSize="@dimen/textSize" />
+
+
+</RelativeLayout>
