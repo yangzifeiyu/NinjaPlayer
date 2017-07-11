@@ -29,6 +29,7 @@ import com.mfusion.commons.entity.template.TemplateEntity;
 import com.mfusion.commons.entity.values.ComponentType;
 import com.mfusion.templatedesigner.R;
 import com.mfusion.commons.tools.CallbackBundle;
+import com.mfusion.templatedesigner.previewcomponent.subview.CustomerVideoSurfaceView;
 import com.mfusion.templatedesigner.previewcomponent.values.CompOperateType;
 import com.mfusion.templatedesigner.previewcomponent.values.PropertyValues;
 import com.mfusion.templatedesigner.previewcomponent.values.TemplateDesignerKeys;
@@ -98,7 +99,7 @@ public class BasicComponentView extends RelativeLayout implements OnLongClickLis
 		this.m_context=context;
 		
 		this.c_back_color=backColor;
-		
+
 		this.setAlpha(0.8f);
 		this.setBackgroundResource(R.drawable.component_style);
 
@@ -124,7 +125,7 @@ public class BasicComponentView extends RelativeLayout implements OnLongClickLis
 		this.addOnLayoutChangeListener(this);
 	}
 
-	@Override  
+	@Override
     protected void onDraw(Canvas canvas)  
     {  
 		super.onDraw(canvas);
@@ -178,15 +179,16 @@ public class BasicComponentView extends RelativeLayout implements OnLongClickLis
 			c_w=getNewSize(r-l,c_w);
 			c_h=getNewSize(b-t,c_h);
 		}
+
 	}
 
 	/*
 	界面像素对实际像素的影响超过1的，才能采用
 	 */
 	private int getNewSize(int displayData,int realData){
-		int new_data=(int)(displayData/ TemplateDesignerKeys.temp_scale);
-		if(Math.abs(new_data-realData)>2)
-			realData=new_data;
+		int new_data=(int)(realData * TemplateDesignerKeys.temp_scale);
+		if(Math.abs(new_data-displayData)>2)
+			realData=(int)(displayData / TemplateDesignerKeys.temp_scale);
 		return realData;
 	}
 
@@ -214,6 +216,17 @@ public class BasicComponentView extends RelativeLayout implements OnLongClickLis
 	
 	public void render(){
 	
+	}
+
+	public void executeTimer(){
+
+	}
+
+	public void setInitLayout(int l, int t, int w,int h){
+		this.c_left=l;
+		this.c_top=t;
+		this.c_w=w;
+		this.c_h=h;
 	}
 
 	public void refreshLayout(){
@@ -342,7 +355,7 @@ public class BasicComponentView extends RelativeLayout implements OnLongClickLis
 		c_h=height;
 		c_left=left;
 		c_top=top;
-		
+
 		LayoutParams layoutParams=new LayoutParams(width,height);
 		layoutParams.leftMargin=c_left;
 		layoutParams.topMargin=c_top;

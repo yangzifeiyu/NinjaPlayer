@@ -39,4 +39,6 @@ public abstract class AbstractScheduleDesigner extends LinearLayout {
     public abstract Boolean openSchedule(Schedule schedule);
 
     public abstract Schedule saveSchedule();
+
+    public abstract void closeDesigner();
 }

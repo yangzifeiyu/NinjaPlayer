@@ -14,6 +14,7 @@
 
     <dimen name="default_btn_height">26dp</dimen>
 
+    <dimen name="textSizeBigger">18dp</dimen>
     <dimen name="textSizeBig">13dp</dimen>
     <dimen name="textSize">12dp</dimen>
     <dimen name="textSizeSmall">11dp</dimen>

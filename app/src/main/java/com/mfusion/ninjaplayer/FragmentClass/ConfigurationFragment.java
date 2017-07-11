@@ -17,6 +17,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -31,8 +32,10 @@ import com.mfusion.commons.tools.OperateCallbackBundle;
 import com.mfusion.commons.view.CheckSwitchButton;
 import com.mfusion.commons.view.ImageTextHorizontalView;
 import com.mfusion.commons.view.ImageTextVerticalView;
+import com.mfusion.commons.view.SystemInfoDialog;
 import com.mfusion.commons.view.TimePickerView;
 import com.mfusion.ninjaplayer.R;
+import com.mfusion.templatedesigner.previewcomponent.subview.CustomerVideoSurfaceView;
 
 import java.util.Calendar;
 
@@ -48,7 +51,7 @@ public class ConfigurationFragment extends AbstractFragment {
 
     TimePickerView shutdown_time_picker,wakeup_time_picker;
 
-    CheckSwitchButton pass_switch_btn,shutdown_switch_btn,wakeup_switch_btn;
+    CheckSwitchButton pass_switch_btn,shutdown_switch_btn,wakeup_switch_btn,autostart_switch_btn;
 
     TextView m_warning_view;
 
@@ -74,6 +77,8 @@ public class ConfigurationFragment extends AbstractFragment {
 
         wakeup_switch_btn = (CheckSwitchButton) rootView.findViewById(R.id.switch_wakeup);//wake up time checkboc
         wakeup_time_picker=(TimePickerView) rootView.findViewById(R.id.time_wakeup);
+
+        autostart_switch_btn = (CheckSwitchButton) rootView.findViewById(R.id.switch_autostart);
 
         pass_switch_btn=(CheckSwitchButton) rootView.findViewById(R.id.switch_pass);
         pass = (EditText) rootView.findViewById(R.id.etPassword);//password
@@ -303,6 +308,8 @@ public class ConfigurationFragment extends AbstractFragment {
         wakeup_time_picker.setTime(wakeupdStr,false);
         wakeup_time_picker.setEnabled(enabled);
 
+        autostart_switch_btn.setChecked(DALSettings.getInstance().getAutoStartOption());
+
         pass.addTextChangedListener(passwordWatcher);//check password
 
         passagain.addTextChangedListener(passwordAgainWatcher);//confirm password validation
@@ -396,7 +403,7 @@ public class ConfigurationFragment extends AbstractFragment {
             String shutdownValue=shutdown_switch_btn.isChecked()?shutdown_time_picker.getTime():"";
             String wakeupValue=wakeup_switch_btn.isChecked()?wakeup_time_picker.getTime():"";
 
-            DALSettings.getInstance().saveConfigParameters(orientation,password,shutdownValue,wakeupValue);
+            DALSettings.getInstance().saveConfigParameters(orientation,password,shutdownValue,wakeupValue,autostart_switch_btn.isChecked());
             pass_switch_btn.setTag(pass_switch_btn.isChecked());
             pass.setTag(password);
             shutdown_switch_btn.setTag(shutdown_switch_btn.isChecked());

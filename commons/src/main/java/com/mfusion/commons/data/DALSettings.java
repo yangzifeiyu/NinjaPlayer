@@ -2,8 +2,14 @@ package com.mfusion.commons.data;
 
 import android.content.pm.ActivityInfo;
 
+import com.mfusion.commons.entity.exception.ExpiryLicenseException;
+import com.mfusion.commons.entity.exception.IllegalLicenseException;
+import com.mfusion.commons.entity.license.LicenseEntity;
 import com.mfusion.commons.tools.DateConverter;
 import com.mfusion.commons.tools.InternalKeyWords;
+import com.mfusion.commons.tools.LicenseDecoder;
+import com.mfusion.commons.tools.LicenseStatus;
+import com.mfusion.commons.tools.LicenseStorage;
 import com.mfusion.commons.tools.SQLiteDBHelper;
 
 import org.w3c.dom.Document;
@@ -100,6 +106,17 @@ public class DALSettings {
         return true;
     }
 
+    public Boolean getAutoStartOption(){
+        String option=this.getSettingByKey(InternalKeyWords.Config_AutoStart);
+        if(option==null||option.isEmpty())
+            return true;
+        return Boolean.valueOf(option);
+    }
+
+    public Boolean setAutoStartOption(Boolean isAuto){
+        return this.updateSetting(InternalKeyWords.Config_AutoStart,String.valueOf(isAuto));
+    }
+
     public String getSettingByKey(String key) {
         // TODO Auto-generated method stub
         return SQLiteDBHelper.getConfiguration(InternalKeyWords.Config_DBPath,InternalKeyWords.Config_TableName,key);
@@ -125,13 +142,14 @@ public class DALSettings {
         return false;
     }
 
-    public Boolean saveConfigParameters(int orientation,String password,String shutdowntime,String wakeuptime){
+    public Boolean saveConfigParameters(int orientation,String password,String shutdowntime,String wakeuptime,Boolean isAutoStart){
         Boolean result=true;
         String old_shutdown=this.getShutDownTime(),old_wakeup=this.getWakeUpTime();
         result=result&&this.updateSetting(InternalKeyWords.Config_Orientation,String.valueOf(orientation));
         result=result&&this.updateSetting(InternalKeyWords.Config_ExitPassword,password);
         result=result&&this.updateSetting(InternalKeyWords.Config_ShutDownTime,shutdowntime);
         result=result&&this.updateSetting(InternalKeyWords.Config_WakeUpTime,wakeuptime);
+        result=result&&this.updateSetting(InternalKeyWords.Config_AutoStart,String.valueOf(isAutoStart));
         if((shutdowntime!=null&&!shutdowntime.equalsIgnoreCase(old_shutdown))||(wakeuptime!=null&&!wakeuptime.equalsIgnoreCase(old_wakeup))){
             try {
                 XMLSchedule.getInstance().assignDeviceSchedule();
@@ -143,4 +161,24 @@ public class DALSettings {
         return result;
     }
 
+    public Boolean saveLicenseInfo(String license_content) throws Exception{
+
+        LicenseEntity entity=LicenseDecoder.decoderLicense(license_content);
+        LicenseDecoder.checkLicenseValidity(entity);
+        if(entity.validity== LicenseStatus.valid) {
+            Boolean result = LicenseStorage.saveLicense(entity);
+            if(result)
+                LicenseDecoder.license=entity;
+
+            return result;
+        }
+        if(entity.validity==LicenseStatus.expiry)
+            throw new ExpiryLicenseException(entity.startDate,entity.validDate);
+
+        throw new IllegalLicenseException();
+    }
+
+    public LicenseEntity getLicenseInfo(){
+        return LicenseStorage.readLicense();
+    }
 }

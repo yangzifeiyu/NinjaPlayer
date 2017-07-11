@@ -28,7 +28,10 @@ import com.mfusion.player.R;
 import com.mfusion.player.library.Callback.DialogCallBack;
 import com.mfusion.player.library.Helper.APPExitHelper;
 
+import java.io.File;
 import java.util.HashMap;
+
+import info.monitorenter.util.FileUtil;
 
 public class ActivityViewpage extends FragmentActivity implements ActionBar.TabListener {
 
@@ -263,5 +266,11 @@ public class ActivityViewpage extends FragmentActivity implements ActionBar.TabL
             }
         }
         return super.dispatchKeyEvent(event);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        System.out.println(this.getRequestedOrientation());
     }
 }

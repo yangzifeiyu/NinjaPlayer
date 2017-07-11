@@ -133,7 +133,13 @@ public class MediaListAdapter  extends BaseAdapter {
         ImageButton deleteButton=(ImageButton)convertView.findViewById(R.id.pm_delete);
         deleteButton.setTag(position);
 		deleteButton.setFocusable(true);
-        deleteButton.setOnClickListener(this.deleteListener);
+        deleteButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				selected_view_list.remove(selectView);
+				deleteListener.onClick(v);
+			}
+		});
           
         return convertView;  
     }

@@ -1,5 +1,6 @@
 package com.mfusion.templatedesigner.previewcomponent;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import org.w3c.dom.Document;
@@ -28,7 +29,7 @@ import com.mfusion.commons.entity.template.TemplateEntity;
 import com.mfusion.commons.entity.values.ComponentType;
 import com.mfusion.commons.tools.ButtonHoverStyle;
 import com.mfusion.commons.tools.DateConverter;
-import com.mfusion.templatedesigner.HandleTimer;
+import com.mfusion.commons.tools.HandleTimer;
 import com.mfusion.templatedesigner.R;
 import com.mfusion.templatedesigner.previewcomponent.dialog.ColorDialog;
 import com.mfusion.commons.view.DropDownView;
@@ -41,7 +42,9 @@ import com.mfusion.templatedesigner.previewcomponent.values.TemplateDesignerKeys
 
 public class DateTimeComponentView extends BasicComponentView {
 	
-	private String c_format="yyyy-MM-dd HH:mm:ss";
+	private String c_format="d MMM, hh:mm a";
+
+	private SimpleDateFormat m_date_format;
 	
 	private ComponentFont c_font=new ComponentFont();
 	
@@ -57,7 +60,7 @@ public class DateTimeComponentView extends BasicComponentView {
 		// TODO Auto-generated constructor stub
 		this.c_w=200;
 		this.c_h=70;
-		
+		this.c_font.color=Color.WHITE;
 		this.init();
 	}
 	
@@ -107,6 +110,8 @@ public class DateTimeComponentView extends BasicComponentView {
 		this.paint_content.setStyle(Style.FILL);
 		this.paint_content.setTextSize(c_font.size* TemplateDesignerKeys.temp_scale);
 		this.paint_content.setTypeface(Typeface.create(c_font.family, c_font.style));
+
+		this.m_date_format=new SimpleDateFormat(c_format);
 	}
 	
 	@Override  
@@ -126,7 +131,7 @@ public class DateTimeComponentView extends BasicComponentView {
 				text_paint_layout.draw(canvas);
 				canvas.translate(0,-base_line_y);*/
 
-				String content=DateConverter.convertCurrentDateToStr(this.c_format);
+				String content=DateConverter.convertCurrentDateToStr(this.m_date_format);
 				float textLenght=this.paint_content.measureText(content);
 				canvas.drawText(content,(this.getLayoutParams().width-textLenght)/2,getTextBaseline(),this.paint_content);
 			} catch (Exception e) {
@@ -149,8 +154,13 @@ public class DateTimeComponentView extends BasicComponentView {
 
 	@Override
 	public void render(){
-		this.timer.start(1000);
+		//this.timer.start(1000);
 		
+	}
+
+	@Override
+	public void executeTimer(){
+		invalidate();
 	}
 
 	@Override
@@ -161,7 +171,9 @@ public class DateTimeComponentView extends BasicComponentView {
 	private HandleTimer timer= new HandleTimer() {
 		@Override
 		protected void onTime() {
+			timer.stop();
 			invalidate();
+			timer.start(1000);
 		}
 	};
 
@@ -243,6 +255,7 @@ public class DateTimeComponentView extends BasicComponentView {
 								return;
 							componentPropertyChanged();
 							c_format=format;
+							m_date_format.applyPattern(c_format);
 							m_format_ddv.setText(c_format);
 						}
 					});

@@ -16,6 +16,7 @@ import com.mfusion.commons.entity.exception.IllegalScheduleException;
 import com.mfusion.commons.entity.exception.PathAccessException;
 import com.mfusion.commons.entity.exception.ScheduleNotFoundException;
 import com.mfusion.commons.tools.AlertDialogHelper;
+import com.mfusion.commons.tools.CallbackBundle;
 import com.mfusion.commons.tools.InternalKeyWords;
 import com.mfusion.commons.tools.LogOperator;
 import com.mfusion.commons.tools.OperateCallbackBundle;
@@ -113,7 +114,7 @@ public class ScheduleFragment extends AbstractFragment {
     }
 
     @Override
-    public void saveModification(OperateCallbackBundle callbackBundle) {
+    public void saveModification(final OperateCallbackBundle callbackBundle) {
         btn_save.setEnabled(false);
         btn_assign.setEnabled(false);
 
@@ -124,7 +125,7 @@ public class ScheduleFragment extends AbstractFragment {
             this.isEditing=false;
             if(callbackBundle!=null)
                 callbackBundle.onConfim("");
-            else {
+            else{
                 AlertDialogHelper.showInformationDialog(getContext(), "Save Schedule", result, null);
             }
             return;
@@ -139,9 +140,14 @@ public class ScheduleFragment extends AbstractFragment {
             result="Save Failed";
             LogOperator.WriteLogfortxt("ScheduleFragment==>saveSchedule :"+ex.getMessage());
         }
-        AlertDialogHelper.showWarningDialog(getContext(),"Save Schedule",result,null);
-        if(callbackBundle!=null)
-            callbackBundle.onCancel("");
+        AlertDialogHelper.showWarningDialog(getContext(), "Save Schedule", result, new CallbackBundle() {
+            @Override
+            public void callback(Bundle bundle) {
+
+                if(callbackBundle!=null)
+                    callbackBundle.onCancel("");
+            }
+        });
     }
 
     @Override
@@ -161,9 +167,12 @@ public class ScheduleFragment extends AbstractFragment {
     @Override
     public void hideFragment() {
 
+        if(scheduleView!=null){
+            scheduleView.closeDesigner();
+        }
     }
 
-    public class AsyncAssignTask extends AsyncTask<String, Integer, String> {
+    protected class AsyncAssignTask extends AsyncTask<String, Integer, String> {
 
         String assign_result="";
         @Override

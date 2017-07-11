@@ -221,10 +221,12 @@ public class PBUDispatcherService implements BasicServiceInterface {
 	//����Ƿ���Ҫ�л�pbu
 	private void m_controller_Elapsed() {
 		// TODO Auto-generated method stub
-		this.mTimer.stop();
 
 		try 
 		{
+			this.m_restart_locker.lock();
+
+			this.mTimer.stop();
 
 			MainActivity.Instance.Clock.CheckIsDateChanged();
 			/*	try
@@ -271,8 +273,6 @@ public class PBUDispatcherService implements BasicServiceInterface {
 				ex.printStackTrace();
 			}*/
 
-			this.m_restart_locker.lock();
-
 			if (this.m_pbu_stack==null||this.m_pbu_stack.size() == 0)
 				return;
 
@@ -306,7 +306,6 @@ public class PBUDispatcherService implements BasicServiceInterface {
 						this.m_pbu_stack.remove(pbu);
 				}
 			}
-			this.m_restart_locker.unlock();
 		}
 		catch (Exception e) 
 		{
@@ -318,6 +317,7 @@ public class PBUDispatcherService implements BasicServiceInterface {
 		{
 			this.mTimer.start(interval);
 
+			this.m_restart_locker.unlock();
 		}
 	}
 
@@ -720,7 +720,6 @@ public class PBUDispatcherService implements BasicServiceInterface {
 		try
 		{
 
-
 			LoggerHelper.WriteLogfortxt("PBUDispatcher Restarted");
 			this.m_pbu_deep_compare = true;
 			this.m_pbu_stack=MainActivity.Instance.ScheduleLoader.pbus;
@@ -744,10 +743,19 @@ public class PBUDispatcherService implements BasicServiceInterface {
 	@Override
 	public void Stop() {
 		// TODO Auto-generated method stub
-		this.mTimer.stop();
-		this.EndComponents(this.m_playing_pbu);
-		com.mfusion.commons.tools.ImageHelper.recycleBitmap(m_template_bg_bitmap);
-		m_template_bg_bitmap=null;
+		this.m_restart_locker.lock();
+		try{
+
+			this.mTimer.stop();
+			this.EndComponents(this.m_playing_pbu);
+			com.mfusion.commons.tools.ImageHelper.recycleBitmap(m_template_bg_bitmap);
+			m_template_bg_bitmap=null;
+		}catch (Exception ex){
+			ex.printStackTrace();
+		}
+		finally {
+			this.m_restart_locker.unlock();
+		}
 	}
 
 	//trigger app

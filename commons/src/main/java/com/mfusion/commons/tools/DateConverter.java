@@ -20,6 +20,12 @@ public class DateConverter {
 		return default_display_format.format(time);
 	}
 
+	public static String convertToDisplayStr(Date time,String defaultStr){
+		if(time==null)
+			return defaultStr;
+		return default_display_format.format(time);
+	}
+
 	public static Date convertDisplayStrToDate(String time){
 		try {
 			return default_display_format.parse(time);
@@ -49,6 +55,12 @@ public class DateConverter {
 
 	public static String convertCurrentDateToStr(String format){
 		return (new SimpleDateFormat(format)).format(Calendar.getInstance().getTime());
+	}
+
+	public static String convertCurrentDateToStr(SimpleDateFormat custom_format){
+		if(custom_format!=null)
+			return custom_format.format(Calendar.getInstance().getTime());
+		return "";
 	}
 
 	public static String convertTimeToStrNoSecond(Date time){
@@ -96,6 +108,13 @@ public class DateConverter {
 			// TODO: handle exception
 		}
 		return null;
+	}
+
+	public static Date addDay(Date oldDate,int addMonth){
+		Calendar calendar=Calendar.getInstance();
+		calendar.setTime(oldDate);
+		calendar.add(Calendar.MONTH,addMonth);
+		return calendar.getTime();
 	}
 
 	public static Calendar clearCalendarNoneHHmmss(Calendar fullTimeCalendar){

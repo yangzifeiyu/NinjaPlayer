@@ -18,7 +18,7 @@ public class LogOperator {
     private static long maxLength = 100000;
 
     public static void WriteLogfortxt(String logMsg)
-    {
+    {Thread.UncaughtExceptionHandler dd;
         WriteLogfortxt(logMsg,Calendar.getInstance().getTime());
     }
 
@@ -48,7 +48,7 @@ public class LogOperator {
         catch(Exception ex){ex.printStackTrace(); }
         finally
         {
-            System.gc();
+            //System.gc();
         }
     }
     private static int getTotalline()
@@ -79,7 +79,7 @@ public class LogOperator {
         }
         finally
         {
-            System.gc();
+            //System.gc();
         }
         return count;
     }
@@ -117,7 +117,7 @@ public class LogOperator {
         catch (Exception e) { e.printStackTrace();  }
         finally
         {
-            System.gc();
+            //System.gc();
         }
     }
 }

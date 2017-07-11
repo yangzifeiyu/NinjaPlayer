@@ -94,6 +94,7 @@ public class PlayerApp extends Application {
 	 */
 	private String saveCatchInfo2File(Throwable ex) {
 		Writer writer = new StringWriter();
+		ex.printStackTrace();
 		PrintWriter printWriter = new PrintWriter(writer);
 		ex.printStackTrace(printWriter);
 		Throwable cause = ex.getCause();

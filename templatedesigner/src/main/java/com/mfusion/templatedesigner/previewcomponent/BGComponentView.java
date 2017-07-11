@@ -37,6 +37,8 @@ public class BGComponentView extends BasicComponentView {
 		
 		this.c_type= ComponentType.Unkown;
 		this.c_name="Background";
+
+		this.setAlpha(1f);
 	}
 	
 	@Override  

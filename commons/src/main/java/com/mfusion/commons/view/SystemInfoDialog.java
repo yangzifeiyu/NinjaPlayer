@@ -309,10 +309,11 @@ public class SystemInfoDialog extends Dialog {
         }
 
         public void clearDialogContent(){
-            if(contentView!=null){
+            dialog.hide();
+            /*if(contentView!=null){
                 InputMethodManager imm = (InputMethodManager) ((Activity)context).getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(contentView.getWindowToken(),0);
-            }
+            }*/
         }
     }
 }

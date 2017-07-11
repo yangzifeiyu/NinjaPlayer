@@ -37,6 +37,7 @@ public class RSSComponent extends BasicComponent{
 		{
 			if(m_rss_control!=null)
 			{
+				m_rss_control.stopPlay();
 				Helper.ControlManager.ReturnControl(this.m_rss_control);
 				MainActivity.Instance.PBUDispatcher.template.removeView(container);
 				if(m_rss_control.Element!=null)

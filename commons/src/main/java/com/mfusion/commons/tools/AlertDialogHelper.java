@@ -62,10 +62,18 @@ public class AlertDialogHelper {
 
     public static void showWarningDialog(Context context,String title, String message, final CallbackBundle positiveCallback){
 
-        showAlertDialog(context,title,R.drawable.mf_warning,message,"OK",positiveCallback,null,null);
+        showAlertDialog(context,AlertDialogType.Warning,title,message,positiveCallback);
     }
     public static void showInformationDialog(Context context,String title, String message, final CallbackBundle positiveCallback){
 
-        showAlertDialog(context,title,R.drawable.mf_information,message,"OK",positiveCallback,null,null);
+        showAlertDialog(context,AlertDialogType.Information,title,message,positiveCallback);
+    }
+    public static void showAlertDialog(Context context,AlertDialogType dialogType,String title, String message, final CallbackBundle positiveCallback){
+
+        showAlertDialog(context,title,dialogType==AlertDialogType.Information?R.drawable.mf_information:R.drawable.mf_warning,message,"OK",positiveCallback,null,positiveCallback);
+    }
+    public enum AlertDialogType{
+        Information,
+        Warning
     }
 }

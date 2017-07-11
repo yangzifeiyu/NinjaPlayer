@@ -38,7 +38,7 @@ import com.mfusion.commons.tools.rss.RssFeed_SAXParser;
 import com.mfusion.commons.tools.rss.RssFeed;
 import com.mfusion.commons.tools.rss.RssItem;
 
-import com.mfusion.templatedesigner.HandleTimer;
+import com.mfusion.commons.tools.HandleTimer;
 import com.mfusion.templatedesigner.R;
 import com.mfusion.templatedesigner.previewcomponent.dialog.ColorDialog;
 import com.mfusion.commons.view.DropDownView;
@@ -51,7 +51,7 @@ import com.mfusion.templatedesigner.previewcomponent.values.TextSpeedType;
 
 public class RSSComponentView extends BasicComponentView {
 
-	private String c_rss_url="http://www.asiaone.com/a1mborss/A1RssMBOTicker.xml";
+	private String c_rss_url="http://www.channelnewsasia.com/rss/latest_cna_frontpage_rss.xml";//http://www.asiaone.com/a1mborss/A1RssMBOTicker.xml";
 	
 	private TextSpeedType c_speed= TextSpeedType.Medium;
 	
@@ -73,7 +73,7 @@ public class RSSComponentView extends BasicComponentView {
 
 	@Override
 	protected int getDefaultColor(){
-		return Color.YELLOW;
+		return Color.BLUE;
 	}
 	
 	public RSSComponentView(Context context) {
@@ -81,7 +81,10 @@ public class RSSComponentView extends BasicComponentView {
 		// TODO Auto-generated constructor stub
 		this.c_w=600;
 		this.c_h=70;
-		
+		this.c_title_font.color=Color.YELLOW;
+		this.c_title_font.size=40;
+		this.c_body_font.color=Color.WHITE;
+		this.c_body_font.size=40;
 		this.init();
 	}
 	
@@ -154,12 +157,14 @@ public class RSSComponentView extends BasicComponentView {
 		this.paint_title=new TextPaint();
 		this.paint_title.setAntiAlias(true);
 		this.paint_title.setStyle(Style.FILL);
+		this.paint_title.setColor(c_title_font.color);
 		this.paint_title.setTextSize(c_title_font.size * TemplateDesignerKeys.temp_scale);
 		this.paint_title.setTypeface(Typeface.create(this.c_title_font.family, this.c_title_font.style));
 		
 		this.paint_body=new TextPaint();
 		this.paint_body.setAntiAlias(true);
 		this.paint_body.setStyle(Style.FILL);
+		this.paint_body.setColor(c_body_font.color);
 		this.paint_body.setTextSize(c_body_font.size * TemplateDesignerKeys.temp_scale);
 		this.paint_body.setTypeface(Typeface.create(this.c_body_font.family, this.c_body_font.style));
 	}
@@ -205,7 +210,7 @@ public class RSSComponentView extends BasicComponentView {
 	@Override
 	public void render(){
 		loadingRssContent();
-		this.timer.start(10);
+		//this.timer.start(10);
 	}
 
 	@Override
@@ -215,6 +220,15 @@ public class RSSComponentView extends BasicComponentView {
 
 		if(oldt!=t||oldb!=b)
 			refreshDisplayView();
+	}
+
+	@Override
+	public void executeTimer(){
+		if(m_content_lenght==0)
+			loadingRssContent();
+		else {
+			invalidate();
+		}
 	}
 
 	@Override
@@ -237,8 +251,11 @@ public class RSSComponentView extends BasicComponentView {
 
 			if(m_content_lenght==0)
 				loadingRssContent();
-			else
+			else {
+				timer.stop();
 				invalidate();
+				timer.start(10);
+			}
 		}
 	};
 	
@@ -332,7 +349,7 @@ public class RSSComponentView extends BasicComponentView {
 
 							String colorString = bundle.getString("color");
 		                    c_title_font.color=Integer.parseInt(colorString);
-		                    paint_title.setColor(c_title_font.color);
+							paint_title.setColor(c_title_font.color);
 							PropertyValues.bindingColorButton(m_title_color_edit_btn,c_title_font.color);
 		                }  
 		            }, c_title_font.color);

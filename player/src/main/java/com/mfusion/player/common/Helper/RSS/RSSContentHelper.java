@@ -66,6 +66,11 @@ public class RSSContentHelper {
 			this.RUNNING=false;
 
 	}
+
+	public void pauseRefresh(){
+		this.RUNNING=false;
+	}
+
 	private void m_checker_Elapsed()
 	{
 

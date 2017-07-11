@@ -121,6 +121,11 @@ public class RSSControl extends AControl implements MyCallInterface{
 			}
 		}
 	}
+
+	public void stopPlay(){
+		((RSSMarqueeTextSurfaceView)this.Element).stopScroll();
+	}
+
 	@Override
 	public void SetTop() {
 		// TODO Auto-generated method stub

@@ -178,7 +178,6 @@
                             android:textColor="@android:color/holo_red_dark"
                             android:minWidth="70dp"
                             android:maxWidth="200dp"
-                            android:layout_centerVertical="true"
                             android:layout_toEndOf="@+id/sche_selected_day"
                             android:singleLine="true"
                             android:layout_marginLeft="@dimen/global_margin_medium" />

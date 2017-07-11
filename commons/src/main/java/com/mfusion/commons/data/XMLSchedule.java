@@ -406,11 +406,11 @@ public class XMLSchedule {
 
             Element displayRunElement = this.m_XMLHelper.getSubNode(scheduleDocument.getDocumentElement(),"Run");
             if(displayRunElement==null)
-                return null;
+                return itemSet;
 
             ArrayList<Element> blockElementList=this.m_XMLHelper.getSubNodeList(displayRunElement, "TimeLine");
             if(blockElementList==null||blockElementList.size()==0)
-                return null;
+                return itemSet;
 
             Date currentDate=Calendar.getInstance().getTime(),endDate;
             ArrayList<Element> blockItemElementList;

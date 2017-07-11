@@ -36,6 +36,7 @@ public class TickerTextComponent extends BasicComponent {
 	@Override
 	public void End() {
 		// TODO Auto-generated method stub
+		this.m_Ticker.stopScroll();
 		MainActivity.Instance.PBUDispatcher.template.removeView(container);
 		this.container.removeView(this.m_Ticker);
 	

@@ -10,7 +10,7 @@ import com.mfusion.commons.entity.template.ComponentEntity;
 import com.mfusion.commons.entity.template.TemplateEntity;
 import com.mfusion.commons.entity.values.ComponentType;
 import com.mfusion.commons.tools.WindowsDecorHelper;
-import com.mfusion.templatedesigner.HandleTimer;
+import com.mfusion.commons.tools.HandleTimer;
 import com.mfusion.templatedesigner.R;
 import com.mfusion.templatedesigner.previewcomponent.dialog.ColorDialog;
 import com.mfusion.commons.view.DropDownView;
@@ -56,7 +56,7 @@ public class TickerTextComponentView extends BasicComponentView {
 	
 	@Override
 	protected int getDefaultColor(){
-		return Color.CYAN;
+		return Color.BLACK;
 	}
 	
 	public TickerTextComponentView(Context context) {
@@ -64,7 +64,8 @@ public class TickerTextComponentView extends BasicComponentView {
 		// TODO Auto-generated constructor stub
 		this.c_w=600;
 		this.c_h=70;
-		
+		this.c_font.size=40;
+		this.c_font.color=Color.WHITE;
 		this.init();
 	}
 	
@@ -84,7 +85,7 @@ public class TickerTextComponentView extends BasicComponentView {
 					fontString=element.getTextContent();
 					continue;
 				}
-				if(propertyName.equals("FontColor")){
+				if(propertyName.equals("ForeColor")){
 					color=PropertyValues.convertColorStrToInt(element.getTextContent());
 					continue;
 				}
@@ -149,7 +150,7 @@ public class TickerTextComponentView extends BasicComponentView {
 		m_content_baseline= getTextBaseline();
 		this.m_content_lenght=this.paint_content.measureText(this.c_content);
 		
-		this.timer.start(10);
+		//this.timer.start(10);
 	}
 
 	@Override
@@ -167,6 +168,11 @@ public class TickerTextComponentView extends BasicComponentView {
 	}
 
 	@Override
+	public void executeTimer(){
+		invalidate();
+	}
+
+	@Override
 	public void stop(){
 		this.timer.stop();
 	}
@@ -174,7 +180,9 @@ public class TickerTextComponentView extends BasicComponentView {
 	private HandleTimer timer= new HandleTimer() {
 		@Override
 		protected void onTime() {
+			timer.stop();
 			invalidate();
+			timer.start(10);
 		}
 	};
 

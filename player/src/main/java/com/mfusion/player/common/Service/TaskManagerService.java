@@ -27,8 +27,8 @@ public class TaskManagerService implements BasicServiceInterface{
 						BackGroundTaskEntity entity = TaskQueue.poll();
 						if (entity.TaskExecute() == false)
 							TaskQueue.add(entity);
-						Thread.sleep(20000);
 					}
+					Thread.sleep(20000);
 				}
 				catch (Exception ex) {
 					LoggerHelper.WriteLogfortxt("TaskManager AddTask==>"+ex.getMessage());
@@ -72,6 +72,12 @@ public class TaskManagerService implements BasicServiceInterface{
 	public void Stop() {
 		// TODO Auto-generated method stub
 		Running=false;
+		try{
+
+			this.TaskQueue.clear();
+		}catch (Exception ex){
+			ex.printStackTrace();
+		}
 	}
 
 

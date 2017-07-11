@@ -264,19 +264,21 @@ public class DateTimeHelper {
 		// TODO Auto-generated method stub
 
 		try {
-			Calendar cal = Calendar.getInstance();
-			cal.setTimeZone(timezone);
-			cal.setTime(date);
-			cal.add(Calendar.SECOND, duration);
-			// cal.set(Calendar.SECOND, cal.get(Calendar.SECOND) + duration);
-			Date datetime = cal.getTime();
-			return datetime;
+			if(date!=null) {
+				Calendar cal = Calendar.getInstance();
+				cal.setTimeZone(timezone);
+				cal.setTime(date);
+				cal.add(Calendar.SECOND, duration);
+				// cal.set(Calendar.SECOND, cal.get(Calendar.SECOND) + duration);
+				Date datetime = cal.getTime();
+				return datetime;
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return new Date();
 		}
 
+		return new Date();
 	}
 	
 	public static Date GetAddedDateFromMinute(Date date, int duration) {

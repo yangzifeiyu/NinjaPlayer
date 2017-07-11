@@ -4,45 +4,151 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-    <ScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true">
+        android:layout_height="match_parent">
 
 
-        <LinearLayout
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Author : m-fusion pte ltd, Singapore   http://www.m-fusion.com.sg"
+            android:id="@+id/tv_author"
+            android:textColor="#3b5998"
+            android:textStyle="italic"
+            android:layout_alignParentBottom="true" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/version_info"
+            android:id="@+id/tv_version"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:textSize="24dp" />
+
+        <RelativeLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:weightSum="1"
-            android:orientation="vertical"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true">
+            android:layout_below="@+id/tv_version"
+            android:layout_above="@+id/tv_author"
+            android:layout_centerHorizontal="true"
+            android:visibility="visible">
 
-
-            <ListView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/listView"
-                android:entries="@array/info_arrays"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true" />
-
-            <TextView
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Author : m-fusion pte ltd, Singapore   http://www.m-fusion.com.sg"
-                android:id="@+id/textView"
-                android:textColor="#3b5998"
-                android:textStyle="italic"/>
+                android:layout_gravity="center"
+                android:layout_centerInParent="true"
+                android:visibility="invisible">
+
+                <ImageView
+                    android:layout_width="@dimen/about_qr_size"
+                    android:layout_height="@dimen/about_qr_size"
+                    android:id="@+id/license_qr_img"
+                    android:layout_gravity="center_horizontal"
+                    android:visibility="visible" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="Device MAC"
+                    android:id="@+id/license_deviceId"
+                    android:layout_gravity="center_horizontal"
+                    android:textSize="@dimen/textSizeBig"
+                    android:textColor="@color/config_text"
+                    android:textStyle="italic" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/license_display_layout"
+                    android:gravity="center_horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="License No:"
+                        android:textSize="@dimen/textSizeBigger"
+                        android:id="@+id/textView13"
+                        android:textStyle="bold"
+                        android:textColor="@color/config_text"
+                        android:layout_gravity="center_vertical" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:id="@+id/license_no"
+                        android:textSize="@dimen/textSizeBigger"
+                        android:layout_marginLeft="@dimen/global_margin"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="@color/config_text" />
+
+                    <com.mfusion.commons.view.ImageTextHorizontalView
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:id="@+id/license_update" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:id="@+id/license_verify_layout">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="Please input license"
+                        android:id="@+id/textView14"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/textSizeBigger"
+                        android:textColor="@color/config_text" />
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical|center_horizontal">
+
+                        <EditText
+                            android:layout_width="300dp"
+                            android:layout_height="wrap_content"
+                            android:inputType="textPersonName|text"
+                            android:text=""
+                            android:ems="10"
+                            android:id="@+id/license_str"
+                            android:layout_weight="1"
+                            android:textSize="@dimen/textSizeBigger"
+                            android:background="@drawable/edittext_bg" />
+
+                        <com.mfusion.commons.view.ImageTextHorizontalView
+                            android:layout_width="wrap_content"
+                            android:layout_height="30dp"
+                            android:id="@+id/license_verify" />
+
+                        <com.mfusion.commons.view.ImageTextHorizontalView
+                            android:layout_width="wrap_content"
+                            android:layout_height="30dp"
+                            android:id="@+id/license_cancel" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+
+        </RelativeLayout>
 
 
-        </LinearLayout>
-    </ScrollView>
-
+    </RelativeLayout>
 </RelativeLayout>

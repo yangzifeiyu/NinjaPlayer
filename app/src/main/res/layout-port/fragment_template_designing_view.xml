@@ -17,7 +17,6 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/manager_title"
         android:gravity="center_vertical|right"
-        android:background="#ffffff"
         android:layout_marginRight="5dp">
 
         <LinearLayout
@@ -41,7 +40,8 @@
                 android:textSize="@dimen/textSize"
                 android:text="Successfully"
                 android:layout_weight="1"
-                android:gravity="center_vertical" />
+                android:gravity="center_vertical"
+                android:visibility="gone" />
         </LinearLayout>
 
         <com.mfusion.commons.view.ImageTextVerticalView

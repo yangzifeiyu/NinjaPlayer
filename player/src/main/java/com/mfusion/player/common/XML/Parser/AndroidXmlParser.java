@@ -320,7 +320,7 @@ public class AndroidXmlParser extends BaseXmlParser {
 			else if (property_name.equalsIgnoreCase("BodyFont")) {
 				this.getFontInfo(contexttextproperty,property_val);
 			}
-			else if (property_name.equalsIgnoreCase("SubjectForeColor")) {
+			else if (property_name.equalsIgnoreCase("BodyForeColor")) {
 				contexttextproperty.FontColor = convertColorStrToInt(property_val);
 			}
 			else if (property_name.equalsIgnoreCase("Address")) {
@@ -370,7 +370,7 @@ public class AndroidXmlParser extends BaseXmlParser {
 			property_name = element.getAttribute("name");
 			property_val = element.getTextContent();
 			if (property_name.equalsIgnoreCase("Mute")) {
-				setting.Mute=CommonConvertHelper.parseIntToBoolean(property_val);
+				setting.Mute=Boolean.parseBoolean(property_val);
 			}
 			else if (property_name.equalsIgnoreCase("PlayMode")) {
 				playlist.Mode=PlayMode.fromString(property_val);

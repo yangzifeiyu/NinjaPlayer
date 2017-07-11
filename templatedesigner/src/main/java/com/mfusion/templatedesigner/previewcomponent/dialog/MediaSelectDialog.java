@@ -37,11 +37,14 @@ public class MediaSelectDialog {
 
 	CheckBox media_select_box;
 
+	CallbackBundle m_media_operate_call;
+
 	ImageTextHorizontalView media_delete_btn,media_move_top_btn,media_move_up_btn,media_move_down_btn,media_move_bottom_btn;
 	
 	public  Dialog createDialog(Context context, final CallbackBundle callback, final List<ScheduleMediaEntity> mediaList, final String filters){
 		this.m_context=context;
 		this.mediaList=mediaList;
+		this.m_media_operate_call=callback;
 
 		LinearLayout dialogContent=(LinearLayout) ((Activity)context).getLayoutInflater().inflate(R.layout.dialog_medias, null);
 
@@ -144,7 +147,6 @@ public class MediaSelectDialog {
 					mediaEntity.setStringDuration(mediaEntity.durationString);
 				}
 
-				callback.callback(null);
 			}
 		});
 
@@ -169,9 +171,10 @@ public class MediaSelectDialog {
 			public void onClick(View deleteBtn) {
 				// TODO Auto-generated method stub
 				int index=Integer.parseInt(deleteBtn.getTag().toString());
+				List<ScheduleMediaEntity> currentSelectedList=((MediaListAdapter)sche_medias.getAdapter()).getSelectedObjectList();
 				mediaList.remove(index);
 
-				bindMediaList(((MediaListAdapter)sche_medias.getAdapter()).getSelectedObjectList());
+				bindMediaList(currentSelectedList);
 			}
 		},true,select_medias);
 		mediaListAdapter.setOnSelectItemChangedListener(new MediaListAdapter.SelectItemChangedListener() {
@@ -185,6 +188,9 @@ public class MediaSelectDialog {
 		});
 		this.sche_medias.setAdapter(mediaListAdapter);
 		setEnableForMediaTools(false);
+
+		if(this.m_media_operate_call!=null)
+			this.m_media_operate_call.callback(null);
 	}
 
 	CompoundButton.OnCheckedChangeListener all_select_listener = new CompoundButton.OnCheckedChangeListener() {

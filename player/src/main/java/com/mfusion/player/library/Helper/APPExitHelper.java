@@ -2,6 +2,7 @@ package com.mfusion.player.library.Helper;
 
 
 import com.mfusion.commons.tools.WindowsDecorHelper;
+import com.mfusion.commons.view.SystemInfoDialog;
 import com.mfusion.player.R;
 import com.mfusion.player.common.Player.MainActivity;
 
@@ -18,6 +19,7 @@ import android.content.IntentFilter;
 import android.os.RemoteException;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.text.method.KeyListener;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -102,8 +104,29 @@ public class APPExitHelper {
 				dialog.dismiss();
 			}
 		};
-		((AlertDialog)dialog).getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(positiveListener);
+		final Button positiveBtn=((AlertDialog)dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+		positiveBtn.setOnClickListener(positiveListener);
 		((AlertDialog)dialog).getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(negativeListener);
+		et_password.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				String input=et_password.getText().toString();
+				if(input.equals(MainActivity.Instance.PlayerSetting.getExitPassword())){
+					positiveBtn.setFocusable(true);positiveBtn.requestFocus();
+					System.out.println(input);
+				}
+			}
+		});
 	}
 
 	public static void showAppClosingDialogNoPassword(final DialogCallBack call,Activity activity){

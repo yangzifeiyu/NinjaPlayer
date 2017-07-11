@@ -15,4 +15,8 @@ public class Helper {
          Helper.RSS = new RSSContentHelper();
          Helper.ControlManager=new ControlManager();
      }
+
+    public static void pause(){
+        Helper.RSS.pauseRefresh();
+    }
 }

@@ -331,23 +331,16 @@ public class TemplateUserCreatedView extends LinearLayout{
             templateInfoAdapter.clearImageResource();
     }
 
+    AsyncTemplateRenameTask renameTemplateTask=null;
     private void renameTemplate(final List<VisualTemplate> select_list){
         if(select_list==null||select_list.size()==0)
             return;
         FileNameEditor.createDialog(context, "Rename Template", "Please input name for this template",select_list.get(0).id, new OperateCallbackBundle() {
             @Override
             public void onConfim(String content) {
-                try {
-                    XMLTemplate.getInstance().renameTemplate(select_list.get(0).id,content);
-                    loadingDatas();
-                }catch (TemplateNotFoundException ex) {
-                    ex.printStackTrace();
-                    AlertDialogHelper.showWarningDialog(context, "Warning", "Template can't find", null);
-                }catch (Exception ex) {
-                    ex.printStackTrace();
-                    AlertDialogHelper.showWarningDialog(context, "Warning", "Rename failed", null);
-                    LogOperator.WriteLogfortxt("TemplateDesigningView==>addTemplate :"+ex.getMessage());
-                }
+                renameTemplateTask=new AsyncTemplateRenameTask();
+                renameTemplateTask.setOperateObject(select_list.get(0).id,content);
+                renameTemplateTask.execute("");
             }
 
             @Override
@@ -524,6 +517,45 @@ public class TemplateUserCreatedView extends LinearLayout{
                 // TODO: handle exception
                 e.printStackTrace();
             }
+        }
+    }
+
+
+    protected class AsyncTemplateRenameTask extends AsyncTask<String, Integer, String> {
+
+        String oldName,newName;
+
+        Boolean operate_result=false;
+
+        public void setOperateObject(String oldName,String newName){
+            this.oldName=oldName;
+            this.newName=newName;
+            operate_result=false;
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String result="";
+            try {
+                XMLTemplate.getInstance().renameTemplate(oldName,newName);
+                operate_result=true;
+            }catch (TemplateNotFoundException ex) {
+                ex.printStackTrace();
+                result="Template can't find";
+            }catch (Exception ex) {
+                ex.printStackTrace();
+                result="Rename failed";
+                LogOperator.WriteLogfortxt("TemplateDesigningView==>renameTemplate :"+ex.getMessage());
+            }
+            return result;
+        }
+        @Override
+        protected void onPostExecute(String result) {
+
+            if(operate_result)
+                loadingDatas();
+            else
+                AlertDialogHelper.showWarningDialog(getContext(), "Rename Template", result, null);
         }
     }
 }

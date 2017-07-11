@@ -296,7 +296,7 @@ public class BlockPropertyEditView extends LinearLayout implements View.OnLayout
 
         block_entity.startTime=DateConverter.convertShortStrToTime(time_start_view.getTime().toString());
         block_entity.endTime=DateConverter.convertShortStrToTime(time_end_view.getTime().toString());
-        block_entity.duration=ScheduleDrawHelper.getDurtion(block_entity.startTime, block_entity.endTime);
+        block_entity.duration=ScheduleDrawHelper.getDuration(block_entity.startTime, block_entity.endTime);
 
         block_entity.isRecurrence=recurrence_view.isChecked();
         if(block_entity.isRecurrence){

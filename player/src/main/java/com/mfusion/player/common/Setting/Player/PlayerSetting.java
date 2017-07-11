@@ -13,8 +13,10 @@ import java.util.TimeZone;
 
 import android.content.Context;
 import android.net.wifi.WifiManager;
+import android.telephony.TelephonyManager;
 
 import com.mfusion.commons.tools.InternalKeyWords;
+import com.mfusion.commons.tools.LicenseDecoder;
 import com.mfusion.player.library.Helper.LoggerHelper;
 import com.mfusion.player.common.Player.MainActivity;
 import com.mfusion.player.common.Enum.*;
@@ -30,6 +32,8 @@ public class PlayerSetting{
 	
 	public Boolean ShowNetwork=false;
 	public Boolean isModifyFromServer=false;
+	
+	public Boolean IsAutoStart=true;
 	
 	public AndroidType BoxType=AndroidType.Panasonic; 
 	public String RealCmdExecuteTime="";
@@ -298,14 +302,22 @@ public class PlayerSetting{
 		this.refreshConfigInfo();
 	}
 
+	public PlayerSetting(Context context)
+	{
+		this.refreshConfigInfo(context);
+	}
 
-	public void refreshConfigInfo() {
+	public void refreshConfigInfo(){
+		this.refreshConfigInfo(MainActivity.Instance);
+	}
+
+	public void refreshConfigInfo(Context context) {
 		// TODO Auto-generated method stub
 		try
 		{
 		
 			
-			PlayerSettingHelper settinghelper=new PlayerSettingHelper(MainActivity.Instance);
+			PlayerSettingHelper settinghelper=new PlayerSettingHelper(context);
 			Map<String,String> map=settinghelper.GetAllFileds();
 
 			if(map.containsKey("MFServerIp"))
@@ -369,6 +381,10 @@ public class PlayerSetting{
 			{
 				this.exitPassword=map.get("ExitPassword");
 			}
+			if(map.containsKey("AutoStart"))
+			{
+				this.IsAutoStart=Boolean.valueOf(map.get("AutoStart"));
+			}
 			if(license.equals(""))
 			{
 				String license=GetMackAddress();
@@ -380,7 +396,9 @@ public class PlayerSetting{
 				this.playername=map.get("PlayerName");
 			else
 				this.playername=this.license;
-			
+
+			//InternalKeyWords.DeviceId=((TelephonyManager)MainActivity.Instance.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
+			InternalKeyWords.DeviceId= LicenseDecoder.getMacAddress();
 		}
 		catch(Exception ex)
 		{

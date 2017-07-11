@@ -358,9 +358,6 @@ public class ScheduleMediaComponent extends BasicComponent {
 					}
 				}
 
-				if(this.setting.Idleplaylist.Medias.size()==1)
-					return;
-
 				this.GetCurrentFileIndex();
 				
 				this.preloadImage(this.CurrentFileIndex,true);

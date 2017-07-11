@@ -14,14 +14,17 @@ import com.mfusion.commons.tools.AlertDialogHelper;
 import com.mfusion.commons.tools.CallbackBundle;
 import com.mfusion.commons.tools.XmlOperator;
 import com.mfusion.commons.view.ImageTextHorizontalView;
+import com.mfusion.commons.view.SystemInfoDialog;
 import com.mfusion.templatedesigner.previewcomponent.BGComponentView;
 import com.mfusion.templatedesigner.previewcomponent.BasicComponentView;
 import com.mfusion.templatedesigner.previewcomponent.ComponenCenter;
 import com.mfusion.templatedesigner.previewcomponent.adapter.ComponentListAdapter;
 import com.mfusion.templatedesigner.previewcomponent.entity.SelectedCompProperty;
+import com.mfusion.templatedesigner.previewcomponent.subview.CustomerVideoSurfaceView;
 import com.mfusion.templatedesigner.previewcomponent.values.CompOperateType;
 import com.mfusion.templatedesigner.previewcomponent.values.PropertyValues;
 import com.mfusion.templatedesigner.previewcomponent.values.TemplateDesignerKeys;
+import com.mfusion.templatedesigner.previewcomponent.values.TemplateGlobalTimer;
 
 
 import android.app.Activity;
@@ -51,6 +54,7 @@ import android.view.View.OnDragListener;
 import android.view.View.OnTouchListener;
 import android.view.View.OnLayoutChangeListener;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -99,6 +103,8 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 
 	TemplateEntity currentTemplate,watingTemplate;
 
+	TemplateGlobalTimer globalTimer;
+
 	public AbstractFragment parentFragment;
 
 	public TemplateEditPreviewLayout(Context context) {
@@ -121,6 +127,8 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 		this.m_component_center=new ComponenCenter();
 
 		this.m_xml_helper=new XmlOperator();
+
+		this.globalTimer=new TemplateGlobalTimer();
 
 		this.initUIControl();
 	}
@@ -197,20 +205,22 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 		});
 
 		this.m_template_rename_btn=(ImageTextHorizontalView)templateLayout.findViewById(R.id.temp_name_editer);
-		this.m_template_rename_btn.setImage(R.drawable.mf_edit);
+		this.m_template_rename_btn.setVisibility(GONE);
+		/*this.m_template_rename_btn.setImage(R.drawable.mf_edit);
 		this.m_template_rename_btn.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if(templateNameChangingListener!=null&&currentTemplate!=null)
 					templateNameChangingListener.templateNameChanging(currentTemplate.id);
 			}
-		});
+		});*/
 		KeyBoardCenter.deleteKeyCallbackList.add(deleteKeyCallBack);
 	}
 
 	CallbackBundle deleteKeyCallBack=new CallbackBundle() {
 		@Override
 		public void callback(Bundle bundle) {
+
 			if(selectedComp.selectedView==null||!((BasicComponentView)selectedComp.selectedView).canDeleted())
 				return;
 			showDeleteDialog();
@@ -327,7 +337,8 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 
 		BasicComponentView componentView=this.m_component_center.CreateComponent(m_context, type);
 		if(componentView!=null) {//this.temp_ws_h
-			bindCompEvent(parentLayout, componentView, x, y, componentView.c_w, componentView.c_h);
+			componentView.setInitLayout(x,y,componentView.c_w, componentView.c_h);
+			bindCompEvent(parentLayout, componentView, (int)(x/TemplateDesignerKeys.temp_scale), (int)(y/TemplateDesignerKeys.temp_scale), componentView.c_w, componentView.c_h);
 			comp_properties_view.bingingBasicProperties(componentView);
 			if(selectedComp.selectedView!=null)
 				((BasicComponentView)selectedComp.selectedView).onSelected(false);
@@ -342,6 +353,7 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 			public void callback(Bundle bundle) {
 				try {
 					temp_workspace.removeView(deletedView);
+					globalTimer.removeTimerProcess(((BasicComponentView)deletedView));
 					comp_properties_view.unBinding();
 
 				} catch (Exception ex) {
@@ -418,6 +430,7 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 			}
 		});
 		componentView.render();
+		this.globalTimer.addTimerProcess(componentView);
 	}
 	CallbackBundle componentEditListener = new CallbackBundle() {
 		@Override
@@ -478,8 +491,9 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 						if(layout.leftMargin>(this.temp_ws_w-layout.width))
 							layout.width-=mouseAddX;
 					}
-					selectedComp.height=layout.height;
-					selectedComp.width=layout.width;
+
+					selectedComp.height=layout.height=layout.height>0?layout.height:10;
+					selectedComp.width=layout.width=layout.width>0?layout.width:10;
 				}
 				selectedComp.mouseX=ev.getX();
 				selectedComp.mouseY=ev.getY();
@@ -562,6 +576,7 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 	@Override
 	public Boolean openTemplate(TemplateEntity template) {
 		this.m_component_center.clear();
+		this.globalTimer.restartTimer();
 
 		this.isOpening=true;
 		currentTemplate=template;
@@ -618,6 +633,7 @@ public class TemplateEditPreviewLayout extends AbstractTemplateDesigner implemen
 				((BasicComponentView)temp_workspace.getChildAt(index)).stop();
 			}
 		}
+		this.globalTimer.releaseTimer();
 		Message msg=new Message();
 		msg.what=0;
 		handler.sendMessage(msg);

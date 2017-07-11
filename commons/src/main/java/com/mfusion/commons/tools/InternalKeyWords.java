@@ -12,6 +12,10 @@ public class InternalKeyWords {
 
 	public static String Config_DBPath="/data/data/com.mfusion.player/database/PlayerConfig.db";
 
+	public static String DeviceQR_Path=Environment.getExternalStorageDirectory().getPath()+"/Data/ninja_QR.jpg";//"/data/data/com.mfusion.player/ninja_QR.jpg";
+
+	public static String DeviceId="";
+
 	public static String Config_TableName="setting";
 
 	public static String Config_PlayingSchedule="PlayingSchedule";
@@ -21,6 +25,8 @@ public class InternalKeyWords {
 	public static String Config_ShutDownTime="ShutDownTime";
 
 	public static String Config_WakeUpTime="WakeUpTime";
+
+	public static String Config_AutoStart="AutoStart";
 
 	public static String Config_ExitPassword="ExitPassword";
 

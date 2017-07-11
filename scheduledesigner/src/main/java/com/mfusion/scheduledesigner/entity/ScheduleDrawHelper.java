@@ -79,7 +79,7 @@ public class ScheduleDrawHelper {
 		return true;
 	}
 	
-	public static int getDurtion(Date startTime,Date endTime) {
+	public static int getDuration(Date startTime,Date endTime) {
 		return (endTime.getHours()-startTime.getHours())*60+(endTime.getMinutes()-startTime.getMinutes());
 	}
 	

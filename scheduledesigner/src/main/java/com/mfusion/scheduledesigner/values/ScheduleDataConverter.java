@@ -56,7 +56,7 @@ public class ScheduleDataConverter {
                 blockUI.endDate=block.endDate;
                 blockUI.startTime=block.startTime;
                 blockUI.endTime=block.endTime;
-                blockUI.duration= ScheduleDrawHelper.getDurtion(block.startTime, block.endTime);
+                blockUI.duration= ScheduleDrawHelper.getDuration(block.startTime, block.endTime);
                 blockUI.isRecurrence=block.isRecurrence;
                 blockUI.recurrence=block.recurrence;
 

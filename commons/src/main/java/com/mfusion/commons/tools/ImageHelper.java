@@ -50,7 +50,8 @@ public class ImageHelper {
 			opts.inPreferredConfig = Bitmap.Config.RGB_565;
 			opts.inPurgeable = false;
 			opts.inInputShareable = false;
-			opts.inSampleSize = scale;
+			if(scale>0)
+				opts.inSampleSize = scale;
 
 			if(sourceType==ResourceSourceType.http){
 				
@@ -92,26 +93,26 @@ public class ImageHelper {
 				}
 			}catch(Exception ex){ex.printStackTrace();}
 
-			System.gc();
+			//System.gc();
 		}
 		
 		return null;
 	}
-	
-	public static Boolean saveBitmap(Bitmap bitmap,String savePath){
+
+	public static Boolean saveBitmap(Bitmap bitmap,String savePath,Bitmap.CompressFormat format){
 		try {
 			if(bitmap==null)
 				return true;
-			
+
 			File saveFile=new File(savePath);
 			if(!saveFile.getParentFile().exists())
 				saveFile.getParentFile().mkdirs();
-			
+
 			FileOutputStream out = new FileOutputStream(new File(savePath));
-			bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+			bitmap.compress(format, 100, out);
 			out.flush();
 			out.close();
-			
+
 			return true;
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -119,6 +120,11 @@ public class ImageHelper {
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	public static Boolean saveBitmap(Bitmap bitmap,String savePath){
+
+		return  saveBitmap(bitmap,savePath,Bitmap.CompressFormat.JPEG);
 	}
 
 	public static Bitmap createTemplateThumb(int width,int height,int color) {
@@ -187,7 +193,7 @@ public class ImageHelper {
 				e.printStackTrace();
 			}
 			
-		} catch (Exception e) {
+		}catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
 			LogOperator.WriteLogfortxt("ImageHelper==>createTemplateThumb :"+e.getMessage());

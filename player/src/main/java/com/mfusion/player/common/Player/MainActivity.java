@@ -8,19 +8,17 @@
  */
 package com.mfusion.player.common.Player;
 
-import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import org.w3c.dom.Element;
 
-import com.mfusion.commons.tools.AlertDialogHelper;
-import com.mfusion.commons.tools.FileOperator;
-import com.mfusion.commons.tools.InternalKeyWords;
+import com.mfusion.commons.tools.HashAlgorithm;
+import com.mfusion.commons.tools.LicenseDecoder;
+import com.mfusion.commons.tools.LicenseStorage;
 import com.mfusion.commons.tools.LogOperator;
+import com.mfusion.commons.tools.QRBuilder;
 import com.mfusion.commons.tools.WindowsDecorHelper;
 import com.mfusion.commons.view.FreeTimeHintDialog;
 import com.mfusion.player.R;
@@ -40,19 +38,15 @@ import com.mfusion.player.common.Service.connection.ConnectionManagerService;
 import com.mfusion.player.common.Setting.Player.PlayerSetting;
 import com.mfusion.player.common.Setting.Player.PlayerStoragePath;
 import com.mfusion.player.IMFServiceInterface;
+
+import android.content.Context;
 import android.media.AudioManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -60,6 +54,7 @@ import android.content.pm.ResolveInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
@@ -68,7 +63,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -199,6 +193,10 @@ public class MainActivity extends Activity implements MyCallInterface{
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
 		setContentView(R.layout.activity_main);
+
+		/*System.out.println( "FNVHash1 : "+LicenseDecoder.baseString(Math.abs(HashAlgorithm.FNVHash1("201712321235959")),36));
+		System.out.println( "oneByOneHash : "+ HashAlgorithm.oneByOneHash("201712321235959"));*/
+
 		//隐藏底部状态栏
 		/*try
 		{  
@@ -221,8 +219,8 @@ public class MainActivity extends Activity implements MyCallInterface{
 		else
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT);*/
 		LoggerHelper.WriteLogfortxt("Starting Player==>");
-		
-		
+
+
 	}
 
 	@Override  
@@ -496,6 +494,7 @@ public class MainActivity extends Activity implements MyCallInterface{
 			}
 			else if(event.getKeyCode()==KeyEvent.KEYCODE_BACK){
 				//Esc
+
 				if(isClosingPlayer==false){
 					isClosingPlayer=true;
 					DialogCallBack callBack=new DialogCallBack(){
@@ -700,6 +699,7 @@ public class MainActivity extends Activity implements MyCallInterface{
 		super.onResume();
 		if(this.changeMainActivity) {
 			this.PlayerSetting.refreshConfigInfo();
+			this.TaskManager.Restart();
 			this.mHandler.sendEmptyMessage(0);
 			changeMainActivity = false;
 		}
@@ -730,10 +730,16 @@ public class MainActivity extends Activity implements MyCallInterface{
 			ResourceCenter.Stop();
 			FileManager.Stop();
 			PBUDispatcher.Stop();
+			DeviceManager.Stop();
 			ScheduleLoader.Stop();
 
 			this.FreeHintDialog.stopDisplay();
 
+			this.TaskManager.Stop();
+
+			this.Clock.Stop();
+
+			Helper.pause();
 			//this.unbindService(mConnection);
 
 		}catch (Exception ex){

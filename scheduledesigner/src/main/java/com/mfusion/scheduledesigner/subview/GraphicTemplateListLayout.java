@@ -242,7 +242,7 @@ public class GraphicTemplateListLayout extends LinearLayout{
                         ImageHelper.recycleBitmap(template.thumbImageBitmap);
                     }
                     template_list.clear();
-                    System.gc();
+                    //System.gc();
                 }
                 template_list = XMLTemplate.getInstance().getAllTemplates();
             }catch (PathAccessException ex){

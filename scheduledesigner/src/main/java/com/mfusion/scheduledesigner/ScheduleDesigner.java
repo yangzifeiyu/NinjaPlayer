@@ -70,20 +70,32 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
     public ScheduleDesigner(Context context) {
         super(context);
         // TODO Auto-generated constructor stub
-        this.m_context=context;
-
-        this.addOnLayoutChangeListener(this);
+        initBasicProperty(context);
     }
     public ScheduleDesigner(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.m_context=context;
-        this.addOnLayoutChangeListener(this);
+        initBasicProperty(context);
     }
 
     public ScheduleDesigner(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        initBasicProperty(context);
+    }
+
+    private void initBasicProperty(Context context){
+
         this.m_context=context;
         this.addOnLayoutChangeListener(this);
+
+        this.m_time_refresh_timer=new HandleTimer() {
+            @Override
+            protected void onTime() {
+                if(systemTimeText!=null)
+                    systemTimeText.setText(DateConverter.convertCurrentTimeToStr());
+                if(m_conflict_view!=null)
+                    m_conflict_view.refresh();
+            }
+        };
     }
     Context m_context;
 
@@ -147,11 +159,13 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
 
     HandleTimer m_time_refresh_timer;
 
+    TextView systemTimeText;
+
     public AbstractFragment parentFragment;
     /**
      * init all subview in schedule designer
      */
-    public void Init() {
+    public void initUI() {
 
         if(this.isInitUI)
             return;
@@ -272,17 +286,7 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
 
         this.initCalendar();
 
-        final TextView systemTimeText=(TextView)scheduleLayout.findViewById(R.id.sche_system_time);
-        this.m_time_refresh_timer=new HandleTimer() {
-            @Override
-            protected void onTime() {
-                systemTimeText.setText(DateConverter.convertCurrentTimeToStr());
-                if(m_conflict_view!=null)
-                    m_conflict_view.refresh();
-            }
-        };
-
-        this.m_time_refresh_timer.start(100,1000);
+        systemTimeText=(TextView)scheduleLayout.findViewById(R.id.sche_system_time);
 
         KeyBoardCenter.deleteKeyCallbackList.add(deleteCompCallBack);
     }
@@ -828,10 +832,18 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
     }
 
     @Override
+    public void closeDesigner() {
+        if(this.m_time_refresh_timer!=null)
+            this.m_time_refresh_timer.stop();
+    }
+
+    @Override
     public Boolean openSchedule(Schedule schedule) {
         // TODO Auto-generated method stub
         m_schedule_data = schedule;
         ScheduleDataConverter.convertToDisplay(m_schedule_data,block_list);
+
+        this.m_time_refresh_timer.start(100,1000);
 
         if(this.isInitUI){
 
@@ -852,7 +864,7 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
     @Override
     public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
         if(left!=oldLeft||right!=oldRight||top!=oldTop||bottom!=oldBottom){
-            sche_container_w=right-left;
+            sche_container_w=right-left;;
             sche_container_h=bottom-top;
 
             Message msg=new Message();
@@ -872,19 +884,21 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
 
                     break;
                 case 1:
-                    Init();
+                    initUI();
 
                     isInitUI=true;
 
                     break;
             }
 
-            if(m_schedule_data.idleItem==null||m_schedule_data.idleItem.isEmpty())
-                sche_idle_view.setText(getResources().getString(R.string.sche_idle_template_tip));
-            else
-                sche_idle_view.setText(m_schedule_data.idleItem);
-            sche_playmode_view.setChecked(m_schedule_data.playType== SchedulePlayType.Sequence);
+            if(m_schedule_data!=null) {
 
+                if (m_schedule_data.idleItem == null || m_schedule_data.idleItem.isEmpty())
+                    sche_idle_view.setText(getResources().getString(R.string.sche_idle_template_tip));
+                else
+                    sche_idle_view.setText(m_schedule_data.idleItem);
+                sche_playmode_view.setChecked(m_schedule_data.playType == SchedulePlayType.Sequence);
+            }
             sche_pbu_view.setEnabled(true);
 
             invalidate();
@@ -893,10 +907,18 @@ public class ScheduleDesigner extends AbstractScheduleDesigner implements View.O
 
     private void initCalendar(){
         calendar = Calendar.getInstance();
-        if(calendar.get(Calendar.DAY_OF_WEEK)==1){
-            calendar.add(Calendar.DAY_OF_WEEK, -7);
-        }else
+
+        if(calendar.getFirstDayOfWeek()==Calendar.MONDAY) {
             calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
+            this.calendar.add(Calendar.DAY_OF_YEAR, -1);
+        }
+        else{
+            if(calendar.get(Calendar.DAY_OF_WEEK)==1){
+                calendar.add(Calendar.DAY_OF_WEEK, -7);
+            }else
+                calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
+        }
+
         DateConverter.clearCalendarNoneHHmmss(calendar);
 
         sche_week_selecter.initWeek(calendar);

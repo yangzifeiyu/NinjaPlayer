@@ -1,5 +1,6 @@
 package com.mfusion.ninjaplayer.FragmentClass;
 
+import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,7 +68,6 @@ public class TemplateFragment extends AbstractFragment {
     @Override
     public void showFragment() {
         if(flowListener!=null){
-            System.out.println(DateConverter.convertCurrentDateToStr("HH:mm:ss SSS")+" start show template");
             flowListener.goUserCreatedView();
         }
     }
@@ -101,7 +101,7 @@ public class TemplateFragment extends AbstractFragment {
                 templateUserCreatedView.setListener(flowListener);
             }
             templateUserCreatedView.loadingDatas();
-            System.out.println(DateConverter.convertCurrentDateToStr("HH:mm:ss SSS")+" end show template");
+
             placeHolder.addView(templateUserCreatedView);
             isEditing=false;
         }

@@ -68,28 +68,43 @@ public abstract class HandleTimer {
 	 *            period time
 	 */
 	public synchronized void start(long delay, final long period) {
-		if (mRunnable != null) {
+		if (mRunnable != null||mHandler==null) {
 			return;
 		}
-		mRunnable = new Runnable() {
-			public void run() {
-				mHandler.postDelayed(this, period);
-				onTime();
-			}
-		};
-		mHandler.postDelayed(mRunnable, delay);
+		try {
+
+			mRunnable = new Runnable() {
+				public void run() {
+					if(mHandler!=null)
+						mHandler.postDelayed(this, period);
+					onTime();
+				}
+			};
+			mHandler.postDelayed(mRunnable, delay);
+		}catch (Exception ex){
+			ex.printStackTrace();
+		}
 	}
 
 	/**
 	 * Stop timer.
 	 */
 	public synchronized void stop() {
-		if (mRunnable != null) {
-			mHandler.removeCallbacks(mRunnable);
-			mRunnable = null;
+		try{
+
+			if (mRunnable != null) {
+				mHandler.removeCallbacks(mRunnable);
+				mRunnable = null;
+			}
+		}catch (Exception ex){
+			ex.printStackTrace();
 		}
 	}
 
+	public synchronized void release() {
+		stop();
+		mHandler=null;
+	}
 	/**
 	 * Call back function on time.
 	 */

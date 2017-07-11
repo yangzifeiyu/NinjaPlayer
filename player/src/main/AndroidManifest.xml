@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -42,12 +43,34 @@
             android:name=".common.Player.PlayerMenu"
             android:label="@string/title_activity_player_menu"
             android:theme="@android:style/Theme.Dialog">
-
             <!-- android:theme="@android:style/Theme.Dialog" -->
         </activity>
-        <activity android:name="com.mfusion.ninjaplayer.New.MainActivity" android:theme="@style/MyTheme" android:screenOrientation="landscape"
-            android:windowSoftInputMode="stateHidden"></activity>
-        <activity android:name=".common.Player.ActivityViewpage" android:theme="@style/MyTheme" android:screenOrientation="landscape"
+
+        <receiver android:name="com.mfusion.player.services.BootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.mfusion.commons.broadcast.UsbBroadcastReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_REMOVED" />
+                <data android:scheme="file" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_MOUNTED" />
+                <data android:scheme="file" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_EJECT" />
+                <data android:scheme="file" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_SHARED" />
+                <data android:scheme="file" />
+            </intent-filter>
+        </receiver>
+
+        <activity android:name=".common.Player.ActivityViewpage" android:theme="@style/MyTheme"
             android:windowSoftInputMode="stateHidden" android:configChanges="orientation|screenSize|keyboardHidden"></activity>
     </application>
 

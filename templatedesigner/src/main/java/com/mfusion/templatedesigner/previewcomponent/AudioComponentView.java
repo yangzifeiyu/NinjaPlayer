@@ -21,7 +21,7 @@ import com.mfusion.commons.entity.template.ComponentEntity;
 import com.mfusion.commons.entity.template.TemplateEntity;
 import com.mfusion.commons.entity.values.ComponentType;
 import com.mfusion.commons.tools.CallbackBundle;
-import com.mfusion.templatedesigner.HandleTimer;
+import com.mfusion.commons.tools.HandleTimer;
 import com.mfusion.templatedesigner.R;
 import com.mfusion.templatedesigner.previewcomponent.dialog.MediaSelectDialog;
 import com.mfusion.templatedesigner.previewcomponent.entity.ScheduleMediaEntity;

@@ -17,10 +17,10 @@ public class RssItem {
 	}
 
 	public String getTitle() {
-		if (title.length() > 20) {
+		/*if (title.length() > 20) {
 			return title.substring(0, 19) + "...";
-		}
-		return title;
+		}*/
+		return "    "+title+"  ";
 	}
 
 	public void setTitle(String title) {

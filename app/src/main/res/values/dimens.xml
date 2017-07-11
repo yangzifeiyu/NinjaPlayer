@@ -13,4 +13,7 @@
 
     <dimen name="config_switch_btn_width">60dp</dimen>
     <dimen name="config_switch_btn_height">25dp</dimen>
+
+
+    <dimen name="about_qr_size">200dp</dimen>
 </resources>

@@ -247,7 +247,31 @@
 
 
         </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="5dp"
+            android:gravity="center_vertical">
 
+            <com.mfusion.commons.view.CheckSwitchButton
+                android:layout_width="@dimen/config_switch_btn_width"
+                android:layout_height="@dimen/config_switch_btn_height"
+                android:id="@+id/switch_autostart"
+                android:layout_gravity="center_vertical"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Auto Start"
+                android:id="@+id/textView15"
+                android:textColor="@color/config_text"
+                android:textStyle="bold"
+                android:layout_gravity="center_vertical"
+                android:textSize="15dp" />
+
+        </LinearLayout>
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
